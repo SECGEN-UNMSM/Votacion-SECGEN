@@ -1,0 +1,60 @@
+create database sistema_votacion
+
+create type categoria_enum as enum ('Docentes Principales', 'Docentes Asociados', 'Docentes Auxiliares', 'Estudiantes');
+
+create table asambleista
+(
+    idasambleista integer not null
+        constraint asambleista_pk
+            primary key,
+    nombre        varchar not null,
+    ha_votado     boolean default false
+);
+
+
+create table candidato
+(
+    idcandidato     integer        not null
+        constraint candidato_pk
+            primary key,
+    nombre          varchar        not null,
+    categoria       categoria_enum not null,
+    codigo_facultad char(2)        not null
+);
+
+
+create table votos
+(
+    idvoto        integer not null
+        constraint votos_pk
+            primary key,
+    idasambleista integer not null
+        constraint votos_asambleista_idasambleista_fk
+            references asambleista,
+    fecha         timestamp default CURRENT_TIMESTAMP,
+    es_abstencion boolean   default false
+);
+
+
+create table voto_candidato
+(
+    idvotocandidato integer not null
+        constraint voto_candidato_pk
+            primary key,
+    idvoto          integer
+        constraint voto_candidato_votos_idvoto_fk
+            references votos,
+    idcandidato     integer not null
+        constraint voto_candidato_candidato_idcandidato_fk
+            references candidato
+);
+
+
+create view vista_ranking_por_categoria(codigo_facultad, nombre_candidato, total_votos) as
+SELECT c.codigo_facultad,
+       c.nombre                  AS nombre_candidato,
+       count(vc.idvotocandidato) AS total_votos
+FROM candidato c
+         LEFT JOIN voto_candidato vc ON c.idcandidato = vc.idcandidato
+GROUP BY c.codigo_facultad, c.nombre
+ORDER BY (count(vc.idvotocandidato)) DESC;

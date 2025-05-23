@@ -1,0 +1,9 @@
+import SistemaVotacion from "@/components/sistema-votacion";
+
+export default function Home() {
+  return (
+    <main className="container py-6">
+      <SistemaVotacion />
+    </main>
+  );
+}
