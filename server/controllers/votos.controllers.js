@@ -22,7 +22,23 @@ const getVotosAsambleista = async (req, res) => {
   }
 };
 
+const registrarVoto = async (req, res) => {
+  const { idasambleista, candidatos, es_abstencion, categoria } = req.body;
+
+  try {
+    await pool.query(
+      'SELECT registrar_voto($1, $2, $3, $4)',
+      [idasambleista, candidatos, es_abstencion, categoria]
+    );
+    res.status(200).json({ success: true, message: 'Voto registrado correctamente' });
+  } catch (err) {
+    console.error('Error al registrar voto:', err);
+    res.status(500).json({ success: false, message: 'Error al registrar voto', error: err.message });
+  }
+};
+
 module.exports = {
   getRanking,
   getVotosAsambleista,
+  registrarVoto,
 };
