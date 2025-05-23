@@ -1,4 +1,4 @@
-const pool = require('../db');
+const pool = require('../src/db');
 
 // Obtener ranking por categoría
 const getRanking = async (req, res) => {
