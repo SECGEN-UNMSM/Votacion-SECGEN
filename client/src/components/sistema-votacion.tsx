@@ -20,6 +20,7 @@ import {
 import type { Asambleista, Candidato, Categoria } from "@/lib/types"
 import { asambleistasIniciales, candidatosIniciales, categorias } from "@/lib/data"
 import { limitesPorCategoria } from "@/lib/types"
+import { ScrollArea } from "./ui/scroll-area"
 
 export default function SistemaVotacion() {
   const [asambleistas, setAsambleistas] = useState<Asambleista[]>(asambleistasIniciales)
@@ -160,13 +161,13 @@ export default function SistemaVotacion() {
   const getColorCategoria = (categoria: Categoria) => {
     switch (categoria) {
       case "Docentes Principales":
-        return "bg-docentes-principales"
+        return "bg-[var(--bg-doc-principales)]"
       case "Docentes Asociados":
-        return "bg-docentes-asociados"
+        return "bg-[var(--bg-doc-asociados)]"
       case "Docentes Auxiliares":
-        return "bg-docentes-auxiliares"
+        return "bg-[var(--bg-doc-auxiliares)]"
       case "Estudiantes":
-        return "bg-estudiantes"
+        return "bg-[var(--bg-estudiantes)]"
       default:
         return "bg-gray-100"
     }
@@ -179,44 +180,63 @@ export default function SistemaVotacion() {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <main className="grid grid-cols-1 gap-6">
+      <div className="grid grid-cols-4 gap-4">
         {/* Sección de Votación */}
-        <Card>
-          <CardHeader className="bg-muted">
-            <CardTitle>Votación</CardTitle>
+        <Card className="col-span-1 flex flex-col gap-2 border-1 border-[var(--border-color)] p-2">
+          <CardHeader className="p-0">
+            <CardTitle className="flex justify-center items-center bg-[var(--bg-title)] py-3 rounded-sm">
+              Votación
+            </CardTitle>
           </CardHeader>
-          <CardContent className="pt-6">
+          <CardContent className="p-2">
             <div className="space-y-4">
-              <div className="space-y-2">
+              <div className="space-y-4">
                 <Label htmlFor="titulo">Título del proceso</Label>
-                <Input id="titulo" value={procesoTitulo} onChange={(e) => setProcesoTitulo(e.target.value)} />
+                <Input
+                  id="titulo"
+                  value={procesoTitulo}
+                  onChange={(e) => setProcesoTitulo(e.target.value)}
+                  className="border-[var(--border-color)] focus:border-1 focus:border-[#555] selection:border-[#555]"
+                />
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-4">
                 <Label htmlFor="asambleista">Lista de asambleístas</Label>
-                <Select value={asambleistaSeleccionado} onValueChange={setAsambleistaSeleccionado}>
-                  <SelectTrigger>
+                <Select
+                  value={asambleistaSeleccionado}
+                  onValueChange={setAsambleistaSeleccionado}
+                >
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Asambleísta" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="w-full">
                     {asambleistas.map((asambleista) => (
-                      <SelectItem key={asambleista.id} value={asambleista.id} disabled={asambleista.haVotado}>
-                        {asambleista.nombre} {asambleista.haVotado && "(Ya votó)"}
+                      <SelectItem
+                        key={asambleista.id}
+                        value={asambleista.id}
+                        disabled={asambleista.haVotado}
+                      >
+                        {asambleista.nombre}{" "}
+                        {asambleista.haVotado && "(Ya votó)"}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
 
-              <div className="flex space-x-2 pt-4">
-                <Button variant="outline" onClick={() => setAsambleistaSeleccionado("")}>
+              <div className="flex gap-2 pt-4">
+                <Button
+                  variant="outline"
+                  onClick={() => setAsambleistaSeleccionado("")}
+                  className="flex-1 cursor-pointer"
+                >
                   No emitir voto
                 </Button>
                 <Button
                   onClick={confirmarVoto}
                   disabled={!puedeEmitirVoto()}
-                  className="bg-green-600 hover:bg-green-700"
+                  className="bg-green-600 hover:bg-green-700 flex-1 cursor-pointer"
                 >
                   Emitir voto
                 </Button>
@@ -226,9 +246,11 @@ export default function SistemaVotacion() {
         </Card>
 
         {/* Sección de Candidatos */}
-        <Card>
-          <CardHeader className="bg-muted">
-            <CardTitle>Candidatos</CardTitle>
+        <Card className="col-span-3 flex flex-col gap-2 border-1 border-[var(--border-color)] p-2">
+          <CardHeader className="p-0">
+            <CardTitle className="flex justify-center items-center bg-[var(--bg-title)] py-3 rounded-sm">
+              Candidatos
+            </CardTitle>
           </CardHeader>
           <CardContent className="p-0">
             <Tabs
@@ -236,112 +258,177 @@ export default function SistemaVotacion() {
               value={categoriaActiva}
               onValueChange={(value) => setCategoriaActiva(value as Categoria)}
             >
-              <TabsList className="grid grid-cols-4 w-full">
+              <TabsList className="grid grid-cols-4 gap-4 w-full h-10">
                 {categorias.map((categoria) => (
-                  <TabsTrigger key={categoria} value={categoria}>
+                  <TabsTrigger
+                    key={categoria}
+                    value={categoria}
+                    className="rounded-sm"
+                  >
                     {categoria}
                   </TabsTrigger>
                 ))}
               </TabsList>
 
               {categorias.map((categoria) => (
-                <TabsContent key={categoria} value={categoria} className="p-4">
+                <TabsContent
+                  key={categoria}
+                  value={categoria}
+                  className="p-4 bg-[var(--bg-doc-principales)]/50 rounded-sm"
+                >
                   <div className="flex justify-between items-center mb-4">
                     <div className="text-sm">
                       {!abstenciones[categoria] ? (
                         <>
                           Seleccione {limitesPorCategoria[categoria]} candidato
-                          {limitesPorCategoria[categoria] > 1 ? "s" : ""} ({selecciones[categoria].length}/
+                          {limitesPorCategoria[categoria] > 1 ? "s" : ""} (
+                          {selecciones[categoria].length}/
                           {limitesPorCategoria[categoria]})
                         </>
                       ) : (
-                        <span className="text-gray-500 italic">Abstención seleccionada</span>
+                        <span className="text-gray-500 italic">
+                          Abstención seleccionada
+                        </span>
                       )}
                     </div>
                     <div className="flex items-center space-x-2">
                       <Switch
                         checked={abstenciones[categoria]}
-                        onCheckedChange={(checked) => handleAbstencion(categoria, checked)}
+                        onCheckedChange={(checked) =>
+                          handleAbstencion(categoria, checked)
+                        }
                         id={`abstencion-${categoria}`}
                       />
-                      <Label htmlFor={`abstencion-${categoria}`}>Abstención</Label>
+                      <Label htmlFor={`abstencion-${categoria}`}>
+                        Abstención
+                      </Label>
                     </div>
                   </div>
 
-                  <div className={abstenciones[categoria] ? "opacity-50 pointer-events-none" : ""}>
-                    {getCandidatosPorCategoria(categoria).map((candidato, index) => (
-                      <div key={candidato.id} className="flex items-center space-x-2 py-2 border-b">
-                        <div className="w-6 text-center font-medium">{index + 1}</div>
-                        <Checkbox
-                          id={candidato.id}
-                          checked={selecciones[categoria].includes(candidato.id)}
-                          onCheckedChange={(checked) =>
-                            handleSeleccionCandidato(categoria, candidato.id, checked === true)
-                          }
-                          disabled={
-                            abstenciones[categoria] ||
-                            (!selecciones[categoria].includes(candidato.id) &&
-                              selecciones[categoria].length >= limitesPorCategoria[categoria])
-                          }
-                        />
-                        <Label htmlFor={candidato.id} className="cursor-pointer">
-                          {candidato.nombre}
-                        </Label>
-                      </div>
-                    ))}
+                  <div
+                    className={
+                      abstenciones[categoria]
+                        ? "opacity-50 pointer-events-none"
+                        : ""
+                    }
+                  >
+                    {getCandidatosPorCategoria(categoria).map(
+                      (candidato, index) => (
+                        <div
+                          key={candidato.id}
+                          className="flex items-center space-x-2 py-2 border-b border-stone-600/50"
+                        >
+                          <div className="w-6 text-center font-medium">
+                            {index + 1}
+                          </div>
+                          <Checkbox
+                            id={candidato.id}
+                            checked={selecciones[categoria].includes(
+                              candidato.id
+                            )}
+                            onCheckedChange={(checked) =>
+                              handleSeleccionCandidato(
+                                categoria,
+                                candidato.id,
+                                checked === true
+                              )
+                            }
+                            disabled={
+                              abstenciones[categoria] ||
+                              (!selecciones[categoria].includes(candidato.id) &&
+                                selecciones[categoria].length >=
+                                  limitesPorCategoria[categoria])
+                            }
+                          />
+                          <Label
+                            htmlFor={candidato.id}
+                            className="cursor-pointer"
+                          >
+                            {candidato.nombre}
+                          </Label>
+                        </div>
+                      )
+                    )}
                   </div>
                 </TabsContent>
               ))}
             </Tabs>
           </CardContent>
         </Card>
-      </div>
 
-      {/* Sección de Resultados */}
-      <Card>
-        <CardHeader className="bg-muted">
-          <CardTitle className="text-center">Resultados</CardTitle>
-        </CardHeader>
-        <CardContent className="pt-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            {categorias.map((categoria) => {
-              // Ordenar candidatos por votos (descendente)
-              const candidatosOrdenados = [...getCandidatosPorCategoria(categoria)].sort((a, b) => b.votos - a.votos)
+        {/* Sección de Resultados */}
+        <Card className="col-span-4 flex-flex-col gap-2 border-1 border-[var(--border-color)] p-2">
+          <CardHeader className="p-0">
+            <CardTitle className="flex justify-center items-center bg-[var(--bg-title)] py-3 rounded-sm">
+              Resultados
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-2">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              {categorias.map((categoria) => {
+                // Ordenar candidatos por votos (descendente)
+                const candidatosOrdenados = [
+                  ...getCandidatosPorCategoria(categoria),
+                ].sort((a, b) => b.votos - a.votos);
 
-              return (
-                <div key={categoria} className={`${getColorCategoria(categoria)} rounded-lg p-4 min-h-[200px]`}>
-                  <h3 className="font-bold mb-4">{categoria}</h3>
-                  <div className="space-y-2">
-                    {candidatosOrdenados.map((candidato) => (
-                      <div key={candidato.id} className="flex justify-between items-center">
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium w-6">{candidato.codigoFacultad}.</span>
-                          <span>{candidato.nombre}</span>
-                        </div>
-                        <span className="font-bold">{candidato.votos} votos</span>
+                return (
+                  <div
+                    key={categoria}
+                    className={`${getColorCategoria(
+                      categoria
+                    )} rounded-lg p-4 min-h-[300px]`}
+                  >
+                    <h3 className="font-bold mb-4 text-center">{categoria}</h3>
+                    <div className="flex gap-2 w-full mb-4 font-semibold ">
+                      <div className={`border-b-2 pb-2 border-white/40`}>
+                        Fac.
                       </div>
-                    ))}
+                      <div className="flex-1 border-b-2 pb-2 border-white/40">
+                        Apellidos y Nombres
+                      </div>
+                      <div className="border-b-2 border-white/40">Votos</div>
+                    </div>
+                    <ScrollArea className="h-48 w-full rounded-md">
+                      {candidatosOrdenados.map((candidato) => (
+                        <div
+                          key={candidato.id}
+                          className="flex justify-between items-center"
+                        >
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium w-6 pl-1">
+                              {candidato.codigoFacultad}.
+                            </span>
+                            <span className="pl-4">{candidato.nombre}</span>
+                          </div>
+                          <span className="font-bold w-12 text-center">
+                            {candidato.votos}
+                          </span>
+                        </div>
+                      ))}
+                    </ScrollArea>
                   </div>
-                </div>
-              )
-            })}
-          </div>
-        </CardContent>
-      </Card>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Modal de Confirmación */}
       <Dialog open={modalConfirmacion} onOpenChange={setModalConfirmacion}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Confirmar Votación</DialogTitle>
-            <DialogDescription>Por favor confirme su selección de candidatos:</DialogDescription>
+            <DialogDescription>
+              Por favor confirme su selección de candidatos:
+            </DialogDescription>
           </DialogHeader>
 
           <div className="py-4">
             {categorias.map((categoria) => {
               const candidatosSeleccionados = selecciones[categoria]
                 .map((id) => candidatos.find((c) => c.id === id))
-                .filter(Boolean) as Candidato[]
+                .filter(Boolean) as Candidato[];
 
               return (
                 <div key={categoria} className="mb-4">
@@ -351,28 +438,39 @@ export default function SistemaVotacion() {
                   ) : (
                     <ul className="list-none pl-5 mt-1">
                       {candidatosSeleccionados.map((candidato) => (
-                        <li key={candidato.id} className="flex items-center gap-2">
-                          <span className="font-medium w-6">{candidato.codigoFacultad}.</span>
+                        <li
+                          key={candidato.id}
+                          className="flex items-center gap-2"
+                        >
+                          <span className="font-medium w-6">
+                            {candidato.codigoFacultad}.
+                          </span>
                           <span>{candidato.nombre}</span>
                         </li>
                       ))}
                     </ul>
                   )}
                 </div>
-              )
+              );
             })}
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setModalConfirmacion(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setModalConfirmacion(false)}
+            >
               Cancelar
             </Button>
-            <Button onClick={emitirVoto} className="bg-green-600 hover:bg-green-700">
+            <Button
+              onClick={emitirVoto}
+              className="bg-green-600 hover:bg-green-700"
+            >
               Confirmar Voto
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
-  )
+    </main>
+  );
 }
