@@ -1,9 +1,11 @@
 import SistemaVotacion from "@/components/sistema-votacion";
+import { Navbar } from "@/components/navbar"; 
 
 export default function Home() {
   return (
-    <main className="container py-6">
+    <div className="w-screen h-screen flex flex-col gap-8 p-8">
+      <Navbar></Navbar>
       <SistemaVotacion />
-    </main>
+    </div>
   );
 }
