@@ -4,5 +4,6 @@ const votoController = require('../controllers/votos.controllers');
 
 router.get('/ranking', votoController.getRanking);
 router.get('/votos-asambleista', votoController.getVotosAsambleista);
+router.post('/registrar-voto', votoController.registrarVoto);
 
 module.exports = router;
