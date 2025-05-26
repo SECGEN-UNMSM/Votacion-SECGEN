@@ -228,7 +228,10 @@ export default function SistemaVotacion() {
               <div className="flex gap-2 pt-4">
                 <Button
                   variant="outline"
-                  onClick={() => setAsambleistaSeleccionado("")}
+                  onClick={() => {
+                    setAsambleistaSeleccionado("");
+                    // 
+                  }}
                   className="flex-1 cursor-pointer"
                 >
                   No emitir voto
@@ -305,51 +308,55 @@ export default function SistemaVotacion() {
                     </div>
                   </div>
 
-                  <div
-                    className={
-                      abstenciones[categoria]
-                        ? "opacity-50 pointer-events-none"
-                        : ""
-                    }
-                  >
-                    {getCandidatosPorCategoria(categoria).map(
-                      (candidato, index) => (
-                        <div
-                          key={candidato.id}
-                          className="flex items-center space-x-2 py-2 border-b border-stone-600/50"
-                        >
-                          <div className="w-6 text-center font-medium">
-                            {index + 1}
-                          </div>
-                          <Checkbox
-                            id={candidato.id}
-                            checked={selecciones[categoria].includes(
-                              candidato.id
-                            )}
-                            onCheckedChange={(checked) =>
-                              handleSeleccionCandidato(
-                                categoria,
-                                candidato.id,
-                                checked === true
-                              )
-                            }
-                            disabled={
-                              abstenciones[categoria] ||
-                              (!selecciones[categoria].includes(candidato.id) &&
-                                selecciones[categoria].length >=
-                                  limitesPorCategoria[categoria])
-                            }
-                          />
-                          <Label
-                            htmlFor={candidato.id}
-                            className="cursor-pointer"
+                  <ScrollArea className="h-56 w-full">
+                    <div
+                      className={
+                        abstenciones[categoria]
+                          ? "opacity-50 pointer-events-none columns-4 gap-2"
+                          : "columns-4 gap-2"
+                      }
+                    >
+                      {getCandidatosPorCategoria(categoria).map(
+                        (candidato, index) => (
+                          <div
+                            key={candidato.id}
+                            className="flex items-center space-x-2 py-2 border-b border-stone-600/50 break-inside-avoid"
                           >
-                            {candidato.nombre}
-                          </Label>
-                        </div>
-                      )
-                    )}
-                  </div>
+                            <div className="w-6 text-center font-medium">
+                              {index + 1}
+                            </div>
+                            <Checkbox
+                              id={candidato.id}
+                              checked={selecciones[categoria].includes(
+                                candidato.id
+                              )}
+                              onCheckedChange={(checked) =>
+                                handleSeleccionCandidato(
+                                  categoria,
+                                  candidato.id,
+                                  checked === true
+                                )
+                              }
+                              disabled={
+                                abstenciones[categoria] ||
+                                (!selecciones[categoria].includes(
+                                  candidato.id
+                                ) &&
+                                  selecciones[categoria].length >=
+                                    limitesPorCategoria[categoria])
+                              }
+                            />
+                            <Label
+                              htmlFor={candidato.id}
+                              className="cursor-pointer"
+                            >
+                              {candidato.nombre}
+                            </Label>
+                          </div>
+                        )
+                      )}
+                    </div>
+                  </ScrollArea>
                 </TabsContent>
               ))}
             </Tabs>
