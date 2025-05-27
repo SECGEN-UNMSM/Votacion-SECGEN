@@ -21,6 +21,7 @@ import type { Asambleista, Candidato, Categoria } from "@/lib/types"
 import { asambleistasIniciales, candidatosIniciales, categorias } from "@/lib/data"
 import { limitesPorCategoria } from "@/lib/types"
 import { ScrollArea } from "./ui/scroll-area"
+import { Info } from "lucide-react"
 
 export default function SistemaVotacion() {
   const [asambleistas, setAsambleistas] = useState<Asambleista[]>(asambleistasIniciales)
@@ -57,7 +58,7 @@ export default function SistemaVotacion() {
 
       if (checked) {
         // Si ya alcanzó el límite, no permitir más selecciones
-        if (seleccionesActuales.length >= limitesPorCategoria[categoria]) {
+        if (seleccionesActuales.length >= limitesPorCategoria[categoria].maximo) {
           return prev
         }
         return {
@@ -90,19 +91,21 @@ export default function SistemaVotacion() {
     }
   }
 
+  const categoriaEsValida = (categoria: Categoria): boolean => {
+    if (abstenciones[categoria]) {
+      return true; // Si se abstiene, es válida
+    }
+    const numSelecciones = selecciones[categoria].length;
+    const limites = limitesPorCategoria[categoria];
+    return numSelecciones >= limites.minimo && numSelecciones <= limites.maximo;
+  };
+
   // Verificar si se cumple con los requisitos para habilitar el botón de emitir voto
   const puedeEmitirVoto = () => {
-    if (!asambleistaSeleccionado) return false
+    if (!asambleistaSeleccionado) return false;
 
-    // Verificar que no se haya abstenido en todas las categorías
-    const todasAbstenciones = categorias.every((categoria) => abstenciones[categoria])
-    if (todasAbstenciones) return false
-
-    // Verificar que para cada categoría, o bien se haya abstenido, o bien haya seleccionado
-    // la cantidad correcta de candidatos
-    return categorias.every(
-      (categoria) => abstenciones[categoria] || selecciones[categoria].length === limitesPorCategoria[categoria],
-    )
+    // Verificar que cada categoría sea válida (abstención o selección dentro de límites)
+    return categorias.every((categoria) => categoriaEsValida(categoria));
   }
 
   // Abrir modal de confirmación
@@ -179,6 +182,11 @@ export default function SistemaVotacion() {
     return candidato ? candidato.nombre : ""
   }
 
+  const todasEnAbstencion = categorias.every(
+    (categoria) => abstenciones[categoria]
+  );
+
+
   return (
     <main className="grid grid-cols-1 gap-6">
       <div className="grid grid-cols-4 gap-4">
@@ -225,8 +233,17 @@ export default function SistemaVotacion() {
                 </Select>
               </div>
 
+              {todasEnAbstencion && (
+                <div className="flex gap-3 items-center text-sm text-slate-500 p-2 rounded-md border-1 border-slate-300">
+                  <Info className="h-5 w-5" />
+                  <p>
+                    Se ha abstenido de todas las categorías.
+                  </p>
+                </div>
+              )}
+
               <div className="flex gap-2 pt-4">
-                <Button
+                {/*<Button
                   variant="outline"
                   onClick={() => {
                     setAsambleistaSeleccionado("");
@@ -235,11 +252,11 @@ export default function SistemaVotacion() {
                   className="flex-1 cursor-pointer"
                 >
                   No emitir voto
-                </Button>
+                </Button>*/}
                 <Button
                   onClick={confirmarVoto}
                   disabled={!puedeEmitirVoto()}
-                  className="bg-green-600 hover:bg-green-700 flex-1 cursor-pointer"
+                  className="bg-green-600 hover:bg-green-700 cursor-pointer flex-1 py-4"
                 >
                   Emitir voto
                 </Button>
@@ -281,7 +298,18 @@ export default function SistemaVotacion() {
                 >
                   <div className="flex justify-between items-center mb-4">
                     <div className="text-sm">
-                      {!abstenciones[categoria] ? (
+                      {abstenciones[categoria] && (
+                        <span className="text-gray-500 italic">
+                          Abstención seleccionada
+                        </span>
+                      )}
+                      {
+                        !abstenciones[categoria] && (
+                          <div className="text-gray-500 mt-1">
+                            Rango: {limitesPorCategoria[categoria].minimo} -{" "}
+                            {limitesPorCategoria[categoria].maximo} candidatos
+                          </div>
+                        ) /*(
                         <>
                           Seleccione {limitesPorCategoria[categoria]} candidato
                           {limitesPorCategoria[categoria] > 1 ? "s" : ""} (
@@ -292,7 +320,8 @@ export default function SistemaVotacion() {
                         <span className="text-gray-500 italic">
                           Abstención seleccionada
                         </span>
-                      )}
+                      )*/
+                      }
                     </div>
                     <div className="flex items-center space-x-2">
                       <Switch
@@ -343,7 +372,7 @@ export default function SistemaVotacion() {
                                   candidato.id
                                 ) &&
                                   selecciones[categoria].length >=
-                                    limitesPorCategoria[categoria])
+                                    limitesPorCategoria[categoria].maximo)
                               }
                             />
                             <Label
@@ -387,13 +416,17 @@ export default function SistemaVotacion() {
                   >
                     <h3 className="font-bold mb-4 text-center">{categoria}</h3>
                     <div className="flex gap-2 w-full mb-4 font-semibold ">
-                      <div className={`border-b-2 pb-2 border-white/40`}>
+                      <div
+                        className={`border-b-2 pb-2 border-white/40 text-sm`}
+                      >
                         Fac.
                       </div>
-                      <div className="flex-1 border-b-2 pb-2 border-white/40">
+                      <div className="flex-1 border-b-2 pb-2 border-white/40 text-sm">
                         Apellidos y Nombres
                       </div>
-                      <div className="border-b-2 border-white/40">Votos</div>
+                      <div className="border-b-2 border-white/40 text-sm">
+                        Votos
+                      </div>
                     </div>
                     <ScrollArea className="h-48 w-full rounded-md">
                       {candidatosOrdenados.map((candidato) => (

@@ -21,9 +21,18 @@ export interface Voto {
   categoria: Categoria
 }
 
-export const limitesPorCategoria: Record<Categoria, number> = {
-  "Docentes Principales": 3,
-  "Docentes Asociados": 2,
-  "Docentes Auxiliares": 1,
-  Estudiantes: 3,
+export const limitesPorCategoria: Record<
+  Categoria,
+  { minimo: number; maximo: number }
+> = {
+  "Docentes Principales": {minimo: 1, maximo:3},
+  "Docentes Asociados": {minimo: 1, maximo:2},
+  "Docentes Auxiliares": {minimo: 1, maximo: 1},
+  Estudiantes: {minimo: 1, maximo: 3},
+};
+
+
+export interface LoginFields {
+  username: string;
+  password: string;
 }
