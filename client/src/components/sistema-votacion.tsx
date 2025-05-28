@@ -22,6 +22,7 @@ import { asambleistasIniciales, candidatosIniciales, categorias } from "@/lib/da
 import { limitesPorCategoria } from "@/lib/types"
 import { ScrollArea } from "./ui/scroll-area"
 import { Info } from "lucide-react"
+import { useAsambleistas } from "@/hooks/useAsambleistas"
 
 export default function SistemaVotacion() {
   const [asambleistas, setAsambleistas] = useState<Asambleista[]>(asambleistasIniciales)
@@ -186,6 +187,9 @@ export default function SistemaVotacion() {
     (categoria) => abstenciones[categoria]
   );
 
+  const { asambleistas: asam } = useAsambleistas();
+
+  console.log("Asambleistas desde el contexto:" , asam)
 
   return (
     <main className="grid grid-cols-1 gap-6">

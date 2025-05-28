@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Sora } from "next/font/google";
 import "./globals.css";
+import { AsambleistaProvider } from "@/context/AsambleistaContext";
 
 const soraSans = Sora({style: "normal", subsets: ["latin"]});
 
@@ -16,7 +17,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${soraSans.className}`}>
-      <body>{children}</body>
+      <body>
+        <AsambleistaProvider>
+          {children}
+        </AsambleistaProvider>
+      </body>
     </html>
   );
 }

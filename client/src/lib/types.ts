@@ -36,3 +36,17 @@ export interface LoginFields {
   username: string;
   password: string;
 }
+
+/* TIPADO */
+export interface AsambleistaBack {
+  id: number,
+  nombre: string,
+  ha_votado: boolean,
+}
+
+export interface CandidatoBack {
+  id: number,
+  nombre: string,
+  categoria: string, // Choices
+  codigo_facultad: string,
+}
