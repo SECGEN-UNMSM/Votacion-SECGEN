@@ -19,6 +19,7 @@ export const AsambleistaProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const [loading, setLoading] = useState<boolean>(true);
 
   const fetchAsambleistas = async () => {
+    setLoading(true);
     try {
       const response = await getAsambleistas();
       setAsambleistas(response);

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -17,7 +17,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import type { Asambleista, Candidato, Categoria } from "@/lib/types"
+import type { Asambleista, AsambleistaBack, Candidato, CandidatoBack, Categoria } from "@/lib/types"
 import { asambleistasIniciales, candidatosIniciales, categorias } from "@/lib/data"
 import { limitesPorCategoria } from "@/lib/types"
 import { ScrollArea } from "./ui/scroll-area"
@@ -26,24 +26,42 @@ import { useAsambleistas } from "@/hooks/useAsambleistas"
 import { useCandidatos } from "@/hooks/useCandidatos"
 
 export default function SistemaVotacion() {
-  const [asambleistas, setAsambleistas] = useState<Asambleista[]>(asambleistasIniciales)
-  const [candidatos, setCandidatos] = useState<Candidato[]>(candidatosIniciales)
+  const { asambleistas: asamDesdeContexto, loading: loadingAsambleista } = useAsambleistas();
+  const { candidatos: candDesdeContexto, loading: loadingCandidato } = useCandidatos();
+  const [asambleistas, setAsambleistas] = useState<Asambleista[]>([])
+  const [candidatos, setCandidatos] = useState<CandidatoBack[]>([])
   const [asambleistaSeleccionado, setAsambleistaSeleccionado] = useState<string>("")
   const [categoriaActiva, setCategoriaActiva] = useState<Categoria>("Docentes Principales")
   const [selecciones, setSelecciones] = useState<Record<Categoria, string[]>>({
     "Docentes Principales": [],
     "Docentes Asociados": [],
     "Docentes Auxiliares": [],
-    Estudiantes: [],
+    "Estudiantes": [],
   })
   const [abstenciones, setAbstenciones] = useState<Record<Categoria, boolean>>({
     "Docentes Principales": false,
     "Docentes Asociados": false,
     "Docentes Auxiliares": false,
-    Estudiantes: false,
+    "Estudiantes": false,
   })
   const [procesoTitulo, setProcesoTitulo] = useState<string>("Proceso 2025-08-10")
   const [modalConfirmacion, setModalConfirmacion] = useState<boolean>(false)
+
+  useEffect(() => {
+    if (asamDesdeContexto && asamDesdeContexto.length > 0) {
+      setAsambleistas(asamDesdeContexto);
+    } else {
+      setAsambleistas([]);
+    }
+  }, [asamDesdeContexto, loadingAsambleista]);
+
+  useEffect(() => {
+    if (candDesdeContexto && candDesdeContexto.length > 0) {
+      setCandidatos(candDesdeContexto);
+    } else {
+      setCandidatos([]);
+    }
+  }, [candDesdeContexto, loadingCandidato]);
 
   // Filtrar candidatos por categoría
   const getCandidatosPorCategoria = (categoria: Categoria) => {
@@ -122,11 +140,11 @@ export default function SistemaVotacion() {
     // Actualizar conteo de votos para candidatos
     const nuevosCandidatos = [...candidatos]
 
-    categorias.forEach((categoria) => {
+    /*categorias.forEach((categoria) => {
       // Solo contar votos en categorías donde no se abstuvo
       if (!abstenciones[categoria]) {
         selecciones[categoria].forEach((candidatoId) => {
-          const candidatoIndex = nuevosCandidatos.findIndex((c) => c.id === candidatoId)
+          const candidatoIndex = nuevosCandidatos.findIndex((c) => c.idcandidato === parseInt(candidatoId))
           if (candidatoIndex !== -1) {
             nuevosCandidatos[candidatoIndex] = {
               ...nuevosCandidatos[candidatoIndex],
@@ -135,13 +153,13 @@ export default function SistemaVotacion() {
           }
         })
       }
-    })
+    })*/
 
     setCandidatos(nuevosCandidatos)
 
     // Marcar asambleísta como que ya votó
     const nuevosAsambleistas = asambleistas.map((asambleista) =>
-      asambleista.id === asambleistaSeleccionado ? { ...asambleista, haVotado: true } : asambleista,
+      asambleista.idasambleista === parseInt(asambleistaSeleccionado) ? { ...asambleista, ha_votado: true } : asambleista,
     )
     setAsambleistas(nuevosAsambleistas)
 
@@ -150,13 +168,13 @@ export default function SistemaVotacion() {
       "Docentes Principales": [],
       "Docentes Asociados": [],
       "Docentes Auxiliares": [],
-      Estudiantes: [],
+      "Estudiantes": [],
     })
     setAbstenciones({
       "Docentes Principales": false,
       "Docentes Asociados": false,
       "Docentes Auxiliares": false,
-      Estudiantes: false,
+      "Estudiantes": false,
     })
     setAsambleistaSeleccionado("")
     setModalConfirmacion(false)
@@ -178,21 +196,9 @@ export default function SistemaVotacion() {
     }
   }
 
-  // Obtener el nombre del candidato por ID
-  const getNombreCandidato = (id: string) => {
-    const candidato = candidatos.find((c) => c.id === id)
-    return candidato ? candidato.nombre : ""
-  }
-
   const todasEnAbstencion = categorias.every(
     (categoria) => abstenciones[categoria]
   );
-
-  const { asambleistas: asam } = useAsambleistas();
-  const { candidatos: cand } = useCandidatos();
-
-  console.log("Asambleistas desde el contexto:" , asam)
-  console.log("Candidatos desde el contexto:", cand);
 
   return (
     <main className="grid grid-cols-1 gap-6">
@@ -226,16 +232,24 @@ export default function SistemaVotacion() {
                     <SelectValue placeholder="Asambleísta" />
                   </SelectTrigger>
                   <SelectContent className="w-full">
-                    {asambleistas.map((asambleista) => (
-                      <SelectItem
-                        key={asambleista.id}
-                        value={asambleista.id}
-                        disabled={asambleista.haVotado}
-                      >
-                        {asambleista.nombre}{" "}
-                        {asambleista.haVotado && "(Ya votó)"}
-                      </SelectItem>
-                    ))}
+                    {
+                      loadingAsambleista ? (
+                        <SelectItem key={"loading"} value="loading-data" disabled>
+                          Cargando datos...
+                        </SelectItem>
+                      ) : (
+                        asambleistas.map((asambleista: AsambleistaBack) => (
+                          <SelectItem
+                              key={asambleista.idasambleista}
+                              value={asambleista.idasambleista.toString()}
+                              disabled={asambleista.ha_votado}
+                            >
+                              {asambleista.nombre}{" "}
+                              {asambleista.ha_votado && "(Ya votó)"}
+                            </SelectItem>
+                        ))
+                      )
+                    }
                   </SelectContent>
                 </Select>
               </div>
@@ -243,9 +257,7 @@ export default function SistemaVotacion() {
               {todasEnAbstencion && (
                 <div className="flex gap-3 items-center text-sm text-slate-500 p-2 rounded-md border-1 border-slate-300">
                   <Info className="h-5 w-5" />
-                  <p>
-                    Se ha abstenido de todas las categorías.
-                  </p>
+                  <p>Se ha abstenido de todas las categorías.</p>
                 </div>
               )}
 
@@ -345,53 +357,57 @@ export default function SistemaVotacion() {
                   </div>
 
                   <ScrollArea className="h-56 w-full">
-                    <div
-                      className={
-                        abstenciones[categoria]
-                          ? "opacity-50 pointer-events-none columns-4 gap-2"
-                          : "columns-4 gap-2"
-                      }
-                    >
-                      {getCandidatosPorCategoria(categoria).map(
-                        (candidato, index) => (
-                          <div
-                            key={candidato.id}
-                            className="flex items-center space-x-2 py-2 border-b border-stone-600/50 break-inside-avoid"
-                          >
-                            <div className="w-6 text-center font-medium">
-                              {index + 1}
-                            </div>
-                            <Checkbox
-                              id={candidato.id}
-                              checked={selecciones[categoria].includes(
-                                candidato.id
-                              )}
-                              onCheckedChange={(checked) =>
-                                handleSeleccionCandidato(
-                                  categoria,
-                                  candidato.id,
-                                  checked === true
-                                )
-                              }
-                              disabled={
-                                abstenciones[categoria] ||
-                                (!selecciones[categoria].includes(
-                                  candidato.id
-                                ) &&
-                                  selecciones[categoria].length >=
-                                    limitesPorCategoria[categoria].maximo)
-                              }
-                            />
-                            <Label
-                              htmlFor={candidato.id}
-                              className="cursor-pointer"
+                    {loadingCandidato ? (
+                      <div className="flex items-center justify-center h-56 text-stone-600">Cargando datos...</div>
+                    ) : (
+                      <div
+                        className={
+                          abstenciones[categoria]
+                            ? "opacity-50 pointer-events-none columns-4 gap-2"
+                            : "columns-4 gap-2"
+                        }
+                      >
+                        {getCandidatosPorCategoria(categoria).map(
+                          (candidato, index) => (
+                            <div
+                              key={candidato.idcandidato}
+                              className="flex items-center space-x-2 py-2 border-b border-stone-600/50 break-inside-avoid"
                             >
-                              {candidato.nombre}
-                            </Label>
-                          </div>
-                        )
-                      )}
-                    </div>
+                              <div className="w-6 text-center font-medium">
+                                {index + 1}
+                              </div>
+                              <Checkbox
+                                id={candidato.idcandidato.toString()}
+                                checked={selecciones[categoria].includes(
+                                  candidato.idcandidato.toString()
+                                )}
+                                onCheckedChange={(checked) =>
+                                  handleSeleccionCandidato(
+                                    categoria,
+                                    candidato.idcandidato.toString(),
+                                    checked === true
+                                  )
+                                }
+                                disabled={
+                                  abstenciones[categoria] ||
+                                  (!selecciones[categoria].includes(
+                                    candidato.idcandidato.toString()
+                                  ) &&
+                                    selecciones[categoria].length >=
+                                      limitesPorCategoria[categoria].maximo)
+                                }
+                              />
+                              <Label
+                                htmlFor={candidato.idcandidato.toString()}
+                                className="cursor-pointer"
+                              >
+                                {candidato.nombre}
+                              </Label>
+                            </div>
+                          )
+                        )}
+                      </div>
+                    )}
                   </ScrollArea>
                 </TabsContent>
               ))}
