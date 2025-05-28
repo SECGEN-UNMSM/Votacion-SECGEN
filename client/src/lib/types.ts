@@ -1,7 +1,7 @@
 export interface Asambleista {
-  id: string
-  nombre: string
-  haVotado: boolean
+  idasambleista: number,
+  nombre: string,
+  ha_votado: boolean,
 }
 
 // Modificar la interfaz Candidato para incluir el código de facultad
@@ -39,13 +39,13 @@ export interface LoginFields {
 
 /* TIPADO */
 export interface AsambleistaBack {
-  id: number,
+  idasambleista: number,
   nombre: string,
   ha_votado: boolean,
 }
 
 export interface CandidatoBack {
-  id: number,
+  idcandidato: number,
   nombre: string,
   categoria: string, // Choices
   codigo_facultad: string,

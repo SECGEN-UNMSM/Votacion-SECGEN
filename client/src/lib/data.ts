@@ -8,14 +8,14 @@ export const categorias: Categoria[] = [
 ]
 
 export const asambleistasIniciales: Asambleista[] = [
-  { id: "1", nombre: "Juan Pérez", haVotado: false },
-  { id: "2", nombre: "María López", haVotado: false },
-  { id: "3", nombre: "Carlos Rodríguez", haVotado: false },
-  { id: "4", nombre: "Ana Martínez", haVotado: false },
-  { id: "5", nombre: "Pedro Sánchez", haVotado: false },
-  { id: "6", nombre: "Laura García", haVotado: false },
-  { id: "7", nombre: "Miguel Fernández", haVotado: false },
-  { id: "8", nombre: "Sofía Torres", haVotado: false },
+  { idasambleista: 1, nombre: "Juan Pérez", ha_votado: false },
+  { idasambleista: 2, nombre: "María López", ha_votado: false },
+  { idasambleista: 3, nombre: "Carlos Rodríguez", ha_votado: false },
+  { idasambleista: 4, nombre: "Ana Martínez", ha_votado: false },
+  { idasambleista: 5, nombre: "Pedro Sánchez", ha_votado: false },
+  { idasambleista: 6, nombre: "Laura García", ha_votado: false },
+  { idasambleista: 7, nombre: "Miguel Fernández", ha_votado: false },
+  { idasambleista: 8, nombre: "Sofía Torres", ha_votado: false },
 ]
 
 export const candidatosIniciales: Candidato[] = [
