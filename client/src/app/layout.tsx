@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Sora } from "next/font/google";
 import "./globals.css";
-import { AsambleistaProvider } from "@/context/AsambleistaContext";
+import { AsambleistaProvider } from "@/context/AsambleistasContext";
+import { CandidatoProvider } from "@/context/CandidatosContext";
 
 const soraSans = Sora({style: "normal", subsets: ["latin"]});
 
@@ -19,7 +20,9 @@ export default function RootLayout({
     <html lang="es" className={`${soraSans.className}`}>
       <body>
         <AsambleistaProvider>
-          {children}
+          <CandidatoProvider>
+            { children }
+          </CandidatoProvider>
         </AsambleistaProvider>
       </body>
     </html>

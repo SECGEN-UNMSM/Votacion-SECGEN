@@ -23,6 +23,7 @@ import { limitesPorCategoria } from "@/lib/types"
 import { ScrollArea } from "./ui/scroll-area"
 import { Info } from "lucide-react"
 import { useAsambleistas } from "@/hooks/useAsambleistas"
+import { useCandidatos } from "@/hooks/useCandidatos"
 
 export default function SistemaVotacion() {
   const [asambleistas, setAsambleistas] = useState<Asambleista[]>(asambleistasIniciales)
@@ -188,8 +189,10 @@ export default function SistemaVotacion() {
   );
 
   const { asambleistas: asam } = useAsambleistas();
+  const { candidatos: cand } = useCandidatos();
 
   console.log("Asambleistas desde el contexto:" , asam)
+  console.log("Candidatos desde el contexto:", cand);
 
   return (
     <main className="grid grid-cols-1 gap-6">

@@ -1,6 +1,6 @@
-import { AsambleistaContextType } from "@/context/AsambleistaContext";
+import { AsambleistaContextType } from "@/context/AsambleistasContext";
 import { useContext } from "react";
-import { AsambleistaContext } from "@/context/AsambleistaContext";
+import { AsambleistaContext } from "@/context/AsambleistasContext";
 
 export const useAsambleistas = (): AsambleistaContextType => {
   const context = useContext(AsambleistaContext);
