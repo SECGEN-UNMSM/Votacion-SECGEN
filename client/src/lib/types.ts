@@ -50,3 +50,11 @@ export interface CandidatoBack {
   categoria: string, // Choices
   codigo_facultad: string,
 }
+
+export interface RankingBack {
+  categoria: string,
+  idcandidato: number,
+  nombre_candidato: string,
+  codigo_facultad: string,
+  total_votos: string
+}
