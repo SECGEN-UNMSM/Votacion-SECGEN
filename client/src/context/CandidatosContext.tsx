@@ -4,7 +4,7 @@ import { createContext, useEffect, useState } from "react";
 import { getCandidatos } from "@/api/apiCandidato";
 import { CandidatoBack } from "@/lib/types"
 
-interface CandidatoContextType {
+export interface CandidatoContextType {
   candidatos: CandidatoBack[];
   fetchCandidatos: () => Promise<void>;
   loading: boolean,

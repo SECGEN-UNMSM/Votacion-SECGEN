@@ -24,10 +24,12 @@ import { ScrollArea } from "./ui/scroll-area"
 import { Info } from "lucide-react"
 import { useAsambleistas } from "@/hooks/useAsambleistas"
 import { useCandidatos } from "@/hooks/useCandidatos"
+import { useVotos } from "@/hooks/useVotos"
 
 export default function SistemaVotacion() {
   const { asambleistas: asamDesdeContexto, loading: loadingAsambleista } = useAsambleistas();
   const { candidatos: candDesdeContexto, loading: loadingCandidato } = useCandidatos();
+  const { rankingVotos, loading: loadingRanking } = useVotos();
   const [asambleistas, setAsambleistas] = useState<Asambleista[]>([])
   const [candidatos, setCandidatos] = useState<CandidatoBack[]>([])
   const [asambleistaSeleccionado, setAsambleistaSeleccionado] = useState<string>("")
@@ -63,9 +65,17 @@ export default function SistemaVotacion() {
     }
   }, [candDesdeContexto, loadingCandidato]);
 
+  useEffect(() => {
+    if (rankingVotos && rankingVotos.length > 0) {
+      setCandidatos(candDesdeContexto);
+    } else {
+      setCandidatos([]);
+    }
+  }, [candDesdeContexto, loadingCandidato]);
+
   // Filtrar candidatos por categoría
   const getCandidatosPorCategoria = (categoria: Categoria) => {
-    return candidatos.filter((candidato) => candidato.categoria === categoria)
+    return rankingVotos.filter((candidato) => candidato.categoria === categoria)
   }
 
   // Manejar la selección de un candidato
@@ -88,7 +98,7 @@ export default function SistemaVotacion() {
       } else {
         return {
           ...prev,
-          [categoria]: seleccionesActuales.filter((id) => id !== candidatoId),
+          [categoria]: seleccionesActuales.filter((id) => id !== candidatoId.toString()),
         }
       }
     })
@@ -232,24 +242,22 @@ export default function SistemaVotacion() {
                     <SelectValue placeholder="Asambleísta" />
                   </SelectTrigger>
                   <SelectContent className="w-full">
-                    {
-                      loadingAsambleista ? (
-                        <SelectItem key={"loading"} value="loading-data" disabled>
-                          Cargando datos...
+                    {loadingAsambleista ? (
+                      <SelectItem key={"loading"} value="loading-data" disabled>
+                        Cargando datos...
+                      </SelectItem>
+                    ) : (
+                      asambleistas.map((asambleista: AsambleistaBack) => (
+                        <SelectItem
+                          key={asambleista.idasambleista}
+                          value={asambleista.idasambleista.toString()}
+                          disabled={asambleista.ha_votado}
+                        >
+                          {asambleista.nombre}{" "}
+                          {asambleista.ha_votado && "(Ya votó)"}
                         </SelectItem>
-                      ) : (
-                        asambleistas.map((asambleista: AsambleistaBack) => (
-                          <SelectItem
-                              key={asambleista.idasambleista}
-                              value={asambleista.idasambleista.toString()}
-                              disabled={asambleista.ha_votado}
-                            >
-                              {asambleista.nombre}{" "}
-                              {asambleista.ha_votado && "(Ya votó)"}
-                            </SelectItem>
-                        ))
-                      )
-                    }
+                      ))
+                    )}
                   </SelectContent>
                 </Select>
               </div>
@@ -358,7 +366,13 @@ export default function SistemaVotacion() {
 
                   <ScrollArea className="h-56 w-full">
                     {loadingCandidato ? (
-                      <div className="flex items-center justify-center h-56 text-stone-600">Cargando datos...</div>
+                      <div className="flex items-center justify-center h-56 text-stone-600">
+                        Cargando datos...
+                      </div>
+                    ) : candidatos.length === 0 ? (
+                      <div className="flex items-center justify-center h-56 text-stone-600">
+                        No hay candidatos
+                      </div>
                     ) : (
                       <div
                         className={
@@ -401,7 +415,7 @@ export default function SistemaVotacion() {
                                 htmlFor={candidato.idcandidato.toString()}
                                 className="cursor-pointer"
                               >
-                                {candidato.nombre}
+                                {candidato.nombre_candidato}
                               </Label>
                             </div>
                           )
@@ -428,7 +442,9 @@ export default function SistemaVotacion() {
                 // Ordenar candidatos por votos (descendente)
                 const candidatosOrdenados = [
                   ...getCandidatosPorCategoria(categoria),
-                ].sort((a, b) => b.votos - a.votos);
+                ].sort(
+                  (a, b) => parseInt(b.total_votos) - parseInt(a.total_votos)
+                );
 
                 return (
                   <div
@@ -452,22 +468,34 @@ export default function SistemaVotacion() {
                       </div>
                     </div>
                     <ScrollArea className="h-48 w-full rounded-md">
-                      {candidatosOrdenados.map((candidato) => (
-                        <div
-                          key={candidato.id}
-                          className="flex justify-between items-center"
-                        >
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium w-6 pl-1">
-                              {candidato.codigoFacultad}.
-                            </span>
-                            <span className="pl-4">{candidato.nombre}</span>
-                          </div>
-                          <span className="font-bold w-12 text-center">
-                            {candidato.votos}
-                          </span>
+                      {loadingRanking ? (
+                        <div className="flex items-center justify-center h-56 text-stone-600">
+                          Cargando datos...
                         </div>
-                      ))}
+                      ) : rankingVotos.length === 0 ? (
+                        <div className="flex items-center justify-center h-48 text-stone-600">
+                          No hay candidatos
+                        </div>
+                      ) : (
+                        candidatosOrdenados.map((candidatoVotos) => (
+                          <div
+                            key={candidatoVotos.idcandidato}
+                            className="flex justify-between items-center"
+                          >
+                            <div className="flex items-center gap-2">
+                              <span className="font-medium w-6 pl-1">
+                                {candidatoVotos.codigo_facultad}.
+                              </span>
+                              <span className="pl-4">
+                                {candidatoVotos.nombre_candidato}
+                              </span>
+                            </div>
+                            <span className="font-bold w-12 text-center">
+                              {candidatoVotos.total_votos}
+                            </span>
+                          </div>
+                        ))
+                      )}
                     </ScrollArea>
                   </div>
                 );
@@ -490,8 +518,12 @@ export default function SistemaVotacion() {
           <div className="py-4">
             {categorias.map((categoria) => {
               const candidatosSeleccionados = selecciones[categoria]
-                .map((id) => candidatos.find((c) => c.id === id))
-                .filter(Boolean) as Candidato[];
+                .map((idcandidato) =>
+                  candidatos.find(
+                    (c) => c.idcandidato.toString() === idcandidato
+                  )
+                )
+                .filter(Boolean) as CandidatoBack[];
 
               return (
                 <div key={categoria} className="mb-4">
@@ -502,11 +534,11 @@ export default function SistemaVotacion() {
                     <ul className="list-none pl-5 mt-1">
                       {candidatosSeleccionados.map((candidato) => (
                         <li
-                          key={candidato.id}
+                          key={candidato.idcandidato}
                           className="flex items-center gap-2"
                         >
                           <span className="font-medium w-6">
-                            {candidato.codigoFacultad}.
+                            {candidato.codigo_facultad}.
                           </span>
                           <span>{candidato.nombre}</span>
                         </li>

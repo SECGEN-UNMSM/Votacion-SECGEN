@@ -3,6 +3,7 @@ import { Sora } from "next/font/google";
 import "./globals.css";
 import { AsambleistaProvider } from "@/context/AsambleistasContext";
 import { CandidatoProvider } from "@/context/CandidatosContext";
+import { VotosProvider } from "@/context/VotosContext";
 
 const soraSans = Sora({style: "normal", subsets: ["latin"]});
 
@@ -21,7 +22,9 @@ export default function RootLayout({
       <body>
         <AsambleistaProvider>
           <CandidatoProvider>
-            { children }
+            <VotosProvider>
+              {children}
+            </VotosProvider>
           </CandidatoProvider>
         </AsambleistaProvider>
       </body>
