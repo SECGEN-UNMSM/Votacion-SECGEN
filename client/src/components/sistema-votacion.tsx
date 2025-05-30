@@ -190,6 +190,14 @@ export default function SistemaVotacion() {
     setModalConfirmacion(false)
   }
 
+  {
+    /*
+  
+  JBURCO3NIU´BIVE2IOUI´VECN
+  */
+  }
+
+
   // Obtener el color de fondo para cada categoría
   const getColorCategoria = (categoria: Categoria) => {
     switch (categoria) {
