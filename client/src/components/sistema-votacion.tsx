@@ -17,7 +17,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import type { Asambleista, AsambleistaBack, Candidato, CandidatoBack, Categoria } from "@/lib/types"
+import type { Asambleista, AsambleistaBack, Candidato, CandidatoBack, Categoria, VotoCategoria, VotosBack } from "@/lib/types"
 import { asambleistasIniciales, candidatosIniciales, categorias } from "@/lib/data"
 import { limitesPorCategoria } from "@/lib/types"
 import { ScrollArea } from "./ui/scroll-area"
@@ -29,7 +29,7 @@ import { useVotos } from "@/hooks/useVotos"
 export default function SistemaVotacion() {
   const { asambleistas: asamDesdeContexto, loading: loadingAsambleista } = useAsambleistas();
   const { candidatos: candDesdeContexto, loading: loadingCandidato } = useCandidatos();
-  const { rankingVotos, loading: loadingRanking } = useVotos();
+  const { rankingVotos, loading: loadingRanking, agregarVoto } = useVotos();
   const [asambleistas, setAsambleistas] = useState<Asambleista[]>([])
   const [candidatos, setCandidatos] = useState<CandidatoBack[]>([])
   const [asambleistaSeleccionado, setAsambleistaSeleccionado] = useState<string>("")
@@ -65,6 +65,7 @@ export default function SistemaVotacion() {
     }
   }, [candDesdeContexto, loadingCandidato]);
 
+  /*
   useEffect(() => {
     if (rankingVotos && rankingVotos.length > 0) {
       setCandidatos(candDesdeContexto);
@@ -72,7 +73,7 @@ export default function SistemaVotacion() {
       setCandidatos([]);
     }
   }, [candDesdeContexto, loadingCandidato]);
-
+*/
   // Filtrar candidatos por categoría
   const getCandidatosPorCategoria = (categoria: Categoria) => {
     return rankingVotos.filter((candidato) => candidato.categoria === categoria)
@@ -144,57 +145,60 @@ export default function SistemaVotacion() {
   }
 
   // Emitir voto
-  const emitirVoto = () => {
+  const emitirVoto = async () => {
     if (!asambleistaSeleccionado) return
 
     // Actualizar conteo de votos para candidatos
-    const nuevosCandidatos = [...candidatos]
+    //const nuevosCandidatos = [...candidatos]
 
-    /*categorias.forEach((categoria) => {
-      // Solo contar votos en categorías donde no se abstuvo
-      if (!abstenciones[categoria]) {
-        selecciones[categoria].forEach((candidatoId) => {
-          const candidatoIndex = nuevosCandidatos.findIndex((c) => c.idcandidato === parseInt(candidatoId))
-          if (candidatoIndex !== -1) {
-            nuevosCandidatos[candidatoIndex] = {
-              ...nuevosCandidatos[candidatoIndex],
-              votos: nuevosCandidatos[candidatoIndex].votos + 1,
-            }
-          }
-        })
+    const votos: VotoCategoria[] = categorias.map((categoria) => {
+      if (abstenciones[categoria]) {
+        return {
+          categoria: categoria,
+          abstencion: true,
+        }
+      } else {
+        return {
+          categoria: categoria,
+          idcandidatos: selecciones[categoria].map((id) => parseInt(id))
+        }
       }
-    })*/
+    })
 
-    setCandidatos(nuevosCandidatos)
+    const data: VotosBack = {
+      idasambleista: parseInt(asambleistaSeleccionado),
+      votos: votos
+    }
 
+    //setCandidatos(nuevosCandidatos)
     // Marcar asambleísta como que ya votó
-    const nuevosAsambleistas = asambleistas.map((asambleista) =>
+    /*const nuevosAsambleistas = asambleistas.map((asambleista) =>
       asambleista.idasambleista === parseInt(asambleistaSeleccionado) ? { ...asambleista, ha_votado: true } : asambleista,
-    )
-    setAsambleistas(nuevosAsambleistas)
+    )*/
+    //setAsambleistas(nuevosAsambleistas)
 
-    // Reiniciar selecciones y abstenciones
-    setSelecciones({
-      "Docentes Principales": [],
-      "Docentes Asociados": [],
-      "Docentes Auxiliares": [],
-      "Estudiantes": [],
-    })
-    setAbstenciones({
-      "Docentes Principales": false,
-      "Docentes Asociados": false,
-      "Docentes Auxiliares": false,
-      "Estudiantes": false,
-    })
-    setAsambleistaSeleccionado("")
-    setModalConfirmacion(false)
-  }
+    try {
+      //console.log(data);
+      await agregarVoto(data)
 
-  {
-    /*
-  
-  JBURCO3NIU´BIVE2IOUI´VECN
-  */
+      // Reiniciar selecciones y abstenciones
+      setSelecciones({
+        "Docentes Principales": [],
+        "Docentes Asociados": [],
+        "Docentes Auxiliares": [],
+        "Estudiantes": [],
+      });
+      setAbstenciones({
+        "Docentes Principales": false,
+        "Docentes Asociados": false,
+        "Docentes Auxiliares": false,
+        "Estudiantes": false,
+      });
+      setAsambleistaSeleccionado("");
+      setModalConfirmacion(false);
+    } catch (error) {
+      console.error("Error al enviar los datos")
+    }
   }
 
 

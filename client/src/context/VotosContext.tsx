@@ -1,12 +1,15 @@
 "use client"
 
 import { createContext, useEffect, useState } from "react";
-import { getRankings } from "@/api/apiVotos";
-import { RankingBack } from "@/lib/types"
+import { getRankings, registrarVotos } from "@/api/apiVotos";
+import { RankingBack, VotosBack } from "@/lib/types"
+import { useAsambleistas } from "@/hooks/useAsambleistas";
+import toast from "react-hot-toast";
 
 export interface VotosContextType {
   rankingVotos: RankingBack[];
   loading: boolean,
+  agregarVoto: (data: VotosBack) => Promise<void>
 }
 
 export const VotosContext = createContext<VotosContextType | undefined>(
@@ -16,6 +19,7 @@ export const VotosContext = createContext<VotosContextType | undefined>(
 export const VotosProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [rankingVotos, setRankingVotos] = useState<RankingBack[]>([]);
   const [loading, setLoading] = useState<boolean>(true)
+  const { fetchAsambleistas } = useAsambleistas();
   
   const fetchRankingVotos = async () => {
     setLoading(true)
@@ -27,7 +31,19 @@ export const VotosProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     } finally {
       setLoading(false);
     }
-  } 
+  }
+
+  const agregarVoto = async (data: VotosBack) => {
+    try {
+      await registrarVotos(data)
+      await fetchRankingVotos();
+      fetchAsambleistas();
+      toast.success("Se registro su voto correctamente.")
+    } catch (error) {
+      console.log("Error al agregar el voto.")
+      toast.error("Error al registrar su voto.")
+    }
+  }
 
   useEffect(() => {
     fetchRankingVotos();
@@ -38,6 +54,7 @@ export const VotosProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     <VotosContext.Provider value={{
       rankingVotos,
       loading,
+      agregarVoto
     }}>
       {children}
     </VotosContext.Provider>
