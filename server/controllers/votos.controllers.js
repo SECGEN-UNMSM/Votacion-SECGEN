@@ -12,17 +12,24 @@ const getRanking = async (req, res) => {
 };
 
 const registrarVoto = async (req, res) => {
-  const { idasambleista, candidatos, es_abstencion, categoria } = req.body;
+  const { idasambleista, votos } = req.body;
 
   try {
-    await pool.query(
-      'SELECT registrar_voto($1, $2, $3, $4)',
-      [idasambleista, candidatos, es_abstencion, categoria]
-    );
-    res.status(200).json({ success: true, message: 'Voto registrado correctamente' });
+    for (const voto of votos) {
+      const categoria = voto.categoria;
+      const idcandidatos = voto.idcandidatos || [];
+      const es_abstencion = voto.abstencion || false;
+
+      await pool.query(
+        'SELECT registrar_voto($1, $2, $3, $4)',
+        [idasambleista, idcandidatos, es_abstencion, categoria]
+      );
+    }
+
+    res.json({ message: 'Voto registrado correctamente' });
   } catch (err) {
     console.error('Error al registrar voto:', err);
-    res.status(500).json({ success: false, message: 'Error al registrar voto', error: err.message });
+    res.status(500).json({ error: 'Error al registrar voto', detail: err.message });
   }
 };
 
