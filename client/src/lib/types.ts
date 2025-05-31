@@ -58,3 +58,15 @@ export interface RankingBack {
   codigo_facultad: string,
   total_votos: string
 }
+
+
+export interface VotoCategoria {
+  categoria: string,
+  idcandidatos?: number[],
+  abstencion?: boolean,
+}
+
+export interface VotosBack {
+  idasambleista: number,
+  votos: VotoCategoria[],
+}
