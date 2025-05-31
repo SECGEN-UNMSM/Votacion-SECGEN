@@ -17,11 +17,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import type { Asambleista, AsambleistaBack, Candidato, CandidatoBack, Categoria, VotoCategoria, VotosBack } from "@/lib/types"
-import { asambleistasIniciales, candidatosIniciales, categorias } from "@/lib/data"
+import type { Asambleista, AsambleistaBack, CandidatoBack, Categoria, VotoCategoria, VotosBack } from "@/lib/types"
+import { categorias } from "@/lib/data"
 import { limitesPorCategoria } from "@/lib/types"
 import { ScrollArea } from "./ui/scroll-area"
-import { Info } from "lucide-react"
+import { Info, LoaderCircle } from "lucide-react"
 import { useAsambleistas } from "@/hooks/useAsambleistas"
 import { useCandidatos } from "@/hooks/useCandidatos"
 import { useVotos } from "@/hooks/useVotos"
@@ -64,16 +64,7 @@ export default function SistemaVotacion() {
       setCandidatos([]);
     }
   }, [candDesdeContexto, loadingCandidato]);
-
-  /*
-  useEffect(() => {
-    if (rankingVotos && rankingVotos.length > 0) {
-      setCandidatos(candDesdeContexto);
-    } else {
-      setCandidatos([]);
-    }
-  }, [candDesdeContexto, loadingCandidato]);
-*/
+  
   // Filtrar candidatos por categoría
   const getCandidatosPorCategoria = (categoria: Categoria) => {
     return rankingVotos.filter((candidato) => candidato.categoria === categoria)
@@ -148,9 +139,6 @@ export default function SistemaVotacion() {
   const emitirVoto = async () => {
     if (!asambleistaSeleccionado) return
 
-    // Actualizar conteo de votos para candidatos
-    //const nuevosCandidatos = [...candidatos]
-
     const votos: VotoCategoria[] = categorias.map((categoria) => {
       if (abstenciones[categoria]) {
         return {
@@ -169,13 +157,6 @@ export default function SistemaVotacion() {
       idasambleista: parseInt(asambleistaSeleccionado),
       votos: votos
     }
-
-    //setCandidatos(nuevosCandidatos)
-    // Marcar asambleísta como que ya votó
-    /*const nuevosAsambleistas = asambleistas.map((asambleista) =>
-      asambleista.idasambleista === parseInt(asambleistaSeleccionado) ? { ...asambleista, ha_votado: true } : asambleista,
-    )*/
-    //setAsambleistas(nuevosAsambleistas)
 
     try {
       //console.log(data);
@@ -255,7 +236,8 @@ export default function SistemaVotacion() {
                   </SelectTrigger>
                   <SelectContent className="w-full">
                     {loadingAsambleista ? (
-                      <SelectItem key={"loading"} value="loading-data" disabled>
+                      <SelectItem key={"loading"} value="loading-data">
+                        <LoaderCircle className="animate-spin"></LoaderCircle>
                         Cargando datos...
                       </SelectItem>
                     ) : (
@@ -348,18 +330,7 @@ export default function SistemaVotacion() {
                             Rango: {limitesPorCategoria[categoria].minimo} -{" "}
                             {limitesPorCategoria[categoria].maximo} candidatos
                           </div>
-                        ) /*(
-                        <>
-                          Seleccione {limitesPorCategoria[categoria]} candidato
-                          {limitesPorCategoria[categoria] > 1 ? "s" : ""} (
-                          {selecciones[categoria].length}/
-                          {limitesPorCategoria[categoria]})
-                        </>
-                      ) : (
-                        <span className="text-gray-500 italic">
-                          Abstención seleccionada
-                        </span>
-                      )*/
+                        )
                       }
                     </div>
                     <div className="flex items-center space-x-2">
@@ -378,7 +349,8 @@ export default function SistemaVotacion() {
 
                   <ScrollArea className="h-56 w-full">
                     {loadingCandidato ? (
-                      <div className="flex items-center justify-center h-56 text-stone-600">
+                      <div className="flex flex-col gap-4 items-center justify-center h-56 text-stone-600">
+                        <LoaderCircle className="animate-spin"></LoaderCircle>
                         Cargando datos...
                       </div>
                     ) : candidatos.length === 0 ? (
@@ -481,7 +453,8 @@ export default function SistemaVotacion() {
                     </div>
                     <ScrollArea className="h-48 w-full rounded-md">
                       {loadingRanking ? (
-                        <div className="flex items-center justify-center h-56 text-stone-600">
+                        <div className="flex flex-col gap-4 items-center justify-center h-56 text-stone-600">
+                          <LoaderCircle className="animate-spin"></LoaderCircle>
                           Cargando datos...
                         </div>
                       ) : rankingVotos.length === 0 ? (

@@ -1,13 +1,19 @@
 "use client"
 import { ReportesPDF } from "@/components/reportes";
-import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { redirect } from "next/navigation";
+import { useState } from "react";
 
 export default function Home() {
+  const [navigate, setNavigate] = useState(false)
+
+  if (navigate) return redirect("/login")
+
   return (
     <div className="w-screen h-screen overflow-x-hidden flex flex-col gap-8 p-8 xl:overflow-y-hidden">
       <div className="flex items-center justify-between">
         <h2 className="font-bold text-xl">Reportes del Proceso de Votación</h2>
-        <Link href="/" className="border-1 border-stone-200 text-stone-700 rounded-md px-3 py-2 text-sm hover:bg-stone-100">Ir a inicio</Link>
+        <Button variant={"outline"} className="cursor-pointer" onClick={() => setNavigate(!navigate)}>Ir a inicio</Button>
       </div>
       <ReportesPDF />
     </div>
