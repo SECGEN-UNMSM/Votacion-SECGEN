@@ -1,5 +1,6 @@
 "use client"
 import { ReportesPDF } from "@/components/reportes";
+import { ToggleDarkMode } from "@/components/ToggleDarkMode";
 import { Button } from "@/components/ui/button";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -23,6 +24,7 @@ export default function Home() {
         <Button variant={"outline"} className="cursor-pointer" onClick={() => setNavigate(!navigate)}>Ir a inicio</Button>
       </div>
       <ReportesPDF />
+      <ToggleDarkMode></ToggleDarkMode>
     </div>
   );
 }

@@ -39,17 +39,17 @@ export default function RankingVotos() {
               categoria
             )} rounded-lg p-4 min-h-[300px]`}
           >
-            <h3 className="font-bold mb-4 text-center">{categoria}</h3>
+            <h3 className="font-bold mb-4 text-center text-black">{categoria}</h3>
             <div className="flex gap-2 w-full mb-4 font-semibold ">
-              <div className={`border-b-2 pb-2 border-white/40 text-sm`}>
+              <div className={`border-b-2 pb-2 border-white/40 text-sm dark:text-black`}>
                 Fac.
               </div>
-              <div className="flex-1 border-b-2 pb-2 border-white/40 text-sm">
+              <div className="flex-1 border-b-2 pb-2 border-white/40 text-sm text-black">
                 Apellidos y Nombres
               </div>
-              <div className="border-b-2 border-white/40 text-sm">Votos</div>
+              <div className="border-b-2 border-white/40 text-sm text-black">Votos</div>
             </div>
-            <ScrollArea className="h-48 w-full rounded-md">
+            <ScrollArea className="h-48 w-full rounded-md text-black">
               {loadingRanking ? (
                 <div className="flex flex-col gap-4 items-center justify-center h-56 text-stone-600">
                   <LoaderCircle className="animate-spin"></LoaderCircle>

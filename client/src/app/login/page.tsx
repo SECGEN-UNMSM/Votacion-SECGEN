@@ -8,8 +8,11 @@ import { useForm, SubmitHandler } from "react-hook-form"
 import { LoginFields } from "@/lib/types";
 import { useState } from "react";
 import { redirect } from "next/navigation"
+import { useDarkMode } from "@/hooks/useDarkMode";
+import { ToggleDarkMode } from "@/components/ToggleDarkMode";
 
 export default function LoginPage() {
+  const [] = useDarkMode()
   const [navigate, setNavigate] = useState(false)
   const {
     register,
@@ -39,7 +42,7 @@ export default function LoginPage() {
         {/*linear-gradient(0deg, rgba(0, 0, 0, 0.50) 0%, rgba(0, 0, 0, 0.50) 100%) */}
         <div className="flex gap-20 items-center z-10">
           <Card className="w-[386px] px-6 py-9">
-            <CardHeader className="flex justify-center items-center bg-[var(--bg-title)] py-2 rounded-md">
+            <CardHeader className="flex justify-center items-center bg-[var(--bg-title)] dark:bg-black py-2 rounded-md">
               <h2 className="text-center font-bold">Sistema de Votación</h2>
             </CardHeader>
             <CardContent>
@@ -99,9 +102,10 @@ export default function LoginPage() {
               </form>
             </CardContent>
           </Card>
-          <img src="Logo_UNMSM.svg" alt="Logo UNMSM" className="w-80" />
+          <img src="Logo_UNMSM.svg" alt="Logo UNMSM" className="w-80"/>
         </div>
       </div>
+      <ToggleDarkMode></ToggleDarkMode>
     </>
   );
 }

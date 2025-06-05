@@ -1,11 +1,14 @@
 "use client"
 
+import { ToggleDarkMode } from "@/components/ToggleDarkMode";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { useDarkMode } from "@/hooks/useDarkMode";
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
 
 export default function About() {
+  const [] = useDarkMode();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -25,7 +28,7 @@ export default function About() {
         {/*linear-gradient(0deg, rgba(0, 0, 0, 0.50) 0%, rgba(0, 0, 0, 0.50) 100%) */}
         <div className="flex gap-20 items-center z-10">
           <Card className="w-3xl px-6 py-9">
-            <CardHeader className="flex justify-center items-center bg-[var(--bg-title)] py-2 rounded-md">
+            <CardHeader className="flex justify-center items-center bg-[var(--bg-title)] py-2 rounded-md dark:bg-black">
               <h2 className="text-center font-bold">Acerca de Nosotros</h2>
             </CardHeader>
             <CardContent className="flex gap-8">
@@ -45,25 +48,25 @@ export default function About() {
               </div>
               <section>
                 <h4 className="font-semibold">Sobre el Sistema de Votación</h4>
-                <p className="text-stone-700 mt-2">
+                <p className="text-stone-700 mt-2 dark:text-stone-400">
                   El Sistema de Elecciones del Comité Electoral ha sido
                   desarrollado por la Unidad de Informática de la Secretaría
                   General de la Universidad Nacional Mayor de San Marcos.
                 </p>
                 <h4 className="font-semibold mt-6">Equipo de Desarrollo</h4>
-                <ul className="text-stone-700 mt-2 pl-6 list-disc">
+                <ul className="text-stone-700 mt-2 pl-6 list-disc dark:text-stone-400">
                   <li>Patricio Julca, Vilberto</li>
                   <li>Román Suyo, André</li>
                   <li>Vera Alva, Miguel</li>
                 </ul>
                 <h4 className="font-semibold mt-6">Equipo de Supervisión</h4>
-                <ul className="text-stone-700 mt-2 pl-6 list-disc">
+                <ul className="text-stone-700 mt-2 pl-6 list-disc dark:text-stone-400">
                   <li>Ing. Tomas Angeles Natividad (Encargado de la Unidad)</li>
                   <li>Ing. Billy Padilla Huaman</li>
                   <li>Ing. Delfin Urbando Ochoa</li>
                 </ul>
                 <h4 className="font-semibold mt-6">Objetivo del Sistema</h4>
-                <p className="italic text-stone-700 mt-2">
+                <p className="italic text-stone-700 mt-2 dark:text-stone-400">
                   Este sistema fue concebido para optimizar y transparentar el
                   proceso de elecciones del Comité Electoral UNMSM.
                 </p>
@@ -73,6 +76,7 @@ export default function About() {
           <img src="Logo_UNMSM.svg" alt="Logo UNMSM" className="w-80" />
         </div>
       </div>
+      <ToggleDarkMode></ToggleDarkMode>
     </>
   );
 }

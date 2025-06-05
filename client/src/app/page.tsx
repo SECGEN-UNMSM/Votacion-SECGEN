@@ -4,8 +4,11 @@ import { Navbar } from "@/components/navbar";
 import { Toaster } from "react-hot-toast";
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
+import { useDarkMode } from "@/hooks/useDarkMode";
+import { ToggleDarkMode } from "@/components/ToggleDarkMode";
 
 export default function Home() {
+  const [] = useDarkMode();
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -18,6 +21,7 @@ export default function Home() {
       <Toaster></Toaster>
       <Navbar></Navbar>
       <SistemaVotacion />
+      <ToggleDarkMode></ToggleDarkMode>
     </div>
   );
 }
