@@ -21,6 +21,7 @@ export default function LoginPage() {
   { /*Verificación de credenciales */}
   const onSubmit: SubmitHandler<LoginFields> = async (data) => {
     if (data.username === "admin" && data.password === "admin") {
+      localStorage.setItem("token", "fake-token");
       setNavigate(true);
     } else {
       toast.error("¡Error! Verifica tus credenciales.");
@@ -29,7 +30,7 @@ export default function LoginPage() {
     reset();
   };
 
-  if (navigate) return redirect("/");
+  if (navigate) return redirect("/about");
 
   return (
     <>

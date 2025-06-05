@@ -25,11 +25,13 @@ import { Info, LoaderCircle } from "lucide-react"
 import { useAsambleistas } from "@/hooks/useAsambleistas"
 import { useCandidatos } from "@/hooks/useCandidatos"
 import { useVotos } from "@/hooks/useVotos"
+import RankingVotos from "./rankingVotos"
+import { getCandidatosPorCategoria } from "@/lib/utils"
 
 export default function SistemaVotacion() {
   const { asambleistas: asamDesdeContexto, loading: loadingAsambleista } = useAsambleistas();
   const { candidatos: candDesdeContexto, loading: loadingCandidato } = useCandidatos();
-  const { rankingVotos, loading: loadingRanking, agregarVoto } = useVotos();
+  const { rankingVotos, agregarVoto } = useVotos();
   const [asambleistas, setAsambleistas] = useState<Asambleista[]>([])
   const [candidatos, setCandidatos] = useState<CandidatoBack[]>([])
   const [asambleistaSeleccionado, setAsambleistaSeleccionado] = useState<string>("")
@@ -64,11 +66,6 @@ export default function SistemaVotacion() {
       setCandidatos([]);
     }
   }, [candDesdeContexto, loadingCandidato]);
-  
-  // Filtrar candidatos por categoría
-  const getCandidatosPorCategoria = (categoria: Categoria) => {
-    return rankingVotos.filter((candidato) => candidato.categoria === categoria)
-  }
 
   // Manejar la selección de un candidato
   const handleSeleccionCandidato = (categoria: Categoria, candidatoId: string, checked: boolean) => {
@@ -179,23 +176,6 @@ export default function SistemaVotacion() {
       setModalConfirmacion(false);
     } catch (error) {
       console.error("Error al enviar los datos")
-    }
-  }
-
-
-  // Obtener el color de fondo para cada categoría
-  const getColorCategoria = (categoria: Categoria) => {
-    switch (categoria) {
-      case "Docentes Principales":
-        return "bg-[var(--bg-doc-principales)]"
-      case "Docentes Asociados":
-        return "bg-[var(--bg-doc-asociados)]"
-      case "Docentes Auxiliares":
-        return "bg-[var(--bg-doc-auxiliares)]"
-      case "Estudiantes":
-        return "bg-[var(--bg-estudiantes)]"
-      default:
-        return "bg-gray-100"
     }
   }
 
@@ -365,7 +345,7 @@ export default function SistemaVotacion() {
                             : "columns-4 gap-2"
                         }
                       >
-                        {getCandidatosPorCategoria(categoria).map(
+                        {getCandidatosPorCategoria(rankingVotos, categoria).map(
                           (candidato, index) => (
                             <div
                               key={candidato.idcandidato}
@@ -422,69 +402,7 @@ export default function SistemaVotacion() {
           </CardHeader>
           <CardContent className="p-2">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              {categorias.map((categoria) => {
-                // Ordenar candidatos por votos (descendente)
-                const candidatosOrdenados = [
-                  ...getCandidatosPorCategoria(categoria),
-                ].sort(
-                  (a, b) => parseInt(b.total_votos) - parseInt(a.total_votos)
-                );
-
-                return (
-                  <div
-                    key={categoria}
-                    className={`${getColorCategoria(
-                      categoria
-                    )} rounded-lg p-4 min-h-[300px]`}
-                  >
-                    <h3 className="font-bold mb-4 text-center">{categoria}</h3>
-                    <div className="flex gap-2 w-full mb-4 font-semibold ">
-                      <div
-                        className={`border-b-2 pb-2 border-white/40 text-sm`}
-                      >
-                        Fac.
-                      </div>
-                      <div className="flex-1 border-b-2 pb-2 border-white/40 text-sm">
-                        Apellidos y Nombres
-                      </div>
-                      <div className="border-b-2 border-white/40 text-sm">
-                        Votos
-                      </div>
-                    </div>
-                    <ScrollArea className="h-48 w-full rounded-md">
-                      {loadingRanking ? (
-                        <div className="flex flex-col gap-4 items-center justify-center h-56 text-stone-600">
-                          <LoaderCircle className="animate-spin"></LoaderCircle>
-                          Cargando datos...
-                        </div>
-                      ) : rankingVotos.length === 0 ? (
-                        <div className="flex items-center justify-center h-48 text-stone-600">
-                          No hay candidatos
-                        </div>
-                      ) : (
-                        candidatosOrdenados.map((candidatoVotos) => (
-                          <div
-                            key={candidatoVotos.idcandidato}
-                            className="flex justify-between items-center"
-                          >
-                            <div className="flex items-center gap-2">
-                              <span className="font-medium w-6 pl-1">
-                                {candidatoVotos.codigo_facultad}.
-                              </span>
-                              <span className="pl-4">
-                                {candidatoVotos.nombre_candidato}
-                              </span>
-                            </div>
-                            <span className="font-bold w-12 text-center">
-                              {candidatoVotos.total_votos}
-                            </span>
-                          </div>
-                        ))
-                      )}
-                    </ScrollArea>
-                  </div>
-                );
-              })}
+              <RankingVotos ></RankingVotos>
             </div>
           </CardContent>
         </Card>

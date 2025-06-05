@@ -2,12 +2,19 @@
 import { ReportesPDF } from "@/components/reportes";
 import { Button } from "@/components/ui/button";
 import { redirect } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const [navigate, setNavigate] = useState(false)
+  
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      redirect("/login");
+    }
+  }, []);
 
-  if (navigate) return redirect("/login")
+  if (navigate) return redirect("/about")
 
   return (
     <div className="w-screen h-screen overflow-x-hidden flex flex-col gap-8 p-8 xl:overflow-y-hidden">
