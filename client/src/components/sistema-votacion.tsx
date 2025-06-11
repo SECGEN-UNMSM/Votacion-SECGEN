@@ -198,7 +198,7 @@ export default function SistemaVotacion() {
       setAsambleistaSeleccionado("");
       setModalConfirmacion(false);
     } catch (error) {
-      console.error("Error al enviar los datos")
+      console.error("Error al enviar los datos", error)
     }
   }
 

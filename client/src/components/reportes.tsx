@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Download, FileText, Eye, Loader2, LoaderCircle} from "lucide-react";
+import { Download, FileText, Loader2, LoaderCircle} from "lucide-react";
 import { categorias } from "@/lib/data";
 import { baseURL } from "@/api/api";
 import { useVotos } from "@/hooks/useVotos";

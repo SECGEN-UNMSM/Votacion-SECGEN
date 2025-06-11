@@ -27,6 +27,6 @@ export const registrarVotos = async (data: VotosBack) => {
       throw new Error(`Error al registrar voto: ${response.status} - ${errorData}`)
     }
   } catch (error) {
-    console.error("Error en la petición de registrar votos")
+    console.error("Error en la petición de registrar votos", error)
   }
 }
