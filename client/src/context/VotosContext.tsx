@@ -27,7 +27,7 @@ export const VotosProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       const response = await getRankings();
       setRankingVotos(response);
     } catch (error) {
-      console.error("Error al obtener el ranking de votos")
+      console.error("Error al obtener el ranking de votos", error)
     } finally {
       setLoading(false);
     }
@@ -40,7 +40,7 @@ export const VotosProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       fetchAsambleistas();
       toast.success("Se registro su voto correctamente.")
     } catch (error) {
-      console.log("Error al agregar el voto.")
+      console.log("Error al agregar el voto.", error)
       toast.error("Error al registrar su voto.")
     }
   }

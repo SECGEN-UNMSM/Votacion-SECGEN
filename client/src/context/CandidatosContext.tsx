@@ -24,7 +24,7 @@ export const CandidatoProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       const response = await getCandidatos();
       setCandidatos(response);
     } catch (error) {
-      console.error("Error al obtener los candidatos")
+      console.error("Error al obtener los candidatos", error)
     } finally {
       setLoading(false);
     }

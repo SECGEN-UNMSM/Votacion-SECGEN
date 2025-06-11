@@ -24,7 +24,7 @@ export const AsambleistaProvider: React.FC<{ children: React.ReactNode }> = ({ c
       const response = await getAsambleistas();
       setAsambleistas(response);
     } catch (error) {
-      console.log("Error al obtener los asambleistas")
+      console.log("Error al obtener los asambleistas", error)
     } finally {
       setLoading(false)
     }

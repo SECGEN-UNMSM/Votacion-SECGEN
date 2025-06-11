@@ -20,20 +20,12 @@ import RankingVotos from "./rankingVotos";
 import toast, { Toaster } from "react-hot-toast";
 
 export function ReportesPDF() {
-  const { loading: loadingRankingVotos, rankingVotos } = useVotos();
+  const { loading: loadingRankingVotos} = useVotos();
   const [tipoReporte, setTipoReporte] = useState<string>("general");
   const [categoriaSeleccionada, setCategoriaSeleccionada] =
     useState<string>("");
-  const [pdfUrl, setPdfUrl] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [mostrarVistaPrevia, setMostrarVistaPrevia] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    setPdfUrl("");
-    setError(null);
-    setMostrarVistaPrevia(false);
-  }, [tipoReporte, categoriaSeleccionada]);
 
   const construirUrlReporte = () => {
     setError(null); // Limpiar errores anteriores

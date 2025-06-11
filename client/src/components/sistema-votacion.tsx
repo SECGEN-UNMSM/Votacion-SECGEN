@@ -1,11 +1,26 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger
+} from "@/components/ui/tabs"
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle
+} from "@/components/ui/card"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Switch } from "@/components/ui/switch"
@@ -17,7 +32,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import type { Asambleista, AsambleistaBack, CandidatoBack, Categoria, VotoCategoria, VotosBack } from "@/lib/types"
+import type {
+  Asambleista,
+  AsambleistaBack,
+  CandidatoBack,
+  Categoria,
+  VotoCategoria,
+  VotosBack
+} from "@/lib/types"
 import { categorias } from "@/lib/data"
 import { limitesPorCategoria } from "@/lib/types"
 import { ScrollArea } from "./ui/scroll-area"
@@ -50,7 +72,6 @@ export default function SistemaVotacion() {
     "Docentes Auxiliares": false,
     "Estudiantes": false,
   })
-  const [procesoTitulo, setProcesoTitulo] = useState<string>("Proceso de Votación")
   const [modalConfirmacion, setModalConfirmacion] = useState<boolean>(false)
 
   useEffect(() => {
@@ -198,17 +219,6 @@ export default function SistemaVotacion() {
           </CardHeader>
           <CardContent className="p-2">
             <div className="space-y-4">
-              {/*<div className="space-y-4">
-                <Label htmlFor="titulo">Título del proceso</Label>
-                <Input
-                  id="titulo"
-                  value={procesoTitulo}
-                  onChange={(e) => setProcesoTitulo(e.target.value)}
-                  readOnly
-                  className="border-[var(--border-color)] focus:border-1 focus:border-[#555] selection:border-[#555]"
-                />
-              </div>*/}
-
               <div className="space-y-4">
                 <Label htmlFor="asambleista">Lista de asambleístas</Label>
                 <Select
@@ -248,16 +258,6 @@ export default function SistemaVotacion() {
               )}
 
               <div className="flex gap-2 pt-4">
-                {/*<Button
-                  variant="outline"
-                  onClick={() => {
-                    setAsambleistaSeleccionado("");
-                    // 
-                  }}
-                  className="flex-1 cursor-pointer"
-                >
-                  No emitir voto
-                </Button>*/}
                 <Button
                   onClick={confirmarVoto}
                   disabled={!puedeEmitirVoto()}

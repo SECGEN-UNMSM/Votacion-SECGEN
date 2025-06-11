@@ -10,6 +10,7 @@ import { useState } from "react";
 import { redirect } from "next/navigation"
 import { useDarkMode } from "@/hooks/useDarkMode";
 import { ToggleDarkMode } from "@/components/ToggleDarkMode";
+import Image from "next/image";
 
 export default function LoginPage() {
   const [] = useDarkMode()
@@ -102,7 +103,7 @@ export default function LoginPage() {
               </form>
             </CardContent>
           </Card>
-          <img src="Logo_UNMSM.svg" alt="Logo UNMSM" className="w-80"/>
+          <Image src="Logo_UNMSM.svg" alt="Logo UNMSM" className="w-80"/>
         </div>
       </div>
       <ToggleDarkMode></ToggleDarkMode>

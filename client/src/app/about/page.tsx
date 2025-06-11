@@ -4,6 +4,7 @@ import { ToggleDarkMode } from "@/components/ToggleDarkMode";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useDarkMode } from "@/hooks/useDarkMode";
+import Image from "next/image";
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
 
@@ -73,7 +74,7 @@ export default function About() {
               </section>
             </CardContent>
           </Card>
-          <img src="Logo_UNMSM.svg" alt="Logo UNMSM" className="w-80" />
+          <Image src="Logo_UNMSM.svg" alt="Logo UNMSM" className="w-80" />
         </div>
       </div>
       <ToggleDarkMode></ToggleDarkMode>

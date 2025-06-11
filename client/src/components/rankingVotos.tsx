@@ -1,4 +1,4 @@
-import { Categoria, RankingBack } from "@/lib/types";
+import { Categoria } from "@/lib/types";
 import { ScrollArea } from "./ui/scroll-area";
 import { categorias } from "@/lib/data";
 import { LoaderCircle } from "lucide-react";
