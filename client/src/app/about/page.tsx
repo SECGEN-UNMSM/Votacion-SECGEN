@@ -74,7 +74,7 @@ export default function About() {
               </section>
             </CardContent>
           </Card>
-          <Image src="Logo_UNMSM.svg" alt="Logo UNMSM" className="w-80" />
+          <Image src="Logo_UNMSM.svg" width={320} height={320} alt="Logo UNMSM" className="w-80" />
         </div>
       </div>
       <ToggleDarkMode></ToggleDarkMode>
