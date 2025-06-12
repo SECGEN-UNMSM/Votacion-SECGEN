@@ -241,7 +241,7 @@ export default function SistemaVotacion() {
                           value={asambleista.idasambleista.toString()}
                           disabled={asambleista.ha_votado}
                         >
-                          {asambleista.nombre}{" "}
+                          {asambleista.apellido}, {asambleista.nombre}
                           {asambleista.ha_votado && "(Ya votó)"}
                         </SelectItem>
                       ))

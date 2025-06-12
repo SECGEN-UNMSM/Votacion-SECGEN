@@ -1,6 +1,7 @@
 export interface Asambleista {
   idasambleista: number,
   nombre: string,
+  apellido: string,
   ha_votado: boolean,
 }
 
@@ -41,6 +42,7 @@ export interface LoginFields {
 export interface AsambleistaBack {
   idasambleista: number,
   nombre: string,
+  apellido: string,
   ha_votado: boolean,
 }
 

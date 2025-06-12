@@ -1,60 +1,126 @@
-create database sistema_votacion
-
 create type categoria_enum as enum ('Docentes Principales', 'Docentes Asociados', 'Docentes Auxiliares', 'Estudiantes');
+
+alter type categoria_enum owner to neondb_owner;
 
 create table asambleista
 (
-    idasambleista integer not null
+    idasambleista integer generated always as identity
         constraint asambleista_pk
             primary key,
     nombre        varchar not null,
-    ha_votado     boolean default false
+    ha_votado     boolean default false,
+    apellido      varchar
 );
 
+alter table asambleista
+    owner to neondb_owner;
 
 create table candidato
 (
-    idcandidato     integer        not null
+    idcandidato     integer generated always as identity
         constraint candidato_pk
             primary key,
-    nombre          varchar        not null,
-    categoria       categoria_enum not null,
-    codigo_facultad char(2)        not null
+    nombre          varchar not null,
+    categoria       categoria_enum,
+    codigo_facultad char(2) not null
 );
 
+alter table candidato
+    owner to neondb_owner;
 
 create table votos
 (
-    idvoto        integer not null
+    idvoto        integer generated always as identity
         constraint votos_pk
             primary key,
     idasambleista integer not null
         constraint votos_asambleista_idasambleista_fk
             references asambleista,
     fecha         timestamp default CURRENT_TIMESTAMP,
-    es_abstencion boolean   default false
+    es_abstencion boolean   default false,
+    categoria     varchar
 );
 
+alter table votos
+    owner to neondb_owner;
 
 create table voto_candidato
 (
-    idvotocandidato integer not null
+    idvotocandidato integer generated always as identity
         constraint voto_candidato_pk
             primary key,
     idvoto          integer
         constraint voto_candidato_votos_idvoto_fk
-            references votos,
+            references votos
+            on delete cascade,
     idcandidato     integer not null
         constraint voto_candidato_candidato_idcandidato_fk
             references candidato
 );
 
+alter table voto_candidato
+    owner to neondb_owner;
 
-create view vista_ranking_por_categoria(codigo_facultad, nombre_candidato, total_votos) as
-SELECT c.codigo_facultad,
+create view vista_ranking_por_categoria (categoria, idcandidato, nombre_candidato, codigo_facultad, total_votos) as
+SELECT c.categoria,
+       c.idcandidato,
        c.nombre                  AS nombre_candidato,
+       c.codigo_facultad,
        count(vc.idvotocandidato) AS total_votos
 FROM candidato c
          LEFT JOIN voto_candidato vc ON c.idcandidato = vc.idcandidato
-GROUP BY c.codigo_facultad, c.nombre
-ORDER BY (count(vc.idvotocandidato)) DESC;
+GROUP BY c.categoria, c.idcandidato, c.nombre, c.codigo_facultad
+ORDER BY c.categoria, (count(vc.idvotocandidato)) DESC;
+
+alter table vista_ranking_por_categoria
+    owner to neondb_owner;
+
+create function registrar_voto(p_idasambleista integer, p_candidatos integer[], p_es_abstencion boolean, p_categoria categoria_enum DEFAULT NULL::categoria_enum) returns void
+    language plpgsql
+as
+$$
+DECLARE
+    v_idvoto INTEGER;
+    v_categoria categoria_enum;
+BEGIN
+    IF p_es_abstencion THEN
+        IF p_categoria IS NULL THEN
+            RAISE EXCEPTION 'Debe proporcionar la categoría si es una abstención';
+        END IF;
+
+        INSERT INTO votos (idasambleista, es_abstencion, categoria)
+        VALUES (p_idasambleista, TRUE, p_categoria)
+        RETURNING idvoto INTO v_idvoto;
+
+    ELSE
+        IF array_length(p_candidatos, 1) IS NULL THEN
+            RAISE EXCEPTION 'Debe proporcionar al menos un candidato si no es abstención';
+        END IF;
+
+        SELECT categoria INTO v_categoria
+        FROM candidato
+        WHERE idcandidato = p_candidatos[1];
+
+        INSERT INTO votos (idasambleista, es_abstencion, categoria)
+        VALUES (p_idasambleista, FALSE, v_categoria)
+        RETURNING idvoto INTO v_idvoto;
+
+        -- Insertar todos los candidatos seleccionados
+        INSERT INTO voto_candidato (idvoto, idcandidato)
+        SELECT v_idvoto, unnest(p_candidatos);
+    END IF;
+
+    -- Actualizar ha_votado = true si ya votó en las 4 categorías
+    UPDATE asambleista
+    SET ha_votado = TRUE
+    WHERE idasambleista = p_idasambleista
+      AND (
+        SELECT COUNT(DISTINCT categoria)
+        FROM votos
+        WHERE idasambleista = p_idasambleista
+      ) = 4;
+END;
+$$;
+
+alter function registrar_voto(integer, integer[], boolean, categoria_enum) owner to neondb_owner;
+
