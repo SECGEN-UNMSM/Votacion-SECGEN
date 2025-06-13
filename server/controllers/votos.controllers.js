@@ -1,5 +1,6 @@
 const pool = require('../src/db');
 const puppeteer = require('puppeteer');
+require("dotenv").config();
 
 const getRanking = async (req, res) => {
   try {
@@ -149,7 +150,16 @@ const exportarRankingCategoriaPDF = async (req, res) => {
     `;
 
     const browser = await puppeteer.launch({
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
+      executablePath:
+        process.env.NODE_ENV === "production"
+          ? process.env.PUPPETEER_EXECUTABLE_PATH
+          : puppeteer.executablePath(),
+      args: [
+        "--single-process",
+        "--no-zygote",
+        "--no - sandbox",
+        "--disable - setuid - sandbox"
+      ],
     });
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: 'networkidle0' });
@@ -302,7 +312,16 @@ const exportarRankingGeneralPDF = async (req, res) => {
     `;
 
     const browser = await puppeteer.launch({
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
+      executablePath:
+        process.env.NODE_ENV === "production"
+          ? process.env.PUPPETEER_EXECUTABLE_PATH
+          : puppeteer.executablePath(),
+      args: [
+        "--single-process",
+        "--no-zygote",
+        "--no - sandbox",
+        "--disable - setuid - sandbox",
+      ],
     });
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: 'networkidle0' });
