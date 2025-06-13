@@ -156,10 +156,10 @@ const exportarRankingCategoriaPDF = async (req, res) => {
         "--single-process",
         "--no-zygote",
       ],
-      executablePath:
+      /*executablePath:
         process.env.NODE_ENV === "production"
           ? process.env.PUPPETEER_EXECUTABLE_PATH
-          : puppeteer.executablePath(),
+          : puppeteer.executablePath(),*/
     });
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: 'networkidle0' });
@@ -318,10 +318,10 @@ const exportarRankingGeneralPDF = async (req, res) => {
         "--single-process",
         "--no-zygote",
       ],
-      executablePath:
+      /*executablePath:
         process.env.NODE_ENV === "production"
           ? process.env.PUPPETEER_EXECUTABLE_PATH
-          : puppeteer.executablePath(),
+          : puppeteer.executablePath(),*/
     });
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: 'networkidle0' });
