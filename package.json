@@ -4,7 +4,6 @@
   "main": "index.js",
   "scripts": {
     "dev": "node index.js",
-    "postinstall": "puppeteer install",
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -17,6 +16,7 @@
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "pg": "^8.16.0",
-    "puppeteer": "^24.10.1"
+    "puppeteer": "^24.10.1",
+    "puppeteer-core": "^24.10.1"
   }
 }
