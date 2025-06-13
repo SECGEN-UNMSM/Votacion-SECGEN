@@ -156,6 +156,7 @@ const exportarRankingCategoriaPDF = async (req, res) => {
         "--single-process",
         "--no-zygote",
       ],
+      executablePath: '/path/to/Chrome'
       /*executablePath:
         process.env.NODE_ENV === "production"
           ? process.env.PUPPETEER_EXECUTABLE_PATH
@@ -318,6 +319,7 @@ const exportarRankingGeneralPDF = async (req, res) => {
         "--single-process",
         "--no-zygote",
       ],
+      executablePath: '/path/to/Chrome'
       /*executablePath:
         process.env.NODE_ENV === "production"
           ? process.env.PUPPETEER_EXECUTABLE_PATH
