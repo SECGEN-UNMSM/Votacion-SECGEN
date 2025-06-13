@@ -1,5 +1,5 @@
 const pool = require('../src/db');
-const puppeteer = require('puppeteer-core');
+const puppeteer = require('puppeteer');
 require("dotenv").config();
 
 const getRanking = async (req, res) => {
