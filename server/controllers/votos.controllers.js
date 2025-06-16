@@ -73,16 +73,17 @@ const exportarRankingCategoriaPDF = async (req, res) => {
             margin: 100px 50px 40px 50px;
             font-size: 9pt;
             font-style: italic;
+            text-align: center;
           }
           h1, h2 {
             text-align: center;
             margin: 5px 0;
           }
           h1 {
-            font-size: 11pt;
+            font-size: 9pt;
           }
           h2 {
-            font-size: 10pt;
+            font-size: 8pt;
           }
           .tabla-contenedor {
             width: 70%;
@@ -106,7 +107,7 @@ const exportarRankingCategoriaPDF = async (req, res) => {
             font-style: italic;
           }
           th {
-            background-color: #87dcf1 !important;
+            background-color: #87dcf1;
             color: #000;
             text-align: center;
           }
@@ -142,13 +143,17 @@ const exportarRankingCategoriaPDF = async (req, res) => {
               </tr>
             </thead>
             <tbody>
-              ${candidatos.rows.map(row => `
+              ${candidatos.rows
+                .map(
+                  (row) => `
                 <tr>
                   <td>${row.codigo_facultad}</td>
                   <td>${row.nombre_candidato.toUpperCase()}</td>
                   <td>${row.total_votos}</td>
                 </tr>
-              `).join('')}
+              `
+                )
+                .join("")}
               <tr>
                 <td></td>
                 <td>NINGUNO/ABSTENCIÓN</td>
@@ -225,17 +230,18 @@ const exportarRankingGeneralPDF = async (req, res) => {
             font-family: Arial, sans-serif;
             font-size: 9pt;
             font-style: italic;
+            text-align: center;
           }
           h1, h2 {
             text-align: center;
             margin: 5px 0;
           }
           h1 {
-            font-size: 11pt;
+            font-size: 5pt;
           }
           h2 {
-            font-size: 10pt;
-            margin-top: 40px;
+            font-size: 4pt;
+            margin-top: 30px;
           }
           .tabla-contenedor {
             width: 70%;
@@ -255,11 +261,11 @@ const exportarRankingGeneralPDF = async (req, res) => {
           th, td {
             border: 1px solid #000;
             padding: 4px;
-            font-size: 9pt;
+            font-size: 3pt;
             font-style: italic;
           }
           th {
-            background-color: #87dcf1 !important;
+            background-color: #87dcf1;
             color: #000;
             text-align: center;
           }
@@ -283,61 +289,75 @@ const exportarRankingGeneralPDF = async (req, res) => {
         </style>
       </head>
       <body>
-        <h2>ELECCIÓN DEL COMITÉ ELECTORAL UNIVERSITARIO 2025 - 2026</h2>
-        <h1>RESULTADO FINAL DE VOTACIÓN - GENERAL</h1>
+        <h2 class="titulo">ELECCIÓN DEL COMITÉ ELECTORAL UNIVERSITARIO 2025 - 2026</h2>
+        <h1 class="subtitulo">RESULTADO FINAL DE VOTACIÓN - GENERAL</h1>
         <hr class="separador" />
         ${Object.keys(grouped)
           .map(
             (cat) => `
-          <h2>${cat.toUpperCase()}</h2>
-          <div class="tabla-contenedor">
-            <table>
-              <thead>
-                <tr>
-                  <th>FACULTAD</th>
-                  <th>APELLIDOS Y NOMBRES</th>
-                  <th>VOTOS</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${grouped[cat]
-                  .map(
-                    (row) => `
+            <h2 class="categoria">${cat.toUpperCase()}</h2>
+            <div class="tabla-contenedor">
+              <table>
+                <thead>
                   <tr>
-                    <td>${row.codigo_facultad}</td>
-                    <td>${row.nombre_candidato.toUpperCase()}</td>
-                    <td>${row.total_votos}</td>
+                    <th>FACULTAD</th>
+                    <th>APELLIDOS Y NOMBRES</th>
+                    <th>VOTOS</th>
                   </tr>
-                `
-                  )
-                  .join("")}
-                <tr>
-                  <td></td>
-                  <td>NINGUNO/ABSTENCIÓN</td>
-                  <td>${abstencionMap[cat] || 0}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <hr class="separador" />
-        `
+                </thead>
+                <tbody>
+                  ${grouped[cat]
+                    .map(
+                      (row) => `
+                    <tr>
+                      <td>${row.codigo_facultad}</td>
+                      <td>${row.nombre_candidato.toUpperCase()}</td>
+                      <td>${row.total_votos}</td>
+                    </tr>
+                  `
+                    )
+                    .join("")}
+                  <tr>
+                    <td></td>
+                    <td>NINGUNO/ABSTENCIÓN</td>
+                    <td>${abstencionMap[cat] || 0}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <hr class="separador" />
+          `
           )
           .join("")}
-      </body>
-      </html>
-    `;
+      `;
 
     const content = htmlToPdfmake(html, { window });
-    const docDefinition = {
-      content,
-      defaultStyle: { font: "Roboto", fontSize: 9, italics: true },
-      styles: {
-        header1: { fontSize: 11, bold: true, alignment: "center" },
-        header2: { fontSize: 10, alignment: "center" },
-      },
-      pageSize: "A4",
-      pageMargins: [50, 100, 50, 40],
-    };
+
+      const docDefinition = {
+        content,
+        defaultStyle: { font: "Roboto", fontSize: 8, italics: true },
+        styles: {
+          titulo: {
+            fontSize: 5,
+            alignment: "center",
+            bold: false,
+            margin: [0, 5, 0, 0],
+          },
+          subtitulo: {
+            fontSize: 4,
+            alignment: "center",
+            margin: [0, 0, 0, 10],
+          },
+          categoria: {
+            fontSize: 3,
+            alignment: "center",
+            bold: false,
+            margin: [0, 20, 0, 5],
+          },
+        },
+        pageSize: "A4",
+        pageMargins: [50, 100, 50, 40],
+      };
 
     const pdfDoc = printer.createPdfKitDocument(docDefinition);
     let chunks = [];
