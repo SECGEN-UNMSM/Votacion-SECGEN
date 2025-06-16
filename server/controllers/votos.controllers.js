@@ -5,10 +5,10 @@ const window = dom.window;
 const PdfPrinter = require("pdfmake");
 const fonts = {
   Roboto: {
-    normal: "pdfmake/fonts/Roboto/Roboto-Regular.ttf",
-    bold: "pdfmake/fonts/Roboto/Roboto-Medium.ttf",
-    italics: "pdfmake/fonts/Roboto/Roboto-Italic.ttf",
-    bolditalics: "pdfmake/fonts/Roboto/Roboto-MediumItalic.ttf",
+    normal: "pdfmake2/fonts/Roboto/Roboto-Regular.ttf",
+    bold: "pdfmake2/fonts/Roboto/Roboto-Medium.ttf",
+    italics: "pdfmake2/fonts/Roboto/Roboto-Italic.ttf",
+    bolditalics: "pdfmake2/fonts/Roboto/Roboto-MediumItalic.ttf",
   },
 };
 const printer = new PdfPrinter(fonts);
