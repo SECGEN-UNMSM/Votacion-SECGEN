@@ -15,8 +15,9 @@
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
-    "pg": "^8.16.0",
-    "puppeteer": "^24.10.1",
-    "puppeteer-core": "^24.10.1"
+    "html-to-pdfmake": "^2.5.27",
+    "jsdom": "^26.1.0",
+    "pdfmake": "^0.2.20",
+    "pg": "^8.16.0"
   }
 }

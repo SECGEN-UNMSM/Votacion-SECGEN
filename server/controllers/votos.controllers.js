@@ -1,6 +1,18 @@
 const pool = require('../src/db');
-const puppeteer = require('puppeteer');
-require("dotenv").config();
+const { JSDOM } = require("jsdom");
+const dom = new JSDOM("");
+const window = dom.window;
+const PdfPrinter = require("pdfmake");
+const fonts = {
+  Roboto: {
+    normal: "pdfmake/fonts/Roboto/Roboto-Regular.ttf",
+    bold: "pdfmake/fonts/Roboto/Roboto-Medium.ttf",
+    italics: "pdfmake/fonts/Roboto/Roboto-Italic.ttf",
+    bolditalics: "pdfmake/fonts/Roboto/Roboto-MediumItalic.ttf",
+  },
+};
+const printer = new PdfPrinter(fonts);
+const htmlToPdfmake = require("html-to-pdfmake");
 
 const getRanking = async (req, res) => {
   try {
@@ -149,34 +161,30 @@ const exportarRankingCategoriaPDF = async (req, res) => {
       </html>
     `;
 
-    const browser = await puppeteer.launch({
-      args: [
-        "--disable-setuid-sandbox",
-        "--no-sandbox",
-        "--single-process",
-        "--no-zygote",
-      ],
-      executablePath:
-        process.env.NODE_ENV === "production"
-          ? process.env.PUPPETEER_EXECUTABLE_PATH
-          : puppeteer.executablePath(),
+    const content = htmlToPdfmake(html, { window });
+    const docDefinition = {
+      content,
+      defaultStyle: { font: "Roboto", fontSize: 9, italics: true },
+      styles: {
+        header1: { fontSize: 11, bold: true, alignment: "center" },
+        header2: { fontSize: 10, alignment: "center" },
+      },
+      pageSize: "A4",
+      pageMargins: [50, 100, 50, 40],
+    };
+
+    const pdfDoc = printer.createPdfKitDocument(docDefinition);
+    let chunks = [];
+    pdfDoc.on("data", (chunk) => chunks.push(chunk));
+    pdfDoc.on("end", () => {
+      const pdfBuffer = Buffer.concat(chunks);
+      res.set({
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `attachment; filename=reporte_${categoria}.pdf`,
+      });
+      res.send(pdfBuffer);
     });
-    const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: 'networkidle0' });
-
-    const pdfBuffer = await page.pdf({
-      format: 'A4',
-      printBackground: true
-    });
-
-    await browser.close();
-
-    res.set({
-      'Content-Type': 'application/pdf',
-      'Content-Disposition': `attachment; filename=reporte_${categoria}.pdf`,
-    });
-
-    res.send(pdfBuffer);
+    pdfDoc.end();
   } catch (err) {
     console.error(err);
     res.status(500).send('Error al generar el PDF');
@@ -199,12 +207,12 @@ const exportarRankingGeneralPDF = async (req, res) => {
     `);
 
     const abstencionMap = {};
-    abstenciones.rows.forEach(row => {
+    abstenciones.rows.forEach((row) => {
       abstencionMap[row.categoria] = row.total_abstenciones;
     });
 
     const grouped = {};
-    result.rows.forEach(row => {
+    result.rows.forEach((row) => {
       if (!grouped[row.categoria]) grouped[row.categoria] = [];
       grouped[row.categoria].push(row);
     });
@@ -278,7 +286,9 @@ const exportarRankingGeneralPDF = async (req, res) => {
         <h2>ELECCIÓN DEL COMITÉ ELECTORAL UNIVERSITARIO 2025 - 2026</h2>
         <h1>RESULTADO FINAL DE VOTACIÓN - GENERAL</h1>
         <hr class="separador" />
-        ${Object.keys(grouped).map(cat => `
+        ${Object.keys(grouped)
+          .map(
+            (cat) => `
           <h2>${cat.toUpperCase()}</h2>
           <div class="tabla-contenedor">
             <table>
@@ -290,13 +300,17 @@ const exportarRankingGeneralPDF = async (req, res) => {
                 </tr>
               </thead>
               <tbody>
-                ${grouped[cat].map(row => `
+                ${grouped[cat]
+                  .map(
+                    (row) => `
                   <tr>
                     <td>${row.codigo_facultad}</td>
                     <td>${row.nombre_candidato.toUpperCase()}</td>
                     <td>${row.total_votos}</td>
                   </tr>
-                `).join('')}
+                `
+                  )
+                  .join("")}
                 <tr>
                   <td></td>
                   <td>NINGUNO/ABSTENCIÓN</td>
@@ -306,43 +320,40 @@ const exportarRankingGeneralPDF = async (req, res) => {
             </table>
           </div>
           <hr class="separador" />
-        `).join('')}
+        `
+          )
+          .join("")}
       </body>
       </html>
     `;
 
-    const browser = await puppeteer.launch({
-      args: [
-        "--disable-setuid-sandbox",
-        "--no-sandbox",
-        "--single-process",
-        "--no-zygote",
-      ],
-      executablePath:
-        process.env.NODE_ENV === "production"
-          ? process.env.PUPPETEER_EXECUTABLE_PATH
-          : puppeteer.executablePath(),
+    const content = htmlToPdfmake(html, { window });
+    const docDefinition = {
+      content,
+      defaultStyle: { font: "Roboto", fontSize: 9, italics: true },
+      styles: {
+        header1: { fontSize: 11, bold: true, alignment: "center" },
+        header2: { fontSize: 10, alignment: "center" },
+      },
+      pageSize: "A4",
+      pageMargins: [50, 100, 50, 40],
+    };
+
+    const pdfDoc = printer.createPdfKitDocument(docDefinition);
+    let chunks = [];
+    pdfDoc.on("data", (chunk) => chunks.push(chunk));
+    pdfDoc.on("end", () => {
+      const pdfBuffer = Buffer.concat(chunks);
+      res.set({
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `attachment; filename=reporte_general.pdf`,
+      });
+      res.send(pdfBuffer);
     });
-    const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: 'networkidle0' });
-
-    const pdfBuffer = await page.pdf({
-      format: 'A4',
-      printBackground: true,
-      margin: { top: '100px', right: '50px', bottom: '40px', left: '50px' }
-    });
-
-    await browser.close();
-
-    res.set({
-      'Content-Type': 'application/pdf',
-      'Content-Disposition': `attachment; filename=reporte_ranking_general.pdf`,
-    });
-
-    res.send(pdfBuffer);
+    pdfDoc.end();
   } catch (err) {
     console.error(err);
-    res.status(500).send('Error al generar el PDF general');
+    res.status(500).send("Error al generar el PDF");
   }
 };
 
