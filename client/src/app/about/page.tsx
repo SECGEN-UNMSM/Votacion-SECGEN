@@ -9,18 +9,18 @@ import { redirect } from "next/navigation";
 import { useEffect } from "react";
 
 export default function About() {
-  const [] = useDarkMode();
+  useDarkMode();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("auth-token");
     if (!token) {
-      redirect("/login");
+      redirect("/");
     }
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    redirect("/login");
+    localStorage.removeItem("auth-token");
+    redirect("/");
   };
 
   return (
@@ -37,7 +37,7 @@ export default function About() {
                 <Button variant={"link"} disabled>
                   Nosotros
                 </Button>
-                <Button variant={"link"} className="cursor-pointer" onClick={() => redirect("/")}>
+                <Button variant={"link"} className="cursor-pointer" onClick={() => redirect("/home")}>
                   Votación
                 </Button>
                 <Button variant={"link"} className="cursor-pointer" onClick={() => redirect("/reportes")}>
@@ -74,7 +74,7 @@ export default function About() {
               </section>
             </CardContent>
           </Card>
-          <Image src="Logo_UNMSM.svg" width={320} height={320} alt="Logo UNMSM" className="w-80" />
+          <Image src="Logo_UNMSM.svg" width={320} height={320} alt="Logo UNMSM" />
         </div>
       </div>
       <ToggleDarkMode></ToggleDarkMode>

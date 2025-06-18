@@ -2,16 +2,18 @@
 import { ReportesPDF } from "@/components/reportes";
 import { ToggleDarkMode } from "@/components/ToggleDarkMode";
 import { Button } from "@/components/ui/button";
+import { useDarkMode } from "@/hooks/useDarkMode";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function Home() {
+export default function Reportes() {
+  useDarkMode();
   const [navigate, setNavigate] = useState(false)
   
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("auth-token");
     if (!token) {
-      redirect("/login");
+      redirect("/");
     }
   }, []);
 
