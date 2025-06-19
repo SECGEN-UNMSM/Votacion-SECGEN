@@ -1,5 +1,6 @@
 import { baseURL } from "./api";
 import { VotosBack } from "@/lib/types";
+import { fetch } from "@tauri-apps/plugin-http";
 
 
 export const getRankings = async () => {
@@ -9,7 +10,7 @@ export const getRankings = async () => {
     throw new Error("Error al obtener el ranking")
   }
 
-  return response.json();
+  return await response.json();
 }
 
 export const registrarVotos = async (data: VotosBack) => {

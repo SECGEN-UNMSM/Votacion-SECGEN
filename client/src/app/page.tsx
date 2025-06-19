@@ -59,6 +59,7 @@ export default function LoginPage() {
                     <input
                       type="text"
                       id="username"
+                      autoComplete="off"
                       {...register("username", {
                         required: {
                           value: true,

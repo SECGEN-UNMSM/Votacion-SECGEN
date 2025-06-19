@@ -6,6 +6,12 @@
     "main"
   ],
   "permissions": [
-    "core:default"
+    "core:default",
+    {
+      "identifier": "http:default",
+      "request": true,
+      "allow": [{"url": "http://localhost:3001/api/*"},{"url": "https://sistemavotacion-secgen.onrender.com/api/*"}],
+      "scope": ["http://localhost:3001/api/*", "https://sistemavotacion-secgen.onrender.com/api/*"]
+    }
   ]
 }

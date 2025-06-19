@@ -1,5 +1,5 @@
 import { baseURL } from "./api";
-
+import { fetch } from "@tauri-apps/plugin-http";
 
 export const getCandidatos = async () => {
   const response = await fetch(`${baseURL}/candidatos/`)
