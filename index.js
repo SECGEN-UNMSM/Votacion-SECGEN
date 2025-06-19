@@ -19,8 +19,14 @@ const candidatoRoutes = require('./server/routes/candidato.routes');
 
 app.use(
   cors({
-    origin: "*",
-    credentials: true,
+    origin: [
+      "tauri:://localhost",
+      "https://tauri.localhost/",
+      "http://tauri.localhost/",
+      "com.sistemavotacion.dev",
+      "tauri.localhost",
+      "http://localhost:3000",
+    ]
   })
 );
 app.use('/api', asambleistaRoutes);
