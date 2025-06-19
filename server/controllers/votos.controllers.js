@@ -64,122 +64,100 @@ const exportarRankingCategoriaPDF = async (req, res) => {
       [categoria]
     );
 
-    const html = `
-      <html>
-      <head>
-        <style>
-          body {
-            font-family: Arial, sans-serif;
-            margin: 100px 50px 40px 50px;
-            font-size: 9pt;
-            font-style: italic;
-            text-align: center;
-          }
-          h1, h2 {
-            text-align: center;
-            margin: 5px 0;
-          }
-          h1 {
-            font-size: 9pt;
-          }
-          h2 {
-            font-size: 8pt;
-          }
-          .tabla-contenedor {
-            width: 70%;
-            margin: 0 auto;
-          }
-          .separador {
-            width: 70%;
-            margin: 15px auto;
-            border: none;
-            border-top: 1px solid #000;
-          }
-          table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 5px;
-          }
-          th, td {
-            border: 1px solid #000;
-            padding: 4px;
-            font-size: 9pt;
-            font-style: italic;
-          }
-          th {
-            background-color: #87dcf1;
-            color: #000;
-            text-align: center;
-          }
-          td:nth-child(1), th:nth-child(1) {
-            width: 15%;
-            text-align: center;
-          }
-          td:nth-child(2), th:nth-child(2) {
-            width: 70%;
-            text-align: left;
-          }
-          td:nth-child(3), th:nth-child(3) {
-            width: 15%;
-            text-align: center;
-          }
-          tfoot td {
-            font-weight: bold;
-            border-top: 2px solid #000;
-          }
-        </style>
-      </head>
-      <body>
-        <h2>ELECCIÓN DEL COMITÉ ELECTORAL UNIVERSITARIO 2025 - 2026</h2>
-        <h1>RESULTADO FINAL DE VOTACIÓN: ${categoria.toUpperCase()}</h1>
-        <hr class="separador" />
-        <div class="tabla-contenedor">
-          <table>
-            <thead>
-              <tr>
-                <th>FACULTAD</th>
-                <th>APELLIDOS Y NOMBRES</th>
-                <th>VOTOS</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${candidatos.rows
-                .map(
-                  (row) => `
-                <tr>
-                  <td>${row.codigo_facultad}</td>
-                  <td>${row.nombre_candidato.toUpperCase()}</td>
-                  <td>${row.total_votos}</td>
-                </tr>
-              `
-                )
-                .join("")}
-              <tr>
-                <td></td>
-                <td>NINGUNO/ABSTENCIÓN</td>
-                <td>${abstenciones.rows[0].total_abstenciones}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </body>
-      </html>
-    `;
-
-    const content = htmlToPdfmake(html, { window });
+    const logo = "pdfmake2/logos/unmsm.png";
     const docDefinition = {
-      content,
-      defaultStyle: { font: "Roboto", fontSize: 9, italics: true },
-      styles: {
-        header1: { fontSize: 11, bold: true, alignment: "center" },
-        header2: { fontSize: 10, alignment: "center" },
-      },
       pageSize: "A4",
-      pageMargins: [50, 100, 50, 40],
+      pageMargins: [50, 120, 50, 60],
+      defaultStyle: {
+        font: "Roboto",
+        fontSize: 9,
+        alignment: "center",
+      },
+      styles: {
+        titulo1: { fontSize: 11, bold: true, margin: [0, 4, 0, 2] },
+        titulo2: { fontSize: 10, margin: [0, 2, 0, 2] },
+        titulo3: { fontSize: 9, margin: [0, 2, 0, 8] },
+        seccionTitulo: { fontSize: 13, bold: true, margin: [0, 15, 0, 4] },
+        seccionSubTitulo: { fontSize: 12, bold: true, margin: [0, 5, 0, 8] },
+        tablaHeader: { fillColor: "#87dcf1", bold: true, fontSize: 11 },
+        celda: { margin: [0, 4], fontSize: 11 },
+        tablaContenedor: {
+          margin: [30, 10, 20, 0],
+        },
+      },
+      header: () => ({
+        margin: [50, 30, 50, 0],
+        stack: [
+          {
+            image: logo,
+            width: 30,
+            alignment: "center",
+            margin: [0, 0, 0, 5],
+          },
+          {
+            text: "UNIVERSIDAD NACIONAL MAYOR DE SAN MARCOS",
+            style: "titulo1",
+          },
+          { text: "Universidad del Perú. Decana de América", style: "titulo2" },
+          { text: "SECRETARIA GENERAL", style: "titulo3" },
+        ],
+      }),
+      content: [
+        {
+          text: "ELECCIÓN DEL COMITÉ ELECTORAL UNIVERSITARIO 2025 - 2026",
+          style: "seccionTitulo",
+        },
+        {
+          text: `RESULTADO FINAL DE VOTACIÓN: ${categoria.toUpperCase()}`,
+          style: "seccionSubTitulo",
+        },
+        {
+          style: "tablaContenedor",
+          table: {
+            headerRows: 1,
+            widths: ["18%", "64%", "18%"],
+            body: [
+              [
+                { text: "FACULTAD", style: "tablaHeader" },
+                { text: "APELLIDOS Y NOMBRES", style: "tablaHeader" },
+                { text: "VOTOS", style: "tablaHeader" },
+              ],
+              ...candidatos.rows.map((row) => [
+                { text: row.codigo_facultad, style: "celda" },
+                {
+                  text: row.nombre_candidato.toUpperCase(),
+                  style: "celda",
+                  alignment: "left",
+                },
+                { text: row.total_votos.toString(), style: "celda" },
+              ]),
+              [
+                { text: "", style: "celda" },
+                {
+                  text: "NINGUNO/ABSTENCIÓN",
+                  style: "celda",
+                  alignment: "left",
+                },
+                {
+                  text: abstenciones.rows[0].total_abstenciones.toString(),
+                  style: "celda",
+                },
+              ],
+            ],
+          },
+          layout: {
+            hLineWidth: () => 0.5,
+            vLineWidth: () => 0.5,
+            hLineColor: () => "#000000",
+            vLineColor: () => "#000000",
+          },
+        },
+      ],
     };
 
     const pdfDoc = printer.createPdfKitDocument(docDefinition);
     let chunks = [];
+    
     pdfDoc.on("data", (chunk) => chunks.push(chunk));
     pdfDoc.on("end", () => {
       const pdfBuffer = Buffer.concat(chunks);
@@ -198,169 +176,130 @@ const exportarRankingCategoriaPDF = async (req, res) => {
 
 const exportarRankingGeneralPDF = async (req, res) => {
   try {
-    const result = await pool.query(
-      `SELECT categoria, codigo_facultad, nombre_candidato, total_votos
-       FROM vista_ranking_por_categoria
-       ORDER BY categoria, total_votos DESC`
-    );
-
-    const abstenciones = await pool.query(`
-      SELECT categoria, COUNT(*) AS total_abstenciones
-      FROM votos
-      WHERE es_abstencion = true
-      GROUP BY categoria
+    const { rows: categoriasResult } = await pool.query(`
+      SELECT unnest(enum_range(NULL::categoria_enum)) AS categoria
     `);
+    const categorias = categoriasResult.map((row) => row.categoria);
 
-    const abstencionMap = {};
-    abstenciones.rows.forEach((row) => {
-      abstencionMap[row.categoria] = row.total_abstenciones;
-    });
+    const logo = "pdfmake2/logos/unmsm.png";
 
-    const grouped = {};
-    result.rows.forEach((row) => {
-      if (!grouped[row.categoria]) grouped[row.categoria] = [];
-      grouped[row.categoria].push(row);
-    });
+    const content = [];
 
-    const html = `
-      <html>
-      <head>
-        <style>
-          body {
-            font-family: Arial, sans-serif;
-            font-size: 9pt;
-            font-style: italic;
-            text-align: center;
-          }
-          h1, h2 {
-            text-align: center;
-            margin: 5px 0;
-          }
-          h1 {
-            font-size: 5pt;
-          }
-          h2 {
-            font-size: 4pt;
-            margin-top: 30px;
-          }
-          .tabla-contenedor {
-            width: 70%;
-            margin: 0 auto 30px auto;
-          }
-          .separador {
-            width: 70%;
-            margin: 20px auto;
-            border: none;
-            border-top: 1px solid #000;
-          }
-          table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 5px;
-          }
-          th, td {
-            border: 1px solid #000;
-            padding: 4px;
-            font-size: 3pt;
-            font-style: italic;
-          }
-          th {
-            background-color: #87dcf1;
-            color: #000;
-            text-align: center;
-          }
-          td:nth-child(1), th:nth-child(1) {
-            width: 15%;
-            text-align: center;
-          }
-          td:nth-child(2), th:nth-child(2) {
-            width: 70%;
-            text-align: left;
-          }
-          td:nth-child(3), th:nth-child(3) {
-            width: 15%;
-            text-align: center;
-          }
-          tfoot td {
-            font-weight: bold;
-            border-top: 2px solid #000;
-            text-align: center;
-          }
-        </style>
-      </head>
-      <body>
-        <h2 class="titulo">ELECCIÓN DEL COMITÉ ELECTORAL UNIVERSITARIO 2025 - 2026</h2>
-        <h1 class="subtitulo">RESULTADO FINAL DE VOTACIÓN - GENERAL</h1>
-        <hr class="separador" />
-        ${Object.keys(grouped)
-          .map(
-            (cat) => `
-            <h2 class="categoria">${cat.toUpperCase()}</h2>
-            <div class="tabla-contenedor">
-              <table>
-                <thead>
-                  <tr>
-                    <th>FACULTAD</th>
-                    <th>APELLIDOS Y NOMBRES</th>
-                    <th>VOTOS</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${grouped[cat]
-                    .map(
-                      (row) => `
-                    <tr>
-                      <td>${row.codigo_facultad}</td>
-                      <td>${row.nombre_candidato.toUpperCase()}</td>
-                      <td>${row.total_votos}</td>
-                    </tr>
-                  `
-                    )
-                    .join("")}
-                  <tr>
-                    <td></td>
-                    <td>NINGUNO/ABSTENCIÓN</td>
-                    <td>${abstencionMap[cat] || 0}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <hr class="separador" />
-          `
-          )
-          .join("")}
-      `;
+    for (const categoria of categorias) {
+      const { rows: candidatos } = await pool.query(
+        `SELECT codigo_facultad, nombre_candidato, categoria, total_votos
+         FROM vista_ranking_por_categoria
+         WHERE categoria = $1
+         ORDER BY total_votos DESC`,
+        [categoria]
+      );
 
-    const content = htmlToPdfmake(html, { window });
+      const {
+        rows: [abstencion],
+      } = await pool.query(
+        `SELECT COUNT(*) AS total_abstenciones
+         FROM votos
+         WHERE categoria = $1 AND es_abstencion = true`,
+        [categoria]
+      );
 
-      const docDefinition = {
-        content,
-        defaultStyle: { font: "Roboto", fontSize: 8, italics: true },
-        styles: {
-          titulo: {
-            fontSize: 5,
-            alignment: "center",
-            bold: false,
-            margin: [0, 5, 0, 0],
+      content.push(
+        {
+          text: "ELECCIÓN DEL COMITÉ ELECTORAL UNIVERSITARIO 2025 - 2026",
+          style: "seccionTitulo",
+        },
+        {
+          text: `RESULTADO FINAL DE VOTACIÓN: ${categoria.toUpperCase()}`,
+          style: "seccionSubTitulo",
+        },
+        {
+          style: "tablaContenedor",
+          table: {
+            headerRows: 1,
+            widths: ["18%", "64%", "18%"],
+            body: [
+              [
+                { text: "FACULTAD", style: "tablaHeader" },
+                { text: "APELLIDOS Y NOMBRES", style: "tablaHeader" },
+                { text: "VOTOS", style: "tablaHeader" },
+              ],
+              ...candidatos.map((row) => [
+                { text: row.codigo_facultad, style: "celda" },
+                {
+                  text: row.nombre_candidato.toUpperCase(),
+                  style: "celda",
+                  alignment: "left",
+                },
+                { text: row.total_votos.toString(), style: "celda" },
+              ]),
+              [
+                { text: "", style: "celda" },
+                {
+                  text: "NINGUNO/ABSTENCIÓN",
+                  style: "celda",
+                  alignment: "left",
+                },
+                {
+                  text: abstencion.total_abstenciones.toString(),
+                  style: "celda",
+                },
+              ],
+            ],
           },
-          subtitulo: {
-            fontSize: 4,
-            alignment: "center",
-            margin: [0, 0, 0, 10],
-          },
-          categoria: {
-            fontSize: 3,
-            alignment: "center",
-            bold: false,
-            margin: [0, 20, 0, 5],
+          layout: {
+            hLineWidth: () => 0.5,
+            vLineWidth: () => 0.5,
+            hLineColor: () => "#000000",
+            vLineColor: () => "#000000",
           },
         },
-        pageSize: "A4",
-        pageMargins: [50, 100, 50, 40],
-      };
+        { text: "", pageBreak: "after" }
+      );
+    }
+
+    const docDefinition = {
+      pageSize: "A4",
+      pageMargins: [50, 120, 50, 60],
+      defaultStyle: {
+        font: "Roboto",
+        fontSize: 9,
+        alignment: "center",
+      },
+      styles: {
+        titulo1: { fontSize: 11, bold: true, margin: [0, 4, 0, 2] },
+        titulo2: { fontSize: 10, margin: [0, 2, 0, 2] },
+        titulo3: { fontSize: 9, margin: [0, 2, 0, 8] },
+        seccionTitulo: { fontSize: 13, bold: true, margin: [0, 15, 0, 4] },
+        seccionSubTitulo: { fontSize: 12, bold: true, margin: [0, 5, 0, 8] },
+        tablaHeader: { fillColor: "#87dcf1", bold: true, fontSize: 11 },
+        celda: { margin: [0, 4], fontSize: 11 },
+        tablaContenedor: {
+          margin: [30, 10, 20, 0],
+        },
+      },
+      header: () => ({
+        margin: [50, 30, 50, 0],
+        stack: [
+          {
+            image: logo,
+            width: 30,
+            alignment: "center",
+            margin: [0, 0, 0, 5],
+          },
+          {
+            text: "UNIVERSIDAD NACIONAL MAYOR DE SAN MARCOS",
+            style: "titulo1",
+          },
+          { text: "Universidad del Perú. Decana de América", style: "titulo2" },
+          { text: "SECRETARIA GENERAL", style: "titulo3" },
+        ],
+      }),
+      content,
+    };
 
     const pdfDoc = printer.createPdfKitDocument(docDefinition);
     let chunks = [];
+
     pdfDoc.on("data", (chunk) => chunks.push(chunk));
     pdfDoc.on("end", () => {
       const pdfBuffer = Buffer.concat(chunks);
@@ -373,7 +312,7 @@ const exportarRankingGeneralPDF = async (req, res) => {
     pdfDoc.end();
   } catch (err) {
     console.error(err);
-    res.status(500).send("Error al generar el PDF");
+    res.status(500).send("Error al generar el PDF general");
   }
 };
 
