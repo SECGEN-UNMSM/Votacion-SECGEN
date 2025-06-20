@@ -24,6 +24,3 @@ Sistema para realizar la votación de candidatos al consejo universitario.
 La plataforma tomó parte de un diseño hecho en Figma por parte de los autores, siguiendo las pautas del equipo de supervisión.
 
 [Design-Sistema_Votacion](https://www.figma.com/design/pa6iiSvkpcnY373KETEf0e/Design---Sistema_Votaci%C3%B3n?node-id=0-1&t=tjQCean5TvKsPr16-1)
-
-## Enlaces
-[Backend-Render](https://sistemavotacion-secgen.onrender.com)
