@@ -209,7 +209,7 @@ export default function SistemaVotacion() {
 
   return (
     <main className="grid grid-cols-1 gap-6">
-      <div className="grid grid-cols-4 gap-4">
+      <div className="flex flex-col xl:grid xl:grid-cols-4 gap-4">
         {/* Sección de Votación */}
         <Card className="col-span-1 flex flex-col gap-2 border-1 border-[var(--border-color)] dark:border-stone-700 p-2">
           <CardHeader className="p-0">
@@ -283,7 +283,7 @@ export default function SistemaVotacion() {
               value={categoriaActiva}
               onValueChange={(value) => setCategoriaActiva(value as Categoria)}
             >
-              <TabsList className="grid grid-cols-4 gap-4 w-full h-10">
+              <TabsList className="grid grid-cols-2 gap-2 h-20 xl:grid-cols-4 xl:gap-4 w-full xl:h-10">
                 {categorias.map((categoria) => (
                   <TabsTrigger
                     key={categoria}
@@ -347,19 +347,17 @@ export default function SistemaVotacion() {
                         className={
                           abstenciones[categoria]
                             ? "opacity-50 pointer-events-none grid grid-cols-4 gap-2"
-                            : "grid grid-cols-4 gap-4"
+                            : "grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-8 xl:gap-4 xl:grid-cols-4"
                         }
                       >
                         {[...Array(4)].map((_, index) => {
                           const candidatosOrdenados = getCandidatosPorCategoria(rankingVotos, categoria)
                             .slice()
                             .sort((a, b) => a.codigo_facultad.localeCompare(b.codigo_facultad));
-
-                          const candidatosPorColumna = 3; // MODIFICAR PARA UN FUTURO
+                          const candidatosPorColumna = candidatosOrdenados.length / 4; // MODIFICAR PARA UN FUTURO
                           const inicio = index * candidatosPorColumna;
                           const fin = inicio + candidatosPorColumna;
                           const candidatosColumna = candidatosOrdenados.slice(inicio, fin);
-
                           return (
                             <div key={index}>
                               {/* Encabezado */}
@@ -405,7 +403,7 @@ export default function SistemaVotacion() {
                                   />
                                   <Label
                                     htmlFor={candidato.idcandidato.toString()}
-                                    className="cursor-pointer"
+                                    className="cursor-pointer line-clamp-1"
                                   >
                                     {candidato.nombre_candidato}
                                   </Label>
@@ -432,7 +430,7 @@ export default function SistemaVotacion() {
             </CardTitle>
           </CardHeader>
           <CardContent className="p-2">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 xl:grid-cols-4 gap-4">
               <RankingVotos ></RankingVotos>
             </div>
           </CardContent>

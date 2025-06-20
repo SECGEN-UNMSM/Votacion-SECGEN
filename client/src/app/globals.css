@@ -4,10 +4,10 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --bg-doc-principales: #13CEE1;
-  --bg-doc-asociados: #E36645;
-  --bg-doc-auxiliares: #36A251;
-  --bg-estudiantes: #8288BF;
+  --bg-doc-principales: #7FCFE3;
+  --bg-doc-asociados: #F0B2A1;
+  --bg-doc-auxiliares: #9AD0A7;
+  --bg-estudiantes: #C0C3DF;
   --bg-button-success: #28A745;
   --border-color: #AEB1B5;
   --text-color: #555555;
