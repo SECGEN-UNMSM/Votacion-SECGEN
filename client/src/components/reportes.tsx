@@ -18,6 +18,7 @@ import { baseURL } from "@/api/api";
 import { useVotos } from "@/hooks/useVotos";
 import RankingVotos from "./rankingVotos";
 import toast, { Toaster } from "react-hot-toast";
+import { fetch } from "@tauri-apps/plugin-http";
 
 export function ReportesPDF() {
   const { loading: loadingRankingVotos} = useVotos();
