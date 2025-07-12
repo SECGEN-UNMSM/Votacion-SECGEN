@@ -2,12 +2,12 @@
 import { ReportesPDF } from "@/components/reportes";
 import { ToggleDarkMode } from "@/components/ToggleDarkMode";
 import { Button } from "@/components/ui/button";
-import { useDarkMode } from "@/hooks/useDarkMode";
+import { useTheme } from "@/hooks/useTheme";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Reportes() {
-  useDarkMode();
+  useTheme();
   const [navigate, setNavigate] = useState(false)
   
   useEffect(() => {

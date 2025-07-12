@@ -4,6 +4,7 @@ import "./globals.css";
 import { AsambleistaProvider } from "@/context/AsambleistasContext";
 import { CandidatoProvider } from "@/context/CandidatosContext";
 import { VotosProvider } from "@/context/VotosContext";
+import { ThemeProvider } from "@/context/ThemeContext";
 
 const soraSans = Sora({style: "normal", subsets: ["latin"]});
 
@@ -20,13 +21,13 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${soraSans.className}`}>
       <body>
-        <AsambleistaProvider>
-          <CandidatoProvider>
-            <VotosProvider>
-              {children}
-            </VotosProvider>
-          </CandidatoProvider>
-        </AsambleistaProvider>
+        <ThemeProvider>
+          <AsambleistaProvider>
+            <CandidatoProvider>
+              <VotosProvider>{children}</VotosProvider>
+            </CandidatoProvider>
+          </AsambleistaProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

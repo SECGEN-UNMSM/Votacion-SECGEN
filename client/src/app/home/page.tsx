@@ -4,11 +4,11 @@ import { Navbar } from "@/components/navbar";
 import { Toaster } from "react-hot-toast";
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
-import { useDarkMode } from "@/hooks/useDarkMode";
+import { useTheme } from "@/hooks/useTheme";
 import { ToggleDarkMode } from "@/components/ToggleDarkMode";
 
 export default function Home() {
-  useDarkMode();
+  useTheme();
   useEffect(() => {
     const token = localStorage.getItem("auth-token");
     if (!token) {

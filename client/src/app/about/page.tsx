@@ -3,13 +3,13 @@
 import { ToggleDarkMode } from "@/components/ToggleDarkMode";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { useDarkMode } from "@/hooks/useDarkMode";
+import { useTheme } from "@/hooks/useTheme";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
 
 export default function About() {
-  useDarkMode();
+  useTheme();
 
   useEffect(() => {
     const token = localStorage.getItem("auth-token");

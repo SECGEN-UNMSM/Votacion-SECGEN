@@ -8,12 +8,12 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { LoginFields } from "@/lib/types";
 import { useState } from "react";
 import { redirect } from "next/navigation";
-import { useDarkMode } from "@/hooks/useDarkMode";
+import { useTheme } from "@/hooks/useTheme";
 import { ToggleDarkMode } from "@/components/ToggleDarkMode";
 import Image from "next/image";
 
 export default function LoginPage() {
-  useDarkMode();
+  useTheme();
   const [navigate, setNavigate] = useState(false);
   const {
     register,
@@ -22,9 +22,6 @@ export default function LoginPage() {
     reset,
   } = useForm<LoginFields>();
 
-  {
-    /*Verificación de credenciales */
-  }
   const onSubmit: SubmitHandler<LoginFields> = async (data) => {
     if (data.username === "admin" && data.password === "admin") {
       localStorage.setItem(
@@ -55,7 +52,7 @@ export default function LoginPage() {
               <form action="" className="" onSubmit={handleSubmit(onSubmit)}>
                 <div className="flex flex-col gap-8">
                   <div className="flex flex-col gap-2">
-                    <Label>Nombre de Usuario</Label>
+                    <Label htmlFor="username">Nombre de Usuario</Label>
                     <input
                       type="text"
                       id="username"
@@ -63,7 +60,7 @@ export default function LoginPage() {
                       {...register("username", {
                         required: {
                           value: true,
-                          message: "El nombre de usuario requerido",
+                          message: "El nombre de usuario es requerido.",
                         },
                         pattern: {
                           value: /^[\w.-]+$/,
@@ -80,14 +77,14 @@ export default function LoginPage() {
                     )}
                   </div>
                   <div className="flex flex-col gap-2">
-                    <Label>Contraseña</Label>
+                    <Label htmlFor="password">Contraseña</Label>
                     <input
                       type="password"
                       id="password"
                       {...register("password", {
                         required: {
                           value: true,
-                          message: "La constraseña es requerida.",
+                          message: "La contraseña es requerida.",
                         },
                       })}
                       placeholder="Escribe tu contraseña"

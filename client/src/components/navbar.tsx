@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Button } from "./ui/button";
 import { useState } from "react";
 import { redirect } from "next/navigation";
-import { useDarkMode } from "@/hooks/useDarkMode";
+import { useDarkMode } from "@/hooks/useTheme";
 
 export function Navbar() {
   const [] = useDarkMode();

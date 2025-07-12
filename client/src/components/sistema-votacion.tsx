@@ -49,10 +49,10 @@ import { useCandidatos } from "@/hooks/useCandidatos"
 import { useVotos } from "@/hooks/useVotos"
 import RankingVotos from "./rankingVotos"
 import { getCandidatosPorCategoria } from "@/lib/utils"
-import { useDarkMode } from "@/hooks/useDarkMode"
+import { useTheme } from "@/hooks/useTheme"
 
 export default function SistemaVotacion() {
-  const [] = useDarkMode();
+  useTheme();
   const { asambleistas: asamDesdeContexto, loading: loadingAsambleista } = useAsambleistas();
   const { candidatos: candDesdeContexto, loading: loadingCandidato } = useCandidatos();
   const { rankingVotos, agregarVoto } = useVotos();
