@@ -3,10 +3,10 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Button } from "./ui/button";
 import { useState } from "react";
 import { redirect } from "next/navigation";
-import { useDarkMode } from "@/hooks/useTheme";
+import { useTheme } from "@/hooks/useTheme";
 
 export function Navbar() {
-  const [] = useDarkMode();
+  useTheme();
   const [openModal, setOpenModal] = useState<boolean>(false)
   const [navigate, setNavigate] = useState<boolean>(false)
 

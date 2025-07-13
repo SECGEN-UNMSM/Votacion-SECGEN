@@ -1,26 +1,11 @@
-export interface Asambleista {
-  idasambleista: number,
-  nombre: string,
-  apellido: string,
-  ha_votado: boolean,
-}
-
-// Modificar la interfaz Candidato para incluir el código de facultad
-export interface Candidato {
-  id: string
-  nombre: string
-  categoria: Categoria
-  votos: number
-  codigoFacultad: string // Código de facultad (01-20)
-}
-
 export type Categoria = "Docentes Principales" | "Docentes Asociados" | "Docentes Auxiliares" | "Estudiantes"
 
-export interface Voto {
-  asambleistaId: string
-  candidatosIds: string[] // Ahora es un array de IDs
-  categoria: Categoria
-}
+export const listaCategorias: Categoria[] = [
+  "Docentes Principales",
+  "Docentes Asociados",
+  "Docentes Auxiliares",
+  "Estudiantes",
+];
 
 export const limitesPorCategoria: Record<
   Categoria,
@@ -39,21 +24,21 @@ export interface LoginFields {
 }
 
 /* TIPADO */
-export interface AsambleistaBack {
+export interface Asambleista {
   idasambleista: number,
   nombre: string,
   apellido: string,
   ha_votado: boolean,
 }
 
-export interface CandidatoBack {
+export interface Candidato {
   idcandidato: number,
   nombre: string,
   categoria: string, // Choices
   codigo_facultad: string,
 }
 
-export interface RankingBack {
+export interface Ranking {
   categoria: string,
   idcandidato: number,
   nombre_candidato: string,
@@ -68,7 +53,43 @@ export interface VotoCategoria {
   abstencion?: boolean,
 }
 
-export interface VotosBack {
+export interface Votos {
   idasambleista: number,
   votos: VotoCategoria[],
 }
+
+export type CandidatoItemType = {
+  candidato: Ranking;
+  isChecked: boolean;
+  isDisabled: boolean;
+  onSelectionChange: (idCandidato: string, isChecked: boolean) => void;
+};
+
+export type CandidatoColumnType = {
+  candidatos: Ranking[];
+  seleccionesCategoria: string[];
+  limiteMaximo: number;
+  isDisabled: boolean;
+  onSelectionChange: (idCandidato: string, isChecked: boolean) => void;
+};
+
+export type ListaCandidatosType = {
+  categoria: Categoria;
+  loadingCandidato: boolean;
+  candidatos: Candidato[];
+  rankingVotos: Ranking[];
+  abstenciones: Record<Categoria, boolean>;
+  selecciones: Record<Categoria, string[]>;
+  limitesPorCategoria: Record<Categoria, { minimo: number; maximo: number }>;
+  handleSeleccionCandidato: (
+    categoria: Categoria,
+    candidatoId: string,
+    checked: boolean
+  ) => void;
+};
+
+export type RankingVotosCandidatoType = {
+  loadingRanking: boolean;
+  rankingVotos: Ranking[];
+  candidatosOrdenados: Ranking[];
+};

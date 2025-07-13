@@ -5,7 +5,7 @@ import { useState } from "react";
 
 export default function NotFound() {
   const [navigate, setNavigate] = useState(false)
-  if (navigate) return redirect("/login")
+  if (navigate) return redirect("/")
   return (
     <div className="h-screen w-screen flex flex-col justify-center items-center">
       <h3 className="font-bold text-3xl">404 | Página no encontrada</h3>

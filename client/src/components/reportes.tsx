@@ -13,12 +13,12 @@ import {
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Download, FileText, Loader2, LoaderCircle} from "lucide-react";
-import { categorias } from "@/lib/data";
 import { baseURL } from "@/api/api";
 import { useVotos } from "@/hooks/useVotos";
-import RankingVotos from "./rankingVotos";
+import RankingVotos from "./CardsRankingVotos/rankingVotos";
 import toast, { Toaster } from "react-hot-toast";
-import { fetch } from "@tauri-apps/plugin-http";
+import { fetch as tauriFetch } from "@tauri-apps/plugin-http";
+import { listaCategorias } from "@/lib/types";
 
 export function ReportesPDF() {
   const { loading: loadingRankingVotos} = useVotos();
@@ -55,7 +55,7 @@ export function ReportesPDF() {
 
     setIsLoading(true);
     try {
-      const response = await fetch(url);
+      const response = await tauriFetch(url);
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -72,7 +72,7 @@ export function ReportesPDF() {
       if (disposition && disposition.indexOf("attachment") !== -1) {
         const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
         const matches = filenameRegex.exec(disposition);
-        if (matches != null && matches[1]) {
+        if (matches?.[1]) {
           filename = matches[1].replace(/['"]/g, "");
         }
       }
@@ -155,7 +155,7 @@ export function ReportesPDF() {
                         <SelectValue placeholder="Seleccione una categoría" />
                       </SelectTrigger>
                       <SelectContent>
-                        {categorias.map((cat, index) => (
+                        {listaCategorias.map((cat, index) => (
                           <SelectItem key={index} value={cat}>
                             {cat}
                           </SelectItem>

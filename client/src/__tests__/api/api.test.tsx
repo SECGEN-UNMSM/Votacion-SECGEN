@@ -1,4 +1,3 @@
-import { baseURL } from "@/api/api";
 import { getAsambleistas } from "@/api/apiAsambleista";
 import { getCandidatos } from "@/api/apiCandidato";
 import { getRankings, registrarVotos } from "@/api/apiVotos";
@@ -123,25 +122,6 @@ describe("registrarVoto", () => {
     );
   });
 });
-
-/**
- * Prueba de api
- */
-/*describe("getBaseURL", () => {
-  it("Debería de mostrar un mensaje de error no hay URL del backend", () => {
-    delete process.env.NEXT_PUBLIC_BACKEND_URL;
-
-    expect(() => baseURL).toThrow(
-      "No existe una variable de entorno BACKEND_URL"
-    );
-  });
-
-  it("Debería de devolver la URL del backend si ya existe", () => {
-    process.env.NEXT_PUBLIC_BACKEND_URL = "https://midominio.com";
-
-    expect(baseURL).toBe("https://midominio.com");
-  });
-});*/
 
 /**
  * Pruebas de apiAsambleista

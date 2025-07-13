@@ -1,10 +1,10 @@
 import { baseURL } from "./api";
-import { VotosBack } from "@/lib/types";
-import { fetch } from "@tauri-apps/plugin-http";
+import { Votos } from "@/lib/types";
+import { fetch as tauriFetch } from "@tauri-apps/plugin-http";
 
 
 export const getRankings = async () => {
-  const response = await fetch(`${baseURL}/ranking/`)
+  const response = await tauriFetch(`${baseURL}/ranking/`)
 
   if (!response.ok) {
     throw new Error("Error al obtener el ranking")
@@ -13,9 +13,9 @@ export const getRankings = async () => {
   return await response.json();
 }
 
-export const registrarVotos = async (data: VotosBack) => {
+export const registrarVotos = async (data: Votos) => {
   try {
-    const response = await fetch(`${baseURL}/registrar-voto`, {
+    const response = await tauriFetch(`${baseURL}/registrar-voto`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

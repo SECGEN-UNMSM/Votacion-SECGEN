@@ -22,7 +22,6 @@ import {
 } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Switch } from "@/components/ui/switch"
 import {
   Dialog,
@@ -34,22 +33,19 @@ import {
 } from "@/components/ui/dialog"
 import type {
   Asambleista,
-  AsambleistaBack,
-  CandidatoBack,
+  Candidato,
   Categoria,
   VotoCategoria,
-  VotosBack
+  Votos
 } from "@/lib/types"
-import { categorias } from "@/lib/data"
-import { limitesPorCategoria } from "@/lib/types"
-import { ScrollArea } from "./ui/scroll-area"
+import { limitesPorCategoria, listaCategorias } from "@/lib/types"
 import { Info, LoaderCircle } from "lucide-react"
 import { useAsambleistas } from "@/hooks/useAsambleistas"
 import { useCandidatos } from "@/hooks/useCandidatos"
 import { useVotos } from "@/hooks/useVotos"
-import RankingVotos from "./rankingVotos"
-import { getCandidatosPorCategoria } from "@/lib/utils"
+import RankingVotos from "./CardsRankingVotos/rankingVotos"
 import { useTheme } from "@/hooks/useTheme"
+import { ListaCandidatos } from "./CardListaCandidatos/listaCandidatos"
 
 export default function SistemaVotacion() {
   useTheme();
@@ -57,7 +53,7 @@ export default function SistemaVotacion() {
   const { candidatos: candDesdeContexto, loading: loadingCandidato } = useCandidatos();
   const { rankingVotos, agregarVoto } = useVotos();
   const [asambleistas, setAsambleistas] = useState<Asambleista[]>([])
-  const [candidatos, setCandidatos] = useState<CandidatoBack[]>([])
+  const [candidatos, setCandidatos] = useState<Candidato[]>([])
   const [asambleistaSeleccionado, setAsambleistaSeleccionado] = useState<string>("")
   const [categoriaActiva, setCategoriaActiva] = useState<Categoria>("Docentes Principales")
   const [selecciones, setSelecciones] = useState<Record<Categoria, string[]>>({
@@ -147,7 +143,7 @@ export default function SistemaVotacion() {
     if (!asambleistaSeleccionado) return false;
 
     // Verificar que cada categoría sea válida (abstención o selección dentro de límites)
-    return categorias.every((categoria) => categoriaEsValida(categoria));
+    return listaCategorias.every((categoria) => categoriaEsValida(categoria));
   }
 
   // Abrir modal de confirmación
@@ -159,7 +155,7 @@ export default function SistemaVotacion() {
   const emitirVoto = async () => {
     if (!asambleistaSeleccionado) return
 
-    const votos: VotoCategoria[] = categorias.map((categoria) => {
+    const votos: VotoCategoria[] = listaCategorias.map((categoria) => {
       if (abstenciones[categoria]) {
         return {
           categoria: categoria,
@@ -173,7 +169,7 @@ export default function SistemaVotacion() {
       }
     })
 
-    const data: VotosBack = {
+    const data: Votos = {
       idasambleista: parseInt(asambleistaSeleccionado),
       votos: votos
     }
@@ -203,7 +199,7 @@ export default function SistemaVotacion() {
   }
 
 
-  const todasEnAbstencion = categorias.every(
+  const todasEnAbstencion = listaCategorias.every(
     (categoria) => abstenciones[categoria]
   );
 
@@ -235,7 +231,7 @@ export default function SistemaVotacion() {
                         Cargando datos...
                       </SelectItem>
                     ) : (
-                      asambleistas.map((asambleista: AsambleistaBack) => (
+                      asambleistas.map((asambleista: Asambleista) => (
                         <SelectItem
                           key={asambleista.idasambleista}
                           value={asambleista.idasambleista.toString()}
@@ -284,7 +280,7 @@ export default function SistemaVotacion() {
               onValueChange={(value) => setCategoriaActiva(value as Categoria)}
             >
               <TabsList className="grid grid-cols-2 gap-2 h-20 xl:grid-cols-4 xl:gap-4 w-full xl:h-10">
-                {categorias.map((categoria) => (
+                {listaCategorias.map((categoria) => (
                   <TabsTrigger
                     key={categoria}
                     value={categoria}
@@ -295,7 +291,7 @@ export default function SistemaVotacion() {
                 ))}
               </TabsList>
 
-              {categorias.map((categoria) => (
+              {listaCategorias.map((categoria) => (
                 <TabsContent
                   key={categoria}
                   value={categoria}
@@ -308,14 +304,12 @@ export default function SistemaVotacion() {
                           Abstención seleccionada
                         </span>
                       )}
-                      {
-                        !abstenciones[categoria] && (
-                          <div className="text-gray-500 mt-1 dark:text-stone-400">
-                            Rango: {limitesPorCategoria[categoria].minimo} -{" "}
-                            {limitesPorCategoria[categoria].maximo} candidatos
-                          </div>
-                        )
-                      }
+                      {!abstenciones[categoria] && (
+                        <div className="text-gray-500 mt-1 dark:text-stone-400">
+                          Rango: {limitesPorCategoria[categoria].minimo} -{" "}
+                          {limitesPorCategoria[categoria].maximo} candidatos
+                        </div>
+                      )}
                     </div>
                     <div className="flex items-center space-x-2">
                       <Switch
@@ -332,90 +326,16 @@ export default function SistemaVotacion() {
                     </div>
                   </div>
 
-                  <ScrollArea className="h-60 w-full">
-                    {loadingCandidato ? (
-                      <div className="flex flex-col gap-4 items-center justify-center h-56 text-stone-600">
-                        <LoaderCircle className="animate-spin"></LoaderCircle>
-                        Cargando datos...
-                      </div>
-                    ) : candidatos.length === 0 ? (
-                      <div className="flex items-center justify-center h-56 text-stone-600">
-                        No hay candidatos
-                      </div>
-                    ) : (
-                      <div
-                        className={
-                          abstenciones[categoria]
-                            ? "opacity-50 pointer-events-none grid grid-cols-4 gap-2"
-                            : "grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-8 xl:gap-4 xl:grid-cols-4"
-                        }
-                      >
-                        {[...Array(4)].map((_, index) => {
-                          const candidatosOrdenados = getCandidatosPorCategoria(rankingVotos, categoria)
-                            .slice()
-                            .sort((a, b) => a.codigo_facultad.localeCompare(b.codigo_facultad));
-                          const candidatosPorColumna = candidatosOrdenados.length / 4; // MODIFICAR PARA UN FUTURO
-                          const inicio = index * candidatosPorColumna;
-                          const fin = inicio + candidatosPorColumna;
-                          const candidatosColumna = candidatosOrdenados.slice(inicio, fin);
-                          return (
-                            <div key={index}>
-                              {/* Encabezado */}
-                              <div className="font-semibold text-sm flex w-full">
-                                <div className="w-6 text-center inline-block mr-2 border-stone-600/50 border-b pb-1 mb-1">
-                                  Fac.
-                                </div>
-                                <span className="border-stone-600/50 border-b pb-1 mb-1 w-full">
-                                  Apellidos y Nombres
-                                </span>
-                              </div>
-
-                              {/* Candidatos en esta columna */}
-                              {candidatosColumna.map((candidato) => (
-                                <div
-                                  key={candidato.idcandidato}
-                                  className="flex items-center space-x-2 py-2 border-b border-stone-600/50"
-                                >
-                                  <div className="w-6 text-center font-medium">
-                                    {candidato.codigo_facultad}
-                                  </div>
-                                  <Checkbox
-                                    id={candidato.idcandidato.toString()}
-                                    checked={selecciones[categoria].includes(
-                                      candidato.idcandidato.toString()
-                                    )}
-                                    onCheckedChange={(checked) =>
-                                      handleSeleccionCandidato(
-                                        categoria,
-                                        candidato.idcandidato.toString(),
-                                        checked === true
-                                      )
-                                    }
-                                    disabled={
-                                      abstenciones[categoria] ||
-                                      (!selecciones[categoria].includes(
-                                        candidato.idcandidato.toString()
-                                      ) &&
-                                        selecciones[categoria].length >=
-                                          limitesPorCategoria[categoria].maximo)
-                                    }
-                                    className="dark:text-black dark:border-white"
-                                  />
-                                  <Label
-                                    htmlFor={candidato.idcandidato.toString()}
-                                    className="cursor-pointer line-clamp-1"
-                                  >
-                                    {candidato.nombre_candidato}
-                                  </Label>
-                                </div>
-                              ))}
-                            </div>
-                          );
-                        })}
-                      </div>
-
-                    )}
-                  </ScrollArea>
+                  <ListaCandidatos
+                    categoria={categoria}
+                    loadingCandidato={loadingCandidato}
+                    candidatos={candidatos}
+                    rankingVotos={rankingVotos}
+                    abstenciones={abstenciones}
+                    selecciones={selecciones}
+                    limitesPorCategoria={limitesPorCategoria}
+                    handleSeleccionCandidato={handleSeleccionCandidato}
+                  ></ListaCandidatos>
                 </TabsContent>
               ))}
             </Tabs>
@@ -431,7 +351,7 @@ export default function SistemaVotacion() {
           </CardHeader>
           <CardContent className="p-2">
             <div className="grid grid-cols-1 xl:grid-cols-4 gap-4">
-              <RankingVotos ></RankingVotos>
+              <RankingVotos></RankingVotos>
             </div>
           </CardContent>
         </Card>
@@ -448,14 +368,14 @@ export default function SistemaVotacion() {
           </DialogHeader>
 
           <div className="py-4">
-            {categorias.map((categoria) => {
+            {listaCategorias.map((categoria) => {
               const candidatosSeleccionados = selecciones[categoria]
                 .map((idcandidato) =>
                   candidatos.find(
                     (c) => c.idcandidato.toString() === idcandidato
                   )
                 )
-                .filter(Boolean) as CandidatoBack[];
+                .filter(Boolean) as Candidato[];
 
               return (
                 <div key={categoria} className="mb-4">
