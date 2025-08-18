@@ -46,13 +46,17 @@ export default function LoginPage() {
         <div className="flex gap-20 items-center z-10">
           <Card className="w-[386px] px-6 py-9">
             <CardHeader className="flex justify-center items-center bg-[var(--bg-title)] dark:bg-black py-2 rounded-md">
-              <h2 className="text-center font-bold">Sistema de Votación</h2>
+              <h2 className="text-center font-bold text-lg">
+                Sistema de Votación
+              </h2>
             </CardHeader>
             <CardContent>
               <form action="" className="" onSubmit={handleSubmit(onSubmit)}>
                 <div className="flex flex-col gap-8">
                   <div className="flex flex-col gap-2">
-                    <Label htmlFor="username">Nombre de Usuario</Label>
+                    <Label htmlFor="username" className="text-base">
+                      Nombre de Usuario
+                    </Label>
                     <input
                       type="text"
                       id="username"
@@ -77,7 +81,9 @@ export default function LoginPage() {
                     )}
                   </div>
                   <div className="flex flex-col gap-2">
-                    <Label htmlFor="password">Contraseña</Label>
+                    <Label htmlFor="password" className="text-base">
+                      Contraseña
+                    </Label>
                     <input
                       type="password"
                       id="password"
@@ -99,7 +105,7 @@ export default function LoginPage() {
                 </div>
                 <Button
                   type="submit"
-                  className="bg-[var(--bg-button-success)] mt-8 w-full hover:bg-[var(--bg-button-success)]/80 cursor-pointer "
+                  className="bg-[var(--bg-button-success)] mt-8 w-full hover:bg-[var(--bg-button-success)]/80 cursor-pointer text-base"
                 >
                   Iniciar
                 </Button>

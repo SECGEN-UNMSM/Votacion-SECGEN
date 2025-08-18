@@ -1,28 +1,18 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger
-} from "@/components/ui/tabs"
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle
-} from "@/components/ui/card"
+import { useEffect, useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
-} from "@/components/ui/select"
-import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import {
   Dialog,
   DialogContent,
@@ -30,45 +20,50 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 import type {
   Asambleista,
   Candidato,
   Categoria,
   VotoCategoria,
-  Votos
-} from "@/lib/types"
-import { limitesPorCategoria, listaCategorias } from "@/lib/types"
-import { Info, LoaderCircle } from "lucide-react"
-import { useAsambleistas } from "@/hooks/useAsambleistas"
-import { useCandidatos } from "@/hooks/useCandidatos"
-import { useVotos } from "@/hooks/useVotos"
-import RankingVotos from "./CardsRankingVotos/rankingVotos"
-import { useTheme } from "@/hooks/useTheme"
-import { ListaCandidatos } from "./CardListaCandidatos/listaCandidatos"
+  Votos,
+} from "@/lib/types";
+import { limitesPorCategoria, listaCategorias } from "@/lib/types";
+import { Info, LoaderCircle } from "lucide-react";
+import { useAsambleistas } from "@/hooks/useAsambleistas";
+import { useCandidatos } from "@/hooks/useCandidatos";
+import { useVotos } from "@/hooks/useVotos";
+import RankingVotos from "./CardsRankingVotos/rankingVotos";
+import { useTheme } from "@/hooks/useTheme";
+import { ListaCandidatos } from "./CardListaCandidatos/listaCandidatos";
 
 export default function SistemaVotacion() {
   useTheme();
-  const { asambleistas: asamDesdeContexto, loading: loadingAsambleista } = useAsambleistas();
-  const { candidatos: candDesdeContexto, loading: loadingCandidato } = useCandidatos();
+  const { asambleistas: asamDesdeContexto, loading: loadingAsambleista } =
+    useAsambleistas();
+  const { candidatos: candDesdeContexto, loading: loadingCandidato } =
+    useCandidatos();
   const { rankingVotos, agregarVoto } = useVotos();
-  const [asambleistas, setAsambleistas] = useState<Asambleista[]>([])
-  const [candidatos, setCandidatos] = useState<Candidato[]>([])
-  const [asambleistaSeleccionado, setAsambleistaSeleccionado] = useState<string>("")
-  const [categoriaActiva, setCategoriaActiva] = useState<Categoria>("Docentes Principales")
+  const [asambleistas, setAsambleistas] = useState<Asambleista[]>([]);
+  const [candidatos, setCandidatos] = useState<Candidato[]>([]);
+  const [asambleistaSeleccionado, setAsambleistaSeleccionado] =
+    useState<string>("");
+  const [categoriaActiva, setCategoriaActiva] = useState<Categoria>(
+    "Docentes Principales"
+  );
   const [selecciones, setSelecciones] = useState<Record<Categoria, string[]>>({
     "Docentes Principales": [],
     "Docentes Asociados": [],
     "Docentes Auxiliares": [],
-    "Estudiantes": [],
-  })
+    Estudiantes: [],
+  });
   const [abstenciones, setAbstenciones] = useState<Record<Categoria, boolean>>({
     "Docentes Principales": false,
     "Docentes Asociados": false,
     "Docentes Auxiliares": false,
-    "Estudiantes": false,
-  })
-  const [modalConfirmacion, setModalConfirmacion] = useState<boolean>(false)
+    Estudiantes: false,
+  });
+  const [modalConfirmacion, setModalConfirmacion] = useState<boolean>(false);
 
   useEffect(() => {
     if (asamDesdeContexto && asamDesdeContexto.length > 0) {
@@ -87,30 +82,38 @@ export default function SistemaVotacion() {
   }, [candDesdeContexto, loadingCandidato]);
 
   // Manejar la selección de un candidato
-  const handleSeleccionCandidato = (categoria: Categoria, candidatoId: string, checked: boolean) => {
+  const handleSeleccionCandidato = (
+    categoria: Categoria,
+    candidatoId: string,
+    checked: boolean
+  ) => {
     // Si la categoría está en abstención, no permitir seleccionar candidatos
-    if (abstenciones[categoria]) return
+    if (abstenciones[categoria]) return;
 
     setSelecciones((prev) => {
-      const seleccionesActuales = [...prev[categoria]]
+      const seleccionesActuales = [...prev[categoria]];
 
       if (checked) {
         // Si ya alcanzó el límite, no permitir más selecciones
-        if (seleccionesActuales.length >= limitesPorCategoria[categoria].maximo) {
-          return prev
+        if (
+          seleccionesActuales.length >= limitesPorCategoria[categoria].maximo
+        ) {
+          return prev;
         }
         return {
           ...prev,
           [categoria]: [...seleccionesActuales, candidatoId],
-        }
+        };
       } else {
         return {
           ...prev,
-          [categoria]: seleccionesActuales.filter((id) => id !== candidatoId.toString()),
-        }
+          [categoria]: seleccionesActuales.filter(
+            (id) => id !== candidatoId.toString()
+          ),
+        };
       }
-    })
-  }
+    });
+  };
 
   // Manejar la abstención en una categoría
   const handleAbstencion = (categoria: Categoria, abstenerse: boolean) => {
@@ -118,16 +121,16 @@ export default function SistemaVotacion() {
     setAbstenciones((prev) => ({
       ...prev,
       [categoria]: abstenerse,
-    }))
+    }));
 
     // Si se abstiene, limpiar las selecciones de esa categoría
     if (abstenerse) {
       setSelecciones((prev) => ({
         ...prev,
         [categoria]: [],
-      }))
+      }));
     }
-  }
+  };
 
   const categoriaEsValida = (categoria: Categoria): boolean => {
     if (abstenciones[categoria]) {
@@ -144,60 +147,59 @@ export default function SistemaVotacion() {
 
     // Verificar que cada categoría sea válida (abstención o selección dentro de límites)
     return listaCategorias.every((categoria) => categoriaEsValida(categoria));
-  }
+  };
 
   // Abrir modal de confirmación
   const confirmarVoto = () => {
-    setModalConfirmacion(true)
-  }
+    setModalConfirmacion(true);
+  };
 
   // Emitir voto
   const emitirVoto = async () => {
-    if (!asambleistaSeleccionado) return
+    if (!asambleistaSeleccionado) return;
 
     const votos: VotoCategoria[] = listaCategorias.map((categoria) => {
       if (abstenciones[categoria]) {
         return {
           categoria: categoria,
           abstencion: true,
-        }
+        };
       } else {
         return {
           categoria: categoria,
-          idcandidatos: selecciones[categoria].map((id) => parseInt(id))
-        }
+          idcandidatos: selecciones[categoria].map((id) => parseInt(id)),
+        };
       }
-    })
+    });
 
     const data: Votos = {
       idasambleista: parseInt(asambleistaSeleccionado),
-      votos: votos
-    }
+      votos: votos,
+    };
 
     try {
       //console.log(data);
-      await agregarVoto(data)
+      await agregarVoto(data);
 
       // Reiniciar selecciones y abstenciones
       setSelecciones({
         "Docentes Principales": [],
         "Docentes Asociados": [],
         "Docentes Auxiliares": [],
-        "Estudiantes": [],
+        Estudiantes: [],
       });
       setAbstenciones({
         "Docentes Principales": false,
         "Docentes Asociados": false,
         "Docentes Auxiliares": false,
-        "Estudiantes": false,
+        Estudiantes: false,
       });
       setAsambleistaSeleccionado("");
       setModalConfirmacion(false);
     } catch (error) {
-      console.error("Error al enviar los datos", error)
+      console.error("Error al enviar los datos", error);
     }
-  }
-
+  };
 
   const todasEnAbstencion = listaCategorias.every(
     (categoria) => abstenciones[categoria]
@@ -209,24 +211,30 @@ export default function SistemaVotacion() {
         {/* Sección de Votación */}
         <Card className="col-span-1 flex flex-col gap-2 border-1 border-[var(--border-color)] dark:border-stone-700 p-2">
           <CardHeader className="p-0">
-            <CardTitle className="flex justify-center items-center bg-[var(--bg-title)] dark:bg-black py-3 rounded-sm">
+            <CardTitle className="flex justify-center items-center bg-[var(--bg-title)] dark:bg-black py-3 rounded-sm text-lg">
               Votación
             </CardTitle>
           </CardHeader>
           <CardContent className="p-2">
             <div className="space-y-4">
               <div className="space-y-4">
-                <Label htmlFor="asambleista">Lista de asambleístas</Label>
+                <Label htmlFor="asambleista" className="text-lg">
+                  Lista de asambleístas
+                </Label>
                 <Select
                   value={asambleistaSeleccionado}
                   onValueChange={setAsambleistaSeleccionado}
                 >
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full text-lg py-5">
                     <SelectValue placeholder="Asambleísta" />
                   </SelectTrigger>
                   <SelectContent className="w-full">
                     {loadingAsambleista ? (
-                      <SelectItem key={"loading"} value="loading-data">
+                      <SelectItem
+                        key={"loading"}
+                        value="loading-data"
+                        className="text-lg"
+                      >
                         <LoaderCircle className="animate-spin"></LoaderCircle>
                         Cargando datos...
                       </SelectItem>
@@ -236,9 +244,10 @@ export default function SistemaVotacion() {
                           key={asambleista.idasambleista}
                           value={asambleista.idasambleista.toString()}
                           disabled={asambleista.ha_votado}
+                          className="text-lg line-clamp-1"
                         >
                           {asambleista.apellido}, {asambleista.nombre}
-                          {asambleista.ha_votado && "(Ya votó)"}
+                          {asambleista.ha_votado && " (Ya votó)"}
                         </SelectItem>
                       ))
                     )}
@@ -257,7 +266,7 @@ export default function SistemaVotacion() {
                 <Button
                   onClick={confirmarVoto}
                   disabled={!puedeEmitirVoto()}
-                  className="bg-green-600 hover:bg-green-700 cursor-pointer flex-1 py-4"
+                  className="bg-green-600 hover:bg-green-700 cursor-pointer flex-1 py-5 text-lg select-none"
                 >
                   Emitir voto
                 </Button>
@@ -269,7 +278,7 @@ export default function SistemaVotacion() {
         {/* Sección de Candidatos */}
         <Card className="col-span-3 flex flex-col gap-2 border-1 border-[var(--border-color)] dark:border-stone-700 p-2">
           <CardHeader className="p-0">
-            <CardTitle className="flex justify-center items-center bg-[var(--bg-title)] dark:bg-black py-3 rounded-sm">
+            <CardTitle className="flex justify-center items-center bg-[var(--bg-title)] dark:bg-black py-3 rounded-sm text-lg">
               Candidatos
             </CardTitle>
           </CardHeader>
@@ -284,7 +293,7 @@ export default function SistemaVotacion() {
                   <TabsTrigger
                     key={categoria}
                     value={categoria}
-                    className="rounded-md border-1 border-[var(--text-color)]/15 cursor-pointer hover:bg-stone-300/40 dark:hover:bg-stone-700"
+                    className="rounded-md border-1 border-[var(--text-color)]/15 cursor-pointer hover:bg-stone-300/40 dark:hover:bg-stone-700 text-[16px]"
                   >
                     {categoria}
                   </TabsTrigger>
@@ -297,8 +306,8 @@ export default function SistemaVotacion() {
                   value={categoria}
                   className="p-4 bg-[var(--bg-doc-principales)]/50 dark:bg-black dark:text-white/90 rounded-sm"
                 >
-                  <div className="flex justify-between items-center mb-4">
-                    <div className="text-sm">
+                  <div className="flex justify-between items-center mb-2">
+                    <div className="text-lg">
                       {abstenciones[categoria] && (
                         <span className="text-gray-500 italic dark:text-stone-300">
                           Abstención seleccionada
@@ -320,7 +329,10 @@ export default function SistemaVotacion() {
                         id={`abstencion-${categoria}`}
                         className="dark:bg-stone-300 dark:border-stone-600"
                       />
-                      <Label htmlFor={`abstencion-${categoria}`}>
+                      <Label
+                        htmlFor={`abstencion-${categoria}`}
+                        className="text-lg text-gray-600"
+                      >
                         Abstención
                       </Label>
                     </div>
@@ -345,7 +357,7 @@ export default function SistemaVotacion() {
         {/* Sección de Resultados */}
         <Card className="col-span-4 flex-flex-col gap-2 border-1 border-[var(--border-color)] dark:border-stone-700 p-2">
           <CardHeader className="p-0">
-            <CardTitle className="flex justify-center items-center bg-[var(--bg-title)] dark:bg-black py-3 rounded-sm">
+            <CardTitle className="flex justify-center items-center bg-[var(--bg-title)] dark:bg-black py-3 rounded-sm text-lg">
               Resultados
             </CardTitle>
           </CardHeader>
@@ -361,8 +373,8 @@ export default function SistemaVotacion() {
       <Dialog open={modalConfirmacion} onOpenChange={setModalConfirmacion}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Confirmar Votación</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-lg">Confirmar Votación</DialogTitle>
+            <DialogDescription className="text-[16px]">
               Por favor confirme su selección de candidatos:
             </DialogDescription>
           </DialogHeader>
@@ -379,17 +391,19 @@ export default function SistemaVotacion() {
 
               return (
                 <div key={categoria} className="mb-4">
-                  <h4 className="font-medium">{categoria}:</h4>
+                  <h4 className="font-medium text-lg">{categoria}:</h4>
                   {abstenciones[categoria] ? (
-                    <p className="pl-5 mt-1 italic text-gray-500">Abstención</p>
+                    <p className="pl-5 mt-1 italic text-gray-500 text-lg">
+                      Abstención
+                    </p>
                   ) : (
                     <ul className="list-none pl-5 mt-1">
                       {candidatosSeleccionados.map((candidato) => (
                         <li
                           key={candidato.idcandidato}
-                          className="flex items-center gap-2"
+                          className="flex items-center gap-2 text-lg pb-2"
                         >
-                          <span className="font-medium w-6">
+                          <span className="font-medium w-8">
                             {candidato.codigo_facultad}.
                           </span>
                           <span>{candidato.nombre}</span>
@@ -405,13 +419,14 @@ export default function SistemaVotacion() {
           <DialogFooter>
             <Button
               variant="outline"
+              className="text-[16px] px-4 cursor-pointer"
               onClick={() => setModalConfirmacion(false)}
             >
               Cancelar
             </Button>
             <Button
               onClick={emitirVoto}
-              className="bg-green-600 hover:bg-green-700"
+              className="bg-green-600 hover:bg-green-700 text-[16px] px-4 cursor-pointer"
             >
               Confirmar Voto
             </Button>

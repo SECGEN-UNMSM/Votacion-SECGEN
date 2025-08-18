@@ -17,7 +17,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="w-screen h-screen overflow-x-hidden flex flex-col gap-8 p-8">
+    <div className="w-screen h-screen overflow-x-hidden flex flex-col gap-6 p-4">
       <Toaster></Toaster>
       <Navbar></Navbar>
       <SistemaVotacion />

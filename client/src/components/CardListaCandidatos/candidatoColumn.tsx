@@ -10,7 +10,7 @@ export const CandidatoColumn = ({
 }: CandidatoColumnType) => {
   return (
     <div>
-      <div className="font-semibold text-sm flex w-full">
+      <div className="font-semibold text-[16px] flex w-full gap-2">
         <div className="w-6 text-center inline-block mr-2 border-stone-600/50 border-b pb-1 mb-1">
           Fac.
         </div>

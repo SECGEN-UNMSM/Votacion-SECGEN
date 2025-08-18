@@ -44,7 +44,7 @@ export const ListaCandidatos = ({
 
   if (loadingCandidato) {
     return (
-      <div className="flex flex-col gap-4 items-center justify-center h-60 text-stone-600">
+      <div className="flex flex-col gap-4 items-center justify-center h-60 text-stone-600 text-lg">
         <LoaderCircle className="animate-spin" />
         Cargando datos...
       </div>
@@ -53,7 +53,7 @@ export const ListaCandidatos = ({
 
   if (candidatos.length === 0) {
     return (
-      <div className="flex items-center justify-center h-60 text-stone-600">
+      <div className="flex items-center justify-center h-60 text-stone-600 text-lg">
         No hay candidatos
       </div>
     );
@@ -69,7 +69,7 @@ export const ListaCandidatos = ({
     : "grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-8 xl:gap-4 xl:grid-cols-4";
 
   return (
-    <ScrollArea className="h-60 w-full">
+    <ScrollArea className="h-[260px] w-full">
       <div className={gridClasses}>
         {candidatosPorColumna.map((columna, index) => {
           return (

@@ -13,7 +13,7 @@ export const CandidatoItem = ({
   };
 
   return (
-    <div className="flex items-center space-x-2 py-2 border-b border-stone-600/50">
+    <div className="flex items-center space-x-2 py-2 border-b border-stone-600/50 text-lg">
       <div className="w-6 text-center font-medium">
         {candidato.codigo_facultad}
       </div>
@@ -26,7 +26,7 @@ export const CandidatoItem = ({
       />
       <Label
         htmlFor={candidato.idcandidato.toString()}
-        className="cursor-pointer line-clamp-1"
+        className="cursor-pointer line-clamp-1 text-[16px] font-normal"
       >
         {candidato.nombre_candidato}
       </Label>

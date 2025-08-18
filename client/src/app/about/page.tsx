@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { ToggleDarkMode } from "@/components/ToggleDarkMode";
 import { Button } from "@/components/ui/button";
@@ -30,20 +30,34 @@ export default function About() {
         <div className="flex gap-20 items-center z-10">
           <Card className="w-3xl px-6 py-9">
             <CardHeader className="flex justify-center items-center bg-[var(--bg-title)] py-2 rounded-md dark:bg-black">
-              <h2 className="text-center font-bold">Acerca de Nosotros</h2>
+              <h2 className="text-center font-bold text-xl">
+                Acerca de Nosotros
+              </h2>
             </CardHeader>
-            <CardContent className="flex gap-8">
+            <CardContent className="flex gap-8 text-base">
               <div className="flex flex-col gap-2 pr-4 border-r-2">
-                <Button variant={"link"} disabled>
+                <Button variant={"link"} disabled className="text-base">
                   Nosotros
                 </Button>
-                <Button variant={"link"} className="cursor-pointer" onClick={() => redirect("/home")}>
+                <Button
+                  variant={"link"}
+                  className="cursor-pointer text-base"
+                  onClick={() => redirect("/home")}
+                >
                   Votación
                 </Button>
-                <Button variant={"link"} className="cursor-pointer" onClick={() => redirect("/reportes")}>
+                <Button
+                  variant={"link"}
+                  className="cursor-pointer text-base"
+                  onClick={() => redirect("/reportes")}
+                >
                   Reportes
                 </Button>
-                <Button className="mt-auto cursor-pointer text-red-700" variant={"link"} onClick={handleLogout}>
+                <Button
+                  className="mt-auto cursor-pointer text-red-700 text-base"
+                  variant={"link"}
+                  onClick={handleLogout}
+                >
                   Cerrar Sesión
                 </Button>
               </div>
@@ -74,7 +88,12 @@ export default function About() {
               </section>
             </CardContent>
           </Card>
-          <Image src="Logo_UNMSM.svg" width={320} height={320} alt="Logo UNMSM" />
+          <Image
+            src="Logo_UNMSM.svg"
+            width={320}
+            height={320}
+            alt="Logo UNMSM"
+          />
         </div>
       </div>
       <ToggleDarkMode></ToggleDarkMode>
