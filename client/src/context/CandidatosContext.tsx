@@ -2,10 +2,10 @@
 
 import { createContext, useEffect, useState } from "react";
 import { getCandidatos } from "@/api/apiCandidato";
-import { CandidatoBack } from "@/lib/types"
+import { Candidato } from "@/lib/types"
 
 export interface CandidatoContextType {
-  candidatos: CandidatoBack[];
+  candidatos: Candidato[];
   fetchCandidatos: () => Promise<void>;
   loading: boolean,
 }
@@ -15,7 +15,7 @@ export const CandidatoContext = createContext<CandidatoContextType | undefined>(
 )
 
 export const CandidatoProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [candidatos, setCandidatos] = useState<CandidatoBack[]>([]);
+  const [candidatos, setCandidatos] = useState<Candidato[]>([]);
   const [loading, setLoading] = useState<boolean>(true)
   
   const fetchCandidatos = async () => {

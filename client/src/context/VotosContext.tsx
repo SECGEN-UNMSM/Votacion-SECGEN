@@ -2,14 +2,14 @@
 
 import { createContext, useEffect, useState } from "react";
 import { getRankings, registrarVotos } from "@/api/apiVotos";
-import { RankingBack, VotosBack } from "@/lib/types"
+import { Ranking, Votos } from "@/lib/types"
 import { useAsambleistas } from "@/hooks/useAsambleistas";
 import toast from "react-hot-toast";
 
 export interface VotosContextType {
-  rankingVotos: RankingBack[];
+  rankingVotos: Ranking[];
   loading: boolean,
-  agregarVoto: (data: VotosBack) => Promise<void>
+  agregarVoto: (data: Votos) => Promise<void>
 }
 
 export const VotosContext = createContext<VotosContextType | undefined>(
@@ -17,7 +17,7 @@ export const VotosContext = createContext<VotosContextType | undefined>(
 )
 
 export const VotosProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [rankingVotos, setRankingVotos] = useState<RankingBack[]>([]);
+  const [rankingVotos, setRankingVotos] = useState<Ranking[]>([]);
   const [loading, setLoading] = useState<boolean>(true)
   const { fetchAsambleistas } = useAsambleistas();
   
@@ -33,7 +33,7 @@ export const VotosProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   }
 
-  const agregarVoto = async (data: VotosBack) => {
+  const agregarVoto = async (data: Votos) => {
     try {
       await registrarVotos(data)
       await fetchRankingVotos();

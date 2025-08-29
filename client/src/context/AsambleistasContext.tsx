@@ -2,10 +2,10 @@
 
 import { createContext, useEffect, useState } from "react";
 import { getAsambleistas } from "@/api/apiAsambleista";
-import { AsambleistaBack } from "@/lib/types";
+import { Asambleista } from "@/lib/types";
 
 export interface AsambleistaContextType {
-  asambleistas: AsambleistaBack[];
+  asambleistas: Asambleista[];
   loading: boolean;
   fetchAsambleistas: () => Promise<void>;
 }
@@ -15,7 +15,7 @@ export const AsambleistaContext = createContext<AsambleistaContextType | undefin
 );
 
 export const AsambleistaProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [asambleistas, setAsambleistas] = useState<AsambleistaBack[]>([])
+  const [asambleistas, setAsambleistas] = useState<Asambleista[]>([])
   const [loading, setLoading] = useState<boolean>(true);
 
   const fetchAsambleistas = async () => {

@@ -12,3 +12,18 @@ export function getCandidatosPorCategoria(
 ) {
   return rankingVotos.filter((candidato) => candidato.categoria === categoria);
 }
+
+export const getColorCategoria = (categoria: Categoria) => {
+  switch (categoria) {
+    case "Docentes Principales":
+      return "bg-[var(--bg-doc-principales)]";
+    case "Docentes Asociados":
+      return "bg-[var(--bg-doc-asociados)]";
+    case "Docentes Auxiliares":
+      return "bg-[var(--bg-doc-auxiliares)]";
+    case "Estudiantes":
+      return "bg-[var(--bg-estudiantes)]";
+    default:
+      return "bg-gray-100";
+  }
+};

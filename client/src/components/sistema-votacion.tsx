@@ -304,7 +304,7 @@ export default function SistemaVotacion() {
                 <TabsContent
                   key={categoria}
                   value={categoria}
-                  className="p-4 bg-[var(--bg-doc-principales)]/50 dark:bg-black dark:text-white/90 rounded-sm"
+                  className="p-4  dark:bg-black dark:text-white/90 rounded-sm"
                 >
                   <div className="flex justify-between items-center mb-2">
                     <div className="text-lg">
