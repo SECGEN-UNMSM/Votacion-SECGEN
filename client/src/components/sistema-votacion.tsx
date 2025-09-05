@@ -4,23 +4,16 @@ import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import type {
   Asambleista,
   Candidato,
@@ -29,13 +22,16 @@ import type {
   Votos,
 } from "@/lib/types";
 import { limitesPorCategoria, listaCategorias } from "@/lib/types";
-import { Info, LoaderCircle } from "lucide-react";
+import { Check, ChevronsUpDown, Info, LoaderCircle } from "lucide-react";
 import { useAsambleistas } from "@/hooks/useAsambleistas";
 import { useCandidatos } from "@/hooks/useCandidatos";
 import { useVotos } from "@/hooks/useVotos";
 import RankingVotos from "./CardsRankingVotos/rankingVotos";
 import { useTheme } from "@/hooks/useTheme";
 import { ListaCandidatos } from "./CardListaCandidatos/listaCandidatos";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { cn } from "@/lib/utils";
+import toast from "react-hot-toast";
 
 export default function SistemaVotacion() {
   useTheme();
@@ -47,7 +43,7 @@ export default function SistemaVotacion() {
   const [asambleistas, setAsambleistas] = useState<Asambleista[]>([]);
   const [candidatos, setCandidatos] = useState<Candidato[]>([]);
   const [asambleistaSeleccionado, setAsambleistaSeleccionado] =
-    useState<string>("");
+    useState<{value: string, label: string} | null>();
   const [categoriaActiva, setCategoriaActiva] = useState<Categoria>(
     "Docentes Principales"
   );
@@ -55,15 +51,16 @@ export default function SistemaVotacion() {
     "Docentes Principales": [],
     "Docentes Asociados": [],
     "Docentes Auxiliares": [],
-    Estudiantes: [],
+    "Estudiantes": [],
   });
   const [abstenciones, setAbstenciones] = useState<Record<Categoria, boolean>>({
     "Docentes Principales": false,
     "Docentes Asociados": false,
     "Docentes Auxiliares": false,
-    Estudiantes: false,
+    "Estudiantes": false,
   });
-  const [modalConfirmacion, setModalConfirmacion] = useState<boolean>(false);
+  //const [modalConfirmacion, setModalConfirmacion] = useState<boolean>(false);
+  const [openSelectAsam, setOpenSelectAsam] = useState<boolean>(false);
 
   useEffect(() => {
     if (asamDesdeContexto && asamDesdeContexto.length > 0) {
@@ -80,6 +77,14 @@ export default function SistemaVotacion() {
       setCandidatos([]);
     }
   }, [candDesdeContexto, loadingCandidato]);
+
+  const listaAsambleistas = asambleistas.map((asam) => ({
+    value: asam.idasambleista.toString(),
+    label: `${asam.apellido}, ${asam.nombre}${
+      asam.ha_votado ? " (Ya votó)" : ""
+    }`,
+    isDisabled: asam.ha_votado,
+  }));
 
   // Manejar la selección de un candidato
   const handleSeleccionCandidato = (
@@ -150,9 +155,9 @@ export default function SistemaVotacion() {
   };
 
   // Abrir modal de confirmación
-  const confirmarVoto = () => {
+  /*const confirmarVoto = () => {
     setModalConfirmacion(true);
-  };
+  };*/
 
   // Emitir voto
   const emitirVoto = async () => {
@@ -173,29 +178,34 @@ export default function SistemaVotacion() {
     });
 
     const data: Votos = {
-      idasambleista: parseInt(asambleistaSeleccionado),
+      idasambleista: parseInt(asambleistaSeleccionado.value),
       votos: votos,
     };
 
     try {
       //console.log(data);
-      await agregarVoto(data);
+
+      toast.promise(agregarVoto(data), {
+        loading: "Guardando voto...",
+        success: <b>Voto guardado!</b>,
+        error: <b>No se puedo guardar el voto.</b>,
+      });
 
       // Reiniciar selecciones y abstenciones
       setSelecciones({
         "Docentes Principales": [],
         "Docentes Asociados": [],
         "Docentes Auxiliares": [],
-        Estudiantes: [],
+        "Estudiantes": [],
       });
       setAbstenciones({
         "Docentes Principales": false,
         "Docentes Asociados": false,
         "Docentes Auxiliares": false,
-        Estudiantes: false,
+        "Estudiantes": false,
       });
-      setAsambleistaSeleccionado("");
-      setModalConfirmacion(false);
+      setAsambleistaSeleccionado({value: "", label: ""});
+      //setModalConfirmacion(false);
     } catch (error) {
       console.error("Error al enviar los datos", error);
     }
@@ -221,38 +231,74 @@ export default function SistemaVotacion() {
                 <Label htmlFor="asambleista" className="text-lg">
                   Lista de asambleístas
                 </Label>
-                <Select
-                  value={asambleistaSeleccionado}
-                  onValueChange={setAsambleistaSeleccionado}
-                >
-                  <SelectTrigger className="w-full text-lg py-5">
-                    <SelectValue placeholder="Asambleísta" />
-                  </SelectTrigger>
-                  <SelectContent className="w-full">
+                <Popover open={openSelectAsam} onOpenChange={setOpenSelectAsam}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      aria-expanded={openSelectAsam}
+                      className="w-full justify-between text-lg"
+                    >
+                      {asambleistaSeleccionado?.label
+                        ? listaAsambleistas.find(
+                            (asambleista) =>
+                              asambleista.label ===
+                              asambleistaSeleccionado.label
+                          )?.label
+                        : "Selecciona un asambleista..."}
+                      <ChevronsUpDown className="opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-full p-0 border dark:border-stone-500">
                     {loadingAsambleista ? (
-                      <SelectItem
-                        key={"loading"}
-                        value="loading-data"
-                        className="text-lg"
-                      >
-                        <LoaderCircle className="animate-spin"></LoaderCircle>
-                        Cargando datos...
-                      </SelectItem>
+                      <Command>
+                        <CommandEmpty className="text-lg text-center p-4 text-stone-600 select-none flex items-center justify-center gap-4">
+                          <LoaderCircle className="animate-spin"></LoaderCircle>
+                          Cargando datos...
+                        </CommandEmpty>
+                      </Command>
                     ) : (
-                      asambleistas.map((asambleista: Asambleista) => (
-                        <SelectItem
-                          key={asambleista.idasambleista}
-                          value={asambleista.idasambleista.toString()}
-                          disabled={asambleista.ha_votado}
-                          className="text-lg line-clamp-1"
-                        >
-                          {asambleista.apellido}, {asambleista.nombre}
-                          {asambleista.ha_votado && " (Ya votó)"}
-                        </SelectItem>
-                      ))
+                      <Command>
+                        <CommandInput
+                          placeholder="Busca un asambleista..."
+                          className="h-9 text-lg"
+                        />
+                        <CommandList>
+                          <CommandEmpty className="text-lg text-center p-4">
+                            Asambleista no encontrado.
+                          </CommandEmpty>
+                          <CommandGroup>
+                            {listaAsambleistas.map((a) => (
+                              <CommandItem
+                                key={a.label}
+                                value={a.label}
+                                onSelect={(currentValue) => {
+                                  const seleccionado = listaAsambleistas.find(
+                                    (a) => a.label === currentValue
+                                  );
+                                  setAsambleistaSeleccionado(seleccionado);
+                                  setOpenSelectAsam(false);
+                                }}
+                                disabled={a.isDisabled}
+                                className="text-lg"
+                              >
+                                {a.label}
+                                <Check
+                                  className={cn(
+                                    "ml-auto",
+                                    asambleistaSeleccionado?.value === a.value
+                                      ? "opacity-100"
+                                      : "opacity-0"
+                                  )}
+                                />
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
                     )}
-                  </SelectContent>
-                </Select>
+                  </PopoverContent>
+                </Popover>
               </div>
 
               {todasEnAbstencion && (
@@ -264,7 +310,7 @@ export default function SistemaVotacion() {
 
               <div className="flex gap-2 pt-4">
                 <Button
-                  onClick={confirmarVoto}
+                  onClick={emitirVoto}
                   disabled={!puedeEmitirVoto()}
                   className="bg-green-600 hover:bg-green-700 cursor-pointer flex-1 py-5 text-lg select-none"
                 >
@@ -331,7 +377,7 @@ export default function SistemaVotacion() {
                       />
                       <Label
                         htmlFor={`abstencion-${categoria}`}
-                        className="text-lg text-gray-600"
+                        className="text-lg text-gray-600 dark:text-stone-400"
                       >
                         Abstención
                       </Label>
@@ -370,7 +416,9 @@ export default function SistemaVotacion() {
       </div>
 
       {/* Modal de Confirmación */}
-      <Dialog open={modalConfirmacion} onOpenChange={setModalConfirmacion}>
+      {/*
+        
+        <Dialog open={modalConfirmacion} onOpenChange={setModalConfirmacion}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="text-lg">Confirmar Votación</DialogTitle>
@@ -430,9 +478,11 @@ export default function SistemaVotacion() {
             >
               Confirmar Voto
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+        */}
     </main>
   );
 }

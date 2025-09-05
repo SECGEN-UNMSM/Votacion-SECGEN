@@ -54,13 +54,6 @@ export default function About() {
                   Reportes
                 </Button>
                 <Button
-                  variant={"link"}
-                  className="cursor-pointer text-base"
-                  onClick={() => redirect("/prueba")}
-                >
-                  Prueba
-                </Button>
-                <Button
                   className="mt-auto cursor-pointer text-red-700 text-base"
                   variant={"link"}
                   onClick={handleLogout}

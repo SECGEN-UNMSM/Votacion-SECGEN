@@ -4,7 +4,6 @@ import { createContext, useEffect, useState } from "react";
 import { getRankings, registrarVotos } from "@/api/apiVotos";
 import { Ranking, Votos } from "@/lib/types"
 import { useAsambleistas } from "@/hooks/useAsambleistas";
-import toast from "react-hot-toast";
 
 export interface VotosContextType {
   rankingVotos: Ranking[];
@@ -35,13 +34,13 @@ export const VotosProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const agregarVoto = async (data: Votos) => {
     try {
-      await registrarVotos(data)
+      await registrarVotos(data);
       await fetchRankingVotos();
       fetchAsambleistas();
-      toast.success("Se registro su voto correctamente.")
+      //toast.promise("Se registro su voto correctamente.")
+      console.log("Datos enviados correctamente.")
     } catch (error) {
       console.log("Error al agregar el voto.", error)
-      toast.error("Error al registrar su voto.")
     }
   }
 
