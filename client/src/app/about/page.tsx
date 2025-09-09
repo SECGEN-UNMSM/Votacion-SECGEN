@@ -62,7 +62,7 @@ export default function About() {
                 </Button>
               </div>
               <section>
-                <h4 className="font-semibold">Sobre el Sistema de Votación</h4>
+                <h4 className="font-semibold">Sobre el Sistema de Votación del Comité Electoral</h4>
                 <p className="text-stone-700 mt-2 dark:text-stone-400">
                   El Sistema de Elecciones del Comité Electoral ha sido
                   desarrollado por la Unidad de Informática de la Secretaría

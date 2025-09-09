@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "Sistema de Votacion",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "identifier": "com.sistemavotacion.dev",
   "build": {
     "frontendDist": "../out",
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "Sistema de Votacion",
+        "title": "Sistema de Votacion del Comité Electoral",
         "width": 1024,
         "height": 768,
         "resizable": true,

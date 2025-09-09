@@ -47,7 +47,7 @@ export default function LoginPage() {
           <Card className="w-[386px] px-6 py-9">
             <CardHeader className="flex justify-center items-center bg-[var(--bg-title)] dark:bg-black py-2 rounded-md">
               <h2 className="text-center font-bold text-lg">
-                Sistema de Votación
+                Sistema de Votación del Comité Electoral
               </h2>
             </CardHeader>
             <CardContent>

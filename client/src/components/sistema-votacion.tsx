@@ -30,7 +30,7 @@ import RankingVotos from "./CardsRankingVotos/rankingVotos";
 import { useTheme } from "@/hooks/useTheme";
 import { ListaCandidatos } from "./CardListaCandidatos/listaCandidatos";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { cn } from "@/lib/utils";
+import { cn, getColorCategoria } from "@/lib/utils";
 import toast from "react-hot-toast";
 
 export default function SistemaVotacion() {
@@ -245,11 +245,11 @@ export default function SistemaVotacion() {
                               asambleista.label ===
                               asambleistaSeleccionado.label
                           )?.label
-                        : "Selecciona un asambleista..."}
-                      <ChevronsUpDown className="opacity-50" />
+                        : "Selecciona un asambleista"}
+                      <ChevronsUpDown className="opacity-0 2xl:opacity-50" />
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-full p-0 border dark:border-stone-500">
+                  <PopoverContent className="2xl:min-w-md w-full p-0 border dark:border-stone-500">
                     {loadingAsambleista ? (
                       <Command>
                         <CommandEmpty className="text-lg text-center p-4 text-stone-600 select-none flex items-center justify-center gap-4">
@@ -335,15 +335,22 @@ export default function SistemaVotacion() {
               onValueChange={(value) => setCategoriaActiva(value as Categoria)}
             >
               <TabsList className="grid grid-cols-2 gap-2 h-20 xl:grid-cols-4 xl:gap-4 w-full xl:h-10">
-                {listaCategorias.map((categoria) => (
-                  <TabsTrigger
-                    key={categoria}
-                    value={categoria}
-                    className="rounded-md border-1 border-[var(--text-color)]/15 cursor-pointer hover:bg-stone-300/40 dark:hover:bg-stone-700 text-[16px]"
-                  >
-                    {categoria}
-                  </TabsTrigger>
-                ))}
+                {listaCategorias.map((categoria) => {
+                  const isActive = categoria == categoriaActiva;
+                  return (
+                    <TabsTrigger
+                      key={categoria}
+                      value={categoria}
+                      className={`rounded-md border-1 border-[var(--text-color)]/15 cursor-pointer hover:opacity-80  text-[16px] ${
+                        isActive
+                          ? getColorCategoria(categoria)
+                          : "hover:bg-stone-300/40 dark:hover:bg-stone-700"
+                      }`}
+                    >
+                      {categoria}
+                    </TabsTrigger>
+                  );
+                })}
               </TabsList>
 
               {listaCategorias.map((categoria) => (

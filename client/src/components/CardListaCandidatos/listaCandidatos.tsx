@@ -65,7 +65,7 @@ export const ListaCandidatos = ({
 
   const isAbstenido = abstenciones[categoria];
   const gridClasses = isAbstenido
-    ? "opacity-50 pointer-events-none grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-8 xl:gap-4 xl:grid-cols-4"
+    ? "pointer-events-none grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-8 xl:gap-4 xl:grid-cols-4"
     : "grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-8 xl:gap-4 xl:grid-cols-4";
 
   return (
