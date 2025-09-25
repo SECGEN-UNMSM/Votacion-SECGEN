@@ -16,7 +16,7 @@
   --bg-text-enabled: #C3C3C3;
   --color-text-disabled: #5B5B5B;
   --color-text-enabled: #000000;
-  --bg-button-danger: oklch(0.5915 0.202 21.24);
+  --bg-button-danger: #dc3545;
   --color-text-white: #FFFFFF;
   --radius: 0.625rem;
   --background: oklch(1 0 0);

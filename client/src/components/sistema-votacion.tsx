@@ -32,9 +32,11 @@ import { ListaCandidatos } from "./CardListaCandidatos/listaCandidatos";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { cn, getColorCategoria } from "@/lib/utils";
 import toast from "react-hot-toast";
+import Swal from "sweetalert2";
+
 
 export default function SistemaVotacion() {
-  useTheme();
+  const { isDark } = useTheme();
   const { asambleistas: asamDesdeContexto, loading: loadingAsambleista } =
     useAsambleistas();
   const { candidatos: candDesdeContexto, loading: loadingCandidato } =
@@ -185,11 +187,44 @@ export default function SistemaVotacion() {
     try {
       //console.log(data);
 
-      toast.promise(agregarVoto(data), {
+      /*toast.promise(agregarVoto(data), {
         loading: "Guardando voto...",
         success: <b>Voto guardado!</b>,
         error: <b>No se puedo guardar el voto.</b>,
+      });*/
+
+      Swal.fire({
+        title: "Procesando voto...",
+        text: "Por favor, espera.",
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading(),
+        showConfirmButton: false,
+        theme: isDark ? "dark" : "light",
       });
+
+      agregarVoto(data).then(() => {
+        Swal.hideLoading();
+        Swal.update({
+          icon: "success",
+          title: "¡Voto procesado!",
+          text: `El voto ha sido procesado exitosamente.`,
+          showConfirmButton: true,
+          confirmButtonText: "Ok",
+          confirmButtonColor: "#28A745",
+        });
+      }).catch(() => {
+        Swal.hideLoading();
+        Swal.update({
+          icon: "error",
+          title: "Error",
+          text: "Algo salió mal",
+          showConfirmButton: true,
+          confirmButtonText: "Ok",
+          confirmButtonColor: "#dc3545",
+        });
+      })
+
+
 
       // Reiniciar selecciones y abstenciones
       setSelecciones({
