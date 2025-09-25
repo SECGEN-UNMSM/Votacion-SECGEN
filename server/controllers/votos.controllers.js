@@ -180,27 +180,33 @@ const exportarRankingGeneralPDF = async (req, res) => {
 
     const content = [];
 
-    for (const categoria of categorias) {
-      const { rows: candidatos } = await pool.query(
-        `SELECT codigo_facultad, nombre_candidato, categoria, total_votos
+     for (let i = 0; i < categorias.length; i++) {
+       const categoria = categorias[i];
+       const { rows: candidatos } = await pool.query(
+         `SELECT codigo_facultad, nombre_candidato, categoria, total_votos
          FROM vista_ranking_por_categoria
          WHERE categoria = $1
          ORDER BY total_votos DESC`,
-        [categoria]
-      );
+         [categoria]
+       );
 
-      const {
-        rows: [{ total_abstenciones }],
-      } = await pool.query(
-        `SELECT COUNT(*) AS total_abstenciones
+       const {
+         rows: [{ total_abstenciones }],
+       } = await pool.query(
+         `SELECT COUNT(*) AS total_abstenciones
          FROM votos
          WHERE categoria = $1 AND es_abstencion = true`,
-        [categoria]
-      );
+         [categoria]
+       );
 
-      content.push(...generarTablaCategoria(categoria, candidatos, total_abstenciones));
-      content.push({ text: "", pageBreak: "after" });
-    }
+       content.push(
+         ...generarTablaCategoria(categoria, candidatos, total_abstenciones)
+       );
+
+       if (i < categorias.length - 1) {
+         content.push({ text: "", pageBreak: "after" });
+       }
+     }
 
     const docDefinition = {
       pageSize: "A4",
