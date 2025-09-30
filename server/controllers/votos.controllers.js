@@ -43,7 +43,7 @@ const generarHeader = () => ({
 function generarTablaCategoria(categoria, candidatos, abstenciones) {
   return [
     {
-      text: "ELECCIÓN DEL COMITÉ ELECTORAL UNIVERSITARIO 2025 - 2026",
+      text: "ELECCIÓN DEL COMITÉ ELECTORAL UNIVERSITARIO (2025 - 2026) - ASAMBLEA UNIVERSITARIA",
       style: "seccionTitulo",
     },
     {
@@ -240,9 +240,23 @@ const exportarRankingGeneralPDF = async (req, res) => {
   }
 };
 
+const reiniciarVotacion = async (req, res) => {
+  try {
+    await pool.query("TRUNCATE TABLE votos RESTART IDENTITY CASCADE");
+
+    await pool.query("UPDATE asambleista SET ha_votado = FALSE");
+
+    res.json({ message: "Votación reiniciada correctamente" });
+  } catch (err) {
+    console.error("Error al reiniciar votación:", err);
+    res.status(500).json({ error: "No se pudo reiniciar la votación" });
+  }
+};
+
 module.exports = {
   getRanking,
   registrarVoto,
   exportarRankingCategoriaPDF,
   exportarRankingGeneralPDF,
+  reiniciarVotacion,
 };
