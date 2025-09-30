@@ -31,9 +31,7 @@ import { useTheme } from "@/hooks/useTheme";
 import { ListaCandidatos } from "./CardListaCandidatos/listaCandidatos";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { cn, getColorCategoria } from "@/lib/utils";
-import toast from "react-hot-toast";
 import Swal from "sweetalert2";
-
 
 export default function SistemaVotacion() {
   const { isDark } = useTheme();
@@ -44,8 +42,10 @@ export default function SistemaVotacion() {
   const { rankingVotos, agregarVoto } = useVotos();
   const [asambleistas, setAsambleistas] = useState<Asambleista[]>([]);
   const [candidatos, setCandidatos] = useState<Candidato[]>([]);
-  const [asambleistaSeleccionado, setAsambleistaSeleccionado] =
-    useState<{value: string, label: string} | null>();
+  const [asambleistaSeleccionado, setAsambleistaSeleccionado] = useState<{
+    value: string;
+    label: string;
+  } | null>();
   const [categoriaActiva, setCategoriaActiva] = useState<Categoria>(
     "Docentes Principales"
   );
@@ -53,13 +53,13 @@ export default function SistemaVotacion() {
     "Docentes Principales": [],
     "Docentes Asociados": [],
     "Docentes Auxiliares": [],
-    "Estudiantes": [],
+    Estudiantes: [],
   });
   const [abstenciones, setAbstenciones] = useState<Record<Categoria, boolean>>({
     "Docentes Principales": false,
     "Docentes Asociados": false,
     "Docentes Auxiliares": false,
-    "Estudiantes": false,
+    Estudiantes: false,
   });
   //const [modalConfirmacion, setModalConfirmacion] = useState<boolean>(false);
   const [openSelectAsam, setOpenSelectAsam] = useState<boolean>(false);
@@ -80,13 +80,21 @@ export default function SistemaVotacion() {
     }
   }, [candDesdeContexto, loadingCandidato]);
 
-  const listaAsambleistas = asambleistas.map((asam) => ({
-    value: asam.idasambleista.toString(),
-    label: `${asam.apellido}, ${asam.nombre}${
-      asam.ha_votado ? " (Ya votó)" : ""
-    }`,
-    isDisabled: asam.ha_votado,
-  }));
+  const listaAsambleistas = asambleistas
+    .map((asam) => ({
+      value: asam.idasambleista.toString(),
+      label: `${asam.apellido}, ${asam.nombre}${
+        asam.ha_votado ? " (Ya votó)" : ""
+      }`,
+      isDisabled: asam.ha_votado,
+      id: parseInt(asam.idasambleista.toString()),
+    }))
+    .sort((a, b) => {
+      // Ordenar por ID
+      if (a.isDisabled && !b.isDisabled) return 1;
+      if (!a.isDisabled && b.isDisabled) return -1;
+      return a.id - b.id;
+    });
 
   // Manejar la selección de un candidato
   const handleSeleccionCandidato = (
@@ -202,44 +210,44 @@ export default function SistemaVotacion() {
         theme: isDark ? "dark" : "light",
       });
 
-      agregarVoto(data).then(() => {
-        Swal.hideLoading();
-        Swal.update({
-          icon: "success",
-          title: "¡Voto procesado!",
-          text: `El voto ha sido procesado exitosamente.`,
-          showConfirmButton: true,
-          confirmButtonText: "Ok",
-          confirmButtonColor: "#28A745",
+      agregarVoto(data)
+        .then(() => {
+          Swal.hideLoading();
+          Swal.update({
+            icon: "success",
+            title: "¡Voto procesado!",
+            text: `El voto ha sido procesado exitosamente.`,
+            showConfirmButton: true,
+            confirmButtonText: "Ok",
+            confirmButtonColor: "#28A745",
+          });
+        })
+        .catch(() => {
+          Swal.hideLoading();
+          Swal.update({
+            icon: "error",
+            title: "Error",
+            text: "Algo salió mal",
+            showConfirmButton: true,
+            confirmButtonText: "Ok",
+            confirmButtonColor: "#dc3545",
+          });
         });
-      }).catch(() => {
-        Swal.hideLoading();
-        Swal.update({
-          icon: "error",
-          title: "Error",
-          text: "Algo salió mal",
-          showConfirmButton: true,
-          confirmButtonText: "Ok",
-          confirmButtonColor: "#dc3545",
-        });
-      })
-
-
 
       // Reiniciar selecciones y abstenciones
       setSelecciones({
         "Docentes Principales": [],
         "Docentes Asociados": [],
         "Docentes Auxiliares": [],
-        "Estudiantes": [],
+        Estudiantes: [],
       });
       setAbstenciones({
         "Docentes Principales": false,
         "Docentes Asociados": false,
         "Docentes Auxiliares": false,
-        "Estudiantes": false,
+        Estudiantes: false,
       });
-      setAsambleistaSeleccionado({value: "", label: ""});
+      setAsambleistaSeleccionado({ value: "", label: "" });
       //setModalConfirmacion(false);
     } catch (error) {
       console.error("Error al enviar los datos", error);
