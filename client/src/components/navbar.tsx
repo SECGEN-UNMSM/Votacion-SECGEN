@@ -21,7 +21,9 @@ export function Navbar() {
 
   return (
     <header className="w-full flex justify-between items-center">
-      <h4 className="font-bold text-xl select-none">Sistema de Votación del Comité Electoral</h4>
+      <h4 className="font-bold text-xl select-none">
+        Sistema de Votación del Comité Electoral
+      </h4>
       <nav className="flex gap-4 items-center">
         <Button
           variant={"destructive"}
@@ -38,7 +40,7 @@ export function Navbar() {
               Finalización del proceso de votación
             </DialogTitle>
             <DialogDescription className="text-[16px]">
-              Por favor, confirme la la finalización del proceso actual de
+              Por favor, confirme la finalización del proceso actual de
               votación.
             </DialogDescription>
           </DialogHeader>

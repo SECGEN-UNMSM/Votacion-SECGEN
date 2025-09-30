@@ -3,13 +3,25 @@
 import { ToggleDarkMode } from "@/components/ToggleDarkMode";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useTheme } from "@/hooks/useTheme";
+import { useVotos } from "@/hooks/useVotos";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 export default function About() {
-  useTheme();
+  const [openDialog, setOpenDialog] = useState(false);
+  const { isDark } = useTheme();
+  const { reiniciarTodo } = useVotos();
 
   useEffect(() => {
     const token = localStorage.getItem("auth-token");
@@ -17,6 +29,56 @@ export default function About() {
       redirect("/");
     }
   }, []);
+
+  const iniciarVotacion = async () => {
+    try {
+      // Asegurarse que el diálogo está cerrado antes de mostrar la carga
+      setOpenDialog(false);
+      
+      // Esperar un momento para que el diálogo se cierre completamente
+      setTimeout(async () => {
+        // Mostrar el modal de carga
+        Swal.fire({
+          title: "Iniciando proceso...",
+          text: "Por favor, espera.",
+          allowOutsideClick: false,
+          didOpen: () => Swal.showLoading(),
+          showConfirmButton: false,
+          theme: isDark ? "dark" : "light",
+        });
+        
+        try {
+          // Esperar a que se complete el reinicio
+          await reiniciarTodo();
+          
+          // Mostrar mensaje de éxito
+          Swal.fire({
+            icon: "success",
+            title: "Proceso iniciado!",
+            text: `El proceso de votación ha sido iniciado exitosamente.`,
+            showConfirmButton: true,
+            confirmButtonText: "Ok",
+            confirmButtonColor: "#28A745",
+            theme: isDark ? "dark" : "light",
+          });
+        } catch (error) {
+          // Mostrar mensaje de error
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Algo salió mal al reiniciar el proceso de votación.",
+            showConfirmButton: true,
+            confirmButtonText: "Ok",
+            confirmButtonColor: "#dc3545",
+            theme: isDark ? "dark" : "light",
+          });
+          console.error("Error al reiniciar todo:", error);
+        }
+      }, 300); // Pequeño retraso para asegurar que el diálogo se cierre
+    } catch (error) {
+      console.error("Error al iniciar la votación", error);
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("auth-token");
@@ -54,6 +116,13 @@ export default function About() {
                   Reportes
                 </Button>
                 <Button
+                  variant={"link"}
+                  className="cursor-pointer text-base"
+                  onClick={() => setOpenDialog(!openDialog)}
+                >
+                  Iniciar
+                </Button>
+                <Button
                   className="mt-auto cursor-pointer text-red-700 text-base"
                   variant={"link"}
                   onClick={handleLogout}
@@ -61,8 +130,39 @@ export default function About() {
                   Cerrar Sesión
                 </Button>
               </div>
+              <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle className="text-xl">
+                      Iniciar el proceso de votación
+                    </DialogTitle>
+                    <DialogDescription className="text-[16px]">
+                      Por favor, confirme que desea iniciar un nuevo proceso de
+                      votación.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <Button
+                      variant={"outline"}
+                      className="cursor-pointer text-[16px] px-4"
+                      onClick={() => setOpenDialog(!openDialog)}
+                    >
+                      Cancelar
+                    </Button>
+                    <Button
+                      variant={"default"}
+                      className="bg-[var(--bg-button-success)] hover:bg-[var(--bg-button-success)] hover:opacity-90 cursor-pointer text-[16px] px-4"
+                      onClick={iniciarVotacion}
+                    >
+                      Aceptar
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
               <section>
-                <h4 className="font-semibold">Sobre el Sistema de Votación del Comité Electoral</h4>
+                <h4 className="font-semibold">
+                  Sobre el Sistema de Votación del Comité Electoral
+                </h4>
                 <p className="text-stone-700 mt-2 dark:text-stone-400">
                   El Sistema de Elecciones del Comité Electoral ha sido
                   desarrollado por la Unidad de Informática de la Secretaría
