@@ -264,7 +264,7 @@ export default function SistemaVotacion() {
         {/* Sección de Votación */}
         <Card className="col-span-1 flex flex-col gap-2 border-1 border-[var(--border-color)] dark:border-stone-700 p-2">
           <CardHeader className="p-0">
-            <CardTitle className="flex justify-center items-center bg-[var(--bg-title)] dark:bg-black py-3 rounded-sm text-lg">
+            <CardTitle className="flex justify-center items-center bg-[var(--bg-title)] dark:bg-black py-3 rounded-sm text-xl">
               Votación
             </CardTitle>
           </CardHeader>
@@ -367,7 +367,7 @@ export default function SistemaVotacion() {
         {/* Sección de Candidatos */}
         <Card className="col-span-3 flex flex-col gap-2 border-1 border-[var(--border-color)] dark:border-stone-700 p-2">
           <CardHeader className="p-0">
-            <CardTitle className="flex justify-center items-center bg-[var(--bg-title)] dark:bg-black py-3 rounded-sm text-lg">
+            <CardTitle className="flex justify-center items-center bg-[var(--bg-title)] dark:bg-black py-3 rounded-sm text-xl">
               Candidatos
             </CardTitle>
           </CardHeader>
@@ -377,14 +377,14 @@ export default function SistemaVotacion() {
               value={categoriaActiva}
               onValueChange={(value) => setCategoriaActiva(value as Categoria)}
             >
-              <TabsList className="grid grid-cols-2 gap-2 h-20 xl:grid-cols-4 xl:gap-4 w-full xl:h-10">
+              <TabsList className="grid grid-cols-2 gap-2 h-20 xl:grid-cols-4 xl:gap-4 w-full xl:h-12">
                 {listaCategorias.map((categoria) => {
                   const isActive = categoria == categoriaActiva;
                   return (
                     <TabsTrigger
                       key={categoria}
                       value={categoria}
-                      className={`rounded-md border-1 border-[var(--text-color)]/15 cursor-pointer hover:opacity-80  text-[16px] ${
+                      className={`rounded-md border-1 border-[var(--text-color)]/15 cursor-pointer hover:opacity-80  text-xl ${
                         isActive
                           ? getColorCategoria(categoria)
                           : "hover:bg-stone-300/40 dark:hover:bg-stone-700"
@@ -453,7 +453,7 @@ export default function SistemaVotacion() {
         {/* Sección de Resultados */}
         <Card className="col-span-4 flex-flex-col gap-2 border-1 border-[var(--border-color)] dark:border-stone-700 p-2">
           <CardHeader className="p-0">
-            <CardTitle className="flex justify-center items-center bg-[var(--bg-title)] dark:bg-black py-3 rounded-sm text-lg">
+            <CardTitle className="flex justify-center items-center bg-[var(--bg-title)] dark:bg-black py-3 rounded-sm text-xl">
               Resultados
             </CardTitle>
           </CardHeader>
