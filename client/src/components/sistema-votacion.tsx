@@ -158,7 +158,9 @@ export default function SistemaVotacion() {
 
   // Verificar si se cumple con los requisitos para habilitar el botón de emitir voto
   const puedeEmitirVoto = () => {
-    if (!asambleistaSeleccionado) return false;
+    // Verificar que se haya seleccionado un asambleísta válido (con value no vacío)
+    if (!asambleistaSeleccionado || !asambleistaSeleccionado.value)
+      return false;
 
     // Verificar que cada categoría sea válida (abstención o selección dentro de límites)
     return listaCategorias.every((categoria) => categoriaEsValida(categoria));
@@ -210,6 +212,7 @@ export default function SistemaVotacion() {
         theme: isDark ? "dark" : "light",
       });
 
+      /*
       agregarVoto(data)
         .then(() => {
           Swal.hideLoading();
@@ -233,6 +236,32 @@ export default function SistemaVotacion() {
             confirmButtonColor: "#dc3545",
           });
         });
+      */
+
+      try {
+        await agregarVoto(data);
+
+        Swal.hideLoading();
+        Swal.update({
+          icon: "success",
+          title: "¡Voto procesado!",
+          text: `El voto ha sido procesado exitosamente.`,
+          showConfirmButton: true,
+          confirmButtonText: "Ok",
+          confirmButtonColor: "#28A745",
+        });
+      } catch (error) {
+        Swal.hideLoading();
+        Swal.update({
+          icon: "error",
+          title: "Error",
+          text: "Algo salió mal",
+          showConfirmButton: true,
+          confirmButtonText: "Ok",
+          confirmButtonColor: "#dc3545",
+        });
+        console.log("Error al enviar los datos", error);
+      }
 
       // Reiniciar selecciones y abstenciones
       setSelecciones({
@@ -313,17 +342,21 @@ export default function SistemaVotacion() {
                           <CommandGroup>
                             {listaAsambleistas.map((a) => (
                               <CommandItem
-                                key={a.label}
+                                key={a.value}
+                                // Usar label para búsqueda manteniendo a value como identificación
                                 value={a.label}
-                                onSelect={(currentValue) => {
-                                  const seleccionado = listaAsambleistas.find(
-                                    (a) => a.label === currentValue
-                                  );
-                                  setAsambleistaSeleccionado(seleccionado);
-                                  setOpenSelectAsam(false);
+                                onSelect={() => {
+                                  // Usar directamente el objeto actual para la selección en vez de buscar por label
+                                  if (!a.isDisabled) {
+                                    setAsambleistaSeleccionado(a);
+                                    setOpenSelectAsam(false);
+                                    console.log("Asambleísta seleccionado:", a);
+                                  }
                                 }}
                                 disabled={a.isDisabled}
-                                className="text-lg"
+                                className={`text-lg ${
+                                  a.isDisabled ? "opacity-50" : ""
+                                }`}
                               >
                                 {a.label}
                                 <Check

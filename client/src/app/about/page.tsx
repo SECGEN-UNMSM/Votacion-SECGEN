@@ -30,14 +30,11 @@ export default function About() {
     }
   }, []);
 
+  // Iniciar un nuevo proceso de votación
   const iniciarVotacion = async () => {
     try {
-      // Asegurarse que el diálogo está cerrado antes de mostrar la carga
       setOpenDialog(false);
-      
-      // Esperar un momento para que el diálogo se cierre completamente
       setTimeout(async () => {
-        // Mostrar el modal de carga
         Swal.fire({
           title: "Iniciando proceso...",
           text: "Por favor, espera.",
@@ -46,12 +43,10 @@ export default function About() {
           showConfirmButton: false,
           theme: isDark ? "dark" : "light",
         });
-        
+
         try {
-          // Esperar a que se complete el reinicio
           await reiniciarTodo();
-          
-          // Mostrar mensaje de éxito
+
           Swal.fire({
             icon: "success",
             title: "Proceso iniciado!",
@@ -62,7 +57,6 @@ export default function About() {
             theme: isDark ? "dark" : "light",
           });
         } catch (error) {
-          // Mostrar mensaje de error
           Swal.fire({
             icon: "error",
             title: "Error",
@@ -74,7 +68,7 @@ export default function About() {
           });
           console.error("Error al reiniciar todo:", error);
         }
-      }, 300); // Pequeño retraso para asegurar que el diálogo se cierre
+      }, 300);
     } catch (error) {
       console.error("Error al iniciar la votación", error);
     }
@@ -97,9 +91,16 @@ export default function About() {
               </h2>
             </CardHeader>
             <CardContent className="flex gap-8 text-base">
-              <div className="flex flex-col gap-2 pr-4 border-r-2">
+              <div className="flex flex-col items-baseline gap-2 pr-2 border-r-2">
                 <Button variant={"link"} disabled className="text-base">
                   Nosotros
+                </Button>
+                <Button
+                  variant={"link"}
+                  className="cursor-pointer text-base"
+                  onClick={() => setOpenDialog(!openDialog)}
+                >
+                  Iniciar
                 </Button>
                 <Button
                   variant={"link"}
@@ -114,13 +115,6 @@ export default function About() {
                   onClick={() => redirect("/reportes")}
                 >
                   Reportes
-                </Button>
-                <Button
-                  variant={"link"}
-                  className="cursor-pointer text-base"
-                  onClick={() => setOpenDialog(!openDialog)}
-                >
-                  Iniciar
                 </Button>
                 <Button
                   className="mt-auto cursor-pointer text-red-700 text-base"
