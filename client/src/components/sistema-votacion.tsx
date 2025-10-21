@@ -63,6 +63,7 @@ export default function SistemaVotacion() {
   });
   //const [modalConfirmacion, setModalConfirmacion] = useState<boolean>(false);
   const [openSelectAsam, setOpenSelectAsam] = useState<boolean>(false);
+  const [visible, setVisible] = useState<boolean>(false);
 
   useEffect(() => {
     if (asamDesdeContexto && asamDesdeContexto.length > 0) {
@@ -174,6 +175,10 @@ export default function SistemaVotacion() {
   // Emitir voto
   const emitirVoto = async () => {
     if (!asambleistaSeleccionado) return;
+
+    if (!visible) {
+      setVisible(true);
+    }
 
     const votos: VotoCategoria[] = listaCategorias.map((categoria) => {
       if (abstenciones[categoria]) {
@@ -492,7 +497,7 @@ export default function SistemaVotacion() {
           </CardHeader>
           <CardContent className="p-2">
             <div className="grid grid-cols-1 xl:grid-cols-4 gap-4">
-              <RankingVotos></RankingVotos>
+              <RankingVotos state={visible}></RankingVotos>
             </div>
           </CardContent>
         </Card>
