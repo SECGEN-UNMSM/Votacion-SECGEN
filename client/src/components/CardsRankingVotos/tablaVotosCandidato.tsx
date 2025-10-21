@@ -25,10 +25,12 @@ export const RankingVotosCandidato = ({
     );
   }
   return (
-    <ScrollArea className="h-52 w-full rounded-md text-black">
-      <div
-        className={`flex flex-col gap-2 ${state ? "opacity-100" : "opacity-0"} transition-opacity duration-300 ease-in-out`}
-      >
+    <ScrollArea
+      className={`h-52 w-full rounded-md text-black ${
+        state ? "opacity-100" : "opacity-0"
+      } transition-opacity duration-300 ease-in-out`}
+    >
+      <div className={`flex flex-col gap-2`}>
         {candidatosOrdenados.map((candidatoVotos) => (
           <div
             key={candidatoVotos.idcandidato}
