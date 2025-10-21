@@ -3,14 +3,6 @@
 import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -18,20 +10,21 @@ import type {
   Asambleista,
   Candidato,
   Categoria,
+  ListaAsambleistaType,
   VotoCategoria,
   Votos,
 } from "@/lib/types";
 import { limitesPorCategoria, listaCategorias } from "@/lib/types";
-import { Check, ChevronsUpDown, Info, LoaderCircle } from "lucide-react";
 import { useAsambleistas } from "@/hooks/useAsambleistas";
 import { useCandidatos } from "@/hooks/useCandidatos";
 import { useVotos } from "@/hooks/useVotos";
 import RankingVotos from "./CardsRankingVotos/rankingVotos";
 import { useTheme } from "@/hooks/useTheme";
 import { ListaCandidatos } from "./CardListaCandidatos/listaCandidatos";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { cn, getColorCategoria } from "@/lib/utils";
+import { getColorCategoria } from "@/lib/utils";
 import Swal from "sweetalert2";
+import { SelectPopover } from "./SelectPopover";
+import { Info } from "lucide-react";
 
 export default function SistemaVotacion() {
   const { isDark } = useTheme();
@@ -62,7 +55,6 @@ export default function SistemaVotacion() {
     Estudiantes: false,
   });
   //const [modalConfirmacion, setModalConfirmacion] = useState<boolean>(false);
-  const [openSelectAsam, setOpenSelectAsam] = useState<boolean>(false);
 
   useEffect(() => {
     if (asamDesdeContexto && asamDesdeContexto.length > 0) {
@@ -80,7 +72,7 @@ export default function SistemaVotacion() {
     }
   }, [candDesdeContexto, loadingCandidato]);
 
-  const listaAsambleistas = asambleistas
+  const listaAsambleistas: ListaAsambleistaType[] = asambleistas
     .map((asam) => ({
       value: asam.idasambleista.toString(),
       label: `${asam.apellido}, ${asam.nombre}${
@@ -195,14 +187,6 @@ export default function SistemaVotacion() {
     };
 
     try {
-      //console.log(data);
-
-      /*toast.promise(agregarVoto(data), {
-        loading: "Guardando voto...",
-        success: <b>Voto guardado!</b>,
-        error: <b>No se puedo guardar el voto.</b>,
-      });*/
-
       Swal.fire({
         title: "Procesando voto...",
         text: "Por favor, espera.",
@@ -211,32 +195,6 @@ export default function SistemaVotacion() {
         showConfirmButton: false,
         theme: isDark ? "dark" : "light",
       });
-
-      /*
-      agregarVoto(data)
-        .then(() => {
-          Swal.hideLoading();
-          Swal.update({
-            icon: "success",
-            title: "¡Voto procesado!",
-            text: `El voto ha sido procesado exitosamente.`,
-            showConfirmButton: true,
-            confirmButtonText: "Ok",
-            confirmButtonColor: "#28A745",
-          });
-        })
-        .catch(() => {
-          Swal.hideLoading();
-          Swal.update({
-            icon: "error",
-            title: "Error",
-            text: "Algo salió mal",
-            showConfirmButton: true,
-            confirmButtonText: "Ok",
-            confirmButtonColor: "#dc3545",
-          });
-        });
-      */
 
       try {
         await agregarVoto(data);
@@ -303,78 +261,12 @@ export default function SistemaVotacion() {
                 <Label htmlFor="asambleista" className="text-lg">
                   Lista de asambleístas
                 </Label>
-                <Popover open={openSelectAsam} onOpenChange={setOpenSelectAsam}>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      aria-expanded={openSelectAsam}
-                      className="w-full justify-between text-lg"
-                    >
-                      {asambleistaSeleccionado?.label
-                        ? listaAsambleistas.find(
-                            (asambleista) =>
-                              asambleista.label ===
-                              asambleistaSeleccionado.label
-                          )?.label
-                        : "Selecciona un asambleista"}
-                      <ChevronsUpDown className="opacity-0 2xl:opacity-50" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="2xl:min-w-md w-full p-0 border dark:border-stone-500">
-                    {loadingAsambleista ? (
-                      <Command>
-                        <CommandEmpty className="text-lg text-center p-4 text-stone-600 select-none flex items-center justify-center gap-4">
-                          <LoaderCircle className="animate-spin"></LoaderCircle>
-                          Cargando datos...
-                        </CommandEmpty>
-                      </Command>
-                    ) : (
-                      <Command>
-                        <CommandInput
-                          placeholder="Busca un asambleista..."
-                          className="h-9 text-lg"
-                        />
-                        <CommandList>
-                          <CommandEmpty className="text-lg text-center p-4">
-                            Asambleista no encontrado.
-                          </CommandEmpty>
-                          <CommandGroup>
-                            {listaAsambleistas.map((a) => (
-                              <CommandItem
-                                key={a.value}
-                                // Usar label para búsqueda manteniendo a value como identificación
-                                value={a.label}
-                                onSelect={() => {
-                                  // Usar directamente el objeto actual para la selección en vez de buscar por label
-                                  if (!a.isDisabled) {
-                                    setAsambleistaSeleccionado(a);
-                                    setOpenSelectAsam(false);
-                                    console.log("Asambleísta seleccionado:", a);
-                                  }
-                                }}
-                                disabled={a.isDisabled}
-                                className={`text-lg ${
-                                  a.isDisabled ? "opacity-50" : ""
-                                }`}
-                              >
-                                {a.label}
-                                <Check
-                                  className={cn(
-                                    "ml-auto",
-                                    asambleistaSeleccionado?.value === a.value
-                                      ? "opacity-100"
-                                      : "opacity-0"
-                                  )}
-                                />
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    )}
-                  </PopoverContent>
-                </Popover>
+                <SelectPopover
+                  listaAsambleistas={listaAsambleistas}
+                  asambleistaSeleccionado={asambleistaSeleccionado}
+                  setAsambleistaSeleccionado={setAsambleistaSeleccionado}
+                  loadingAsambleista={loadingAsambleista}
+                ></SelectPopover>
               </div>
 
               {todasEnAbstencion && (
@@ -497,75 +389,6 @@ export default function SistemaVotacion() {
           </CardContent>
         </Card>
       </div>
-
-      {/* Modal de Confirmación */}
-      {/*
-        
-        <Dialog open={modalConfirmacion} onOpenChange={setModalConfirmacion}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle className="text-lg">Confirmar Votación</DialogTitle>
-            <DialogDescription className="text-[16px]">
-              Por favor confirme su selección de candidatos:
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="py-4">
-            {listaCategorias.map((categoria) => {
-              const candidatosSeleccionados = selecciones[categoria]
-                .map((idcandidato) =>
-                  candidatos.find(
-                    (c) => c.idcandidato.toString() === idcandidato
-                  )
-                )
-                .filter(Boolean) as Candidato[];
-
-              return (
-                <div key={categoria} className="mb-4">
-                  <h4 className="font-medium text-lg">{categoria}:</h4>
-                  {abstenciones[categoria] ? (
-                    <p className="pl-5 mt-1 italic text-gray-500 text-lg">
-                      Abstención
-                    </p>
-                  ) : (
-                    <ul className="list-none pl-5 mt-1">
-                      {candidatosSeleccionados.map((candidato) => (
-                        <li
-                          key={candidato.idcandidato}
-                          className="flex items-center gap-2 text-lg pb-2"
-                        >
-                          <span className="font-medium w-8">
-                            {candidato.codigo_facultad}.
-                          </span>
-                          <span>{candidato.nombre}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-
-          <DialogFooter>
-            <Button
-              variant="outline"
-              className="text-[16px] px-4 cursor-pointer"
-              onClick={() => setModalConfirmacion(false)}
-            >
-              Cancelar
-            </Button>
-            <Button
-              onClick={emitirVoto}
-              className="bg-green-600 hover:bg-green-700 text-[16px] px-4 cursor-pointer"
-            >
-              Confirmar Voto
-            </Button>
-            </DialogFooter>
-            </DialogContent>
-          </Dialog>
-
-        */}
     </main>
   );
 }

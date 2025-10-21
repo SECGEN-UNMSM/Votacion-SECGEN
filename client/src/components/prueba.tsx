@@ -1,4 +1,4 @@
-"use client";
+/*"use client";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -168,8 +168,9 @@ export function ComponentePrueba() {
               </SelectContent>
             </Select>
 
-          */}
+          }
       </div>
     </div>
   );
 }
+*/

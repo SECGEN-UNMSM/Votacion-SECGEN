@@ -187,3 +187,111 @@ export const mockCandidatosOrdenados: Ranking[] = [
     total_votos: "9",
   },
 ];
+
+/*
+
+      //console.log(data);
+      
+      toast.promise(agregarVoto(data), {
+        loading: "Guardando voto...",
+        success: <b>Voto guardado!</b>,
+        error: <b>No se puedo guardar el voto.</b>,
+      });
+
+      agregarVoto(data)
+        .then(() => {
+          Swal.hideLoading();
+          Swal.update({
+            icon: "success",
+            title: "¡Voto procesado!",
+            text: `El voto ha sido procesado exitosamente.`,
+            showConfirmButton: true,
+            confirmButtonText: "Ok",
+            confirmButtonColor: "#28A745",
+          });
+        })
+        .catch(() => {
+          Swal.hideLoading();
+          Swal.update({
+            icon: "error",
+            title: "Error",
+            text: "Algo salió mal",
+            showConfirmButton: true,
+            confirmButtonText: "Ok",
+            confirmButtonColor: "#dc3545",
+          });
+        });
+      */
+
+{
+  /* Modal de Confirmación */
+}
+{
+  /*
+        
+        <Dialog open={modalConfirmacion} onOpenChange={setModalConfirmacion}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="text-lg">Confirmar Votación</DialogTitle>
+            <DialogDescription className="text-[16px]">
+              Por favor confirme su selección de candidatos:
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="py-4">
+            {listaCategorias.map((categoria) => {
+              const candidatosSeleccionados = selecciones[categoria]
+                .map((idcandidato) =>
+                  candidatos.find(
+                    (c) => c.idcandidato.toString() === idcandidato
+                  )
+                )
+                .filter(Boolean) as Candidato[];
+
+              return (
+                <div key={categoria} className="mb-4">
+                  <h4 className="font-medium text-lg">{categoria}:</h4>
+                  {abstenciones[categoria] ? (
+                    <p className="pl-5 mt-1 italic text-gray-500 text-lg">
+                      Abstención
+                    </p>
+                  ) : (
+                    <ul className="list-none pl-5 mt-1">
+                      {candidatosSeleccionados.map((candidato) => (
+                        <li
+                          key={candidato.idcandidato}
+                          className="flex items-center gap-2 text-lg pb-2"
+                        >
+                          <span className="font-medium w-8">
+                            {candidato.codigo_facultad}.
+                          </span>
+                          <span>{candidato.nombre}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              className="text-[16px] px-4 cursor-pointer"
+              onClick={() => setModalConfirmacion(false)}
+            >
+              Cancelar
+            </Button>
+            <Button
+              onClick={emitirVoto}
+              className="bg-green-600 hover:bg-green-700 text-[16px] px-4 cursor-pointer"
+            >
+              Confirmar Voto
+            </Button>
+            </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+        */
+}
