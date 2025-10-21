@@ -497,7 +497,7 @@ export default function SistemaVotacion() {
           </CardHeader>
           <CardContent className="p-2">
             <div className="grid grid-cols-1 xl:grid-cols-4 gap-4">
-              <RankingVotos state={visible}></RankingVotos>
+              <RankingVotos stateVisibility={visible}></RankingVotos>
             </div>
           </CardContent>
         </Card>

@@ -3,7 +3,7 @@ import { useVotos } from "@/hooks/useVotos";
 import { getCandidatosPorCategoria, getColorCategoria } from "@/lib/utils";
 import { RankingVotosCandidato } from "./tablaVotosCandidato";
 
-export default function RankingVotos({state}: {state: boolean}) {
+export default function RankingVotos({stateVisibility}: {stateVisibility: boolean}) {
   const { loading: loadingRanking, rankingVotos } = useVotos();
 
   return (
@@ -19,7 +19,7 @@ export default function RankingVotos({state}: {state: boolean}) {
             key={categoria}
             className={`${getColorCategoria(
               categoria
-            )} ${state ? "opacity-100" : "opacity-0"} rounded-lg p-4 min-h-[324px]`}
+            )} rounded-lg p-4 min-h-[324px] `}
           >
             <h3 className="font-bold mb-4 text-center text-black text-lg">
               {categoria}
@@ -39,6 +39,7 @@ export default function RankingVotos({state}: {state: boolean}) {
               loadingRanking={loadingRanking}
               rankingVotos={rankingVotos}
               candidatosOrdenados={candidatosOrdenados}
+              state={stateVisibility}
             ></RankingVotosCandidato>
           </div>
         );

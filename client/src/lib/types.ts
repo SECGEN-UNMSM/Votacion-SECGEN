@@ -92,4 +92,5 @@ export type RankingVotosCandidatoType = {
   loadingRanking: boolean;
   rankingVotos: Ranking[];
   candidatosOrdenados: Ranking[];
+  state: boolean;
 };
