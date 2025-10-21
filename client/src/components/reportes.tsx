@@ -204,7 +204,7 @@ export function ReportesPDF() {
               {!loadingRankingVotos ? (
                 <div className="w-full h-full rounded-lg overflow-hidden">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <RankingVotos></RankingVotos>
+                    <RankingVotos state={true}></RankingVotos>
                   </div>
                 </div>
               ) : (
