@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -15,8 +15,6 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import type {
-  Asambleista,
-  Candidato,
   Categoria,
   VotoCategoria,
   Votos,
@@ -24,7 +22,6 @@ import type {
 import { limitesPorCategoria, listaCategorias } from "@/lib/types";
 import { Check, ChevronsUpDown, Info, LoaderCircle } from "lucide-react";
 import { useAsambleistas } from "@/hooks/useAsambleistas";
-import { useCandidatos } from "@/hooks/useCandidatos";
 import { useVotos } from "@/hooks/useVotos";
 import RankingVotos from "./CardsRankingVotos/rankingVotos";
 import { useTheme } from "@/hooks/useTheme";
@@ -32,16 +29,15 @@ import { ListaCandidatos } from "./CardListaCandidatos/listaCandidatos";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { cn, getColorCategoria } from "@/lib/utils";
 import Swal from "sweetalert2";
+import { useCandidatos } from "@/hooks/useCandidatos";
 
 export default function SistemaVotacion() {
   const { isDark } = useTheme();
   const { asambleistas: asamDesdeContexto, loading: loadingAsambleista } =
     useAsambleistas();
-  const { candidatos: candDesdeContexto, loading: loadingCandidato } =
+  const { candidatos, loading: loadingCandidato } =
     useCandidatos();
   const { rankingVotos, agregarVoto } = useVotos();
-  const [asambleistas, setAsambleistas] = useState<Asambleista[]>([]);
-  const [candidatos, setCandidatos] = useState<Candidato[]>([]);
   const [asambleistaSeleccionado, setAsambleistaSeleccionado] = useState<{
     value: string;
     label: string;
@@ -53,49 +49,34 @@ export default function SistemaVotacion() {
     "Docentes Principales": [],
     "Docentes Asociados": [],
     "Docentes Auxiliares": [],
-    Estudiantes: [],
+    "Estudiantes": [],
   });
   const [abstenciones, setAbstenciones] = useState<Record<Categoria, boolean>>({
     "Docentes Principales": false,
     "Docentes Asociados": false,
     "Docentes Auxiliares": false,
-    Estudiantes: false,
+    "Estudiantes": false,
   });
-  //const [modalConfirmacion, setModalConfirmacion] = useState<boolean>(false);
   const [openSelectAsam, setOpenSelectAsam] = useState<boolean>(false);
   const [visible, setVisible] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (asamDesdeContexto && asamDesdeContexto.length > 0) {
-      setAsambleistas(asamDesdeContexto);
-    } else {
-      setAsambleistas([]);
-    }
-  }, [asamDesdeContexto, loadingAsambleista]);
-
-  useEffect(() => {
-    if (candDesdeContexto && candDesdeContexto.length > 0) {
-      setCandidatos(candDesdeContexto);
-    } else {
-      setCandidatos([]);
-    }
-  }, [candDesdeContexto, loadingCandidato]);
-
-  const listaAsambleistas = asambleistas
-    .map((asam) => ({
-      value: asam.idasambleista.toString(),
-      label: `${asam.apellido}, ${asam.nombre}${
-        asam.ha_votado ? " (Ya votó)" : ""
-      }`,
-      isDisabled: asam.ha_votado,
-      id: parseInt(asam.idasambleista.toString()),
-    }))
-    .sort((a, b) => {
-      // Ordenar por ID
-      if (a.isDisabled && !b.isDisabled) return 1;
-      if (!a.isDisabled && b.isDisabled) return -1;
-      return a.id - b.id;
-    });
+  const listaAsambleistas = useMemo(() => {
+    return (asamDesdeContexto)
+      .map((asam) => ({
+        value: asam.idasambleista.toString(),
+        label: `${asam.apellido}, ${asam.nombre}${
+          asam.ha_votado ? " (Ya votó)" : ""
+        }`,
+        isDisabled: asam.ha_votado,
+        id: parseInt(asam.idasambleista.toString()),
+      }))
+      .sort((a, b) => {
+        // Ordenar por ID
+        if (a.isDisabled && !b.isDisabled) return 1;
+        if (!a.isDisabled && b.isDisabled) return -1;
+        return a.id - b.id;
+      });
+  }, [asamDesdeContexto])
 
   // Manejar la selección de un candidato
   const handleSeleccionCandidato = (
@@ -167,11 +148,6 @@ export default function SistemaVotacion() {
     return listaCategorias.every((categoria) => categoriaEsValida(categoria));
   };
 
-  // Abrir modal de confirmación
-  /*const confirmarVoto = () => {
-    setModalConfirmacion(true);
-  };*/
-
   // Emitir voto
   const emitirVoto = async () => {
     if (!asambleistaSeleccionado) return;
@@ -200,13 +176,6 @@ export default function SistemaVotacion() {
     };
 
     try {
-      //console.log(data);
-
-      /*toast.promise(agregarVoto(data), {
-        loading: "Guardando voto...",
-        success: <b>Voto guardado!</b>,
-        error: <b>No se puedo guardar el voto.</b>,
-      });*/
 
       Swal.fire({
         title: "Procesando voto...",
@@ -216,32 +185,6 @@ export default function SistemaVotacion() {
         showConfirmButton: false,
         theme: isDark ? "dark" : "light",
       });
-
-      /*
-      agregarVoto(data)
-        .then(() => {
-          Swal.hideLoading();
-          Swal.update({
-            icon: "success",
-            title: "¡Voto procesado!",
-            text: `El voto ha sido procesado exitosamente.`,
-            showConfirmButton: true,
-            confirmButtonText: "Ok",
-            confirmButtonColor: "#28A745",
-          });
-        })
-        .catch(() => {
-          Swal.hideLoading();
-          Swal.update({
-            icon: "error",
-            title: "Error",
-            text: "Algo salió mal",
-            showConfirmButton: true,
-            confirmButtonText: "Ok",
-            confirmButtonColor: "#dc3545",
-          });
-        });
-      */
 
       try {
         await agregarVoto(data);
@@ -282,7 +225,6 @@ export default function SistemaVotacion() {
         Estudiantes: false,
       });
       setAsambleistaSeleccionado({ value: "", label: "" });
-      //setModalConfirmacion(false);
     } catch (error) {
       console.error("Error al enviar los datos", error);
     }
@@ -355,7 +297,7 @@ export default function SistemaVotacion() {
                                   if (!a.isDisabled) {
                                     setAsambleistaSeleccionado(a);
                                     setOpenSelectAsam(false);
-                                    console.log("Asambleísta seleccionado:", a);
+                                    //console.log("Asambleísta seleccionado:", a);
                                   }
                                 }}
                                 disabled={a.isDisabled}
@@ -502,75 +444,6 @@ export default function SistemaVotacion() {
           </CardContent>
         </Card>
       </div>
-
-      {/* Modal de Confirmación */}
-      {/*
-        
-        <Dialog open={modalConfirmacion} onOpenChange={setModalConfirmacion}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle className="text-lg">Confirmar Votación</DialogTitle>
-            <DialogDescription className="text-[16px]">
-              Por favor confirme su selección de candidatos:
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="py-4">
-            {listaCategorias.map((categoria) => {
-              const candidatosSeleccionados = selecciones[categoria]
-                .map((idcandidato) =>
-                  candidatos.find(
-                    (c) => c.idcandidato.toString() === idcandidato
-                  )
-                )
-                .filter(Boolean) as Candidato[];
-
-              return (
-                <div key={categoria} className="mb-4">
-                  <h4 className="font-medium text-lg">{categoria}:</h4>
-                  {abstenciones[categoria] ? (
-                    <p className="pl-5 mt-1 italic text-gray-500 text-lg">
-                      Abstención
-                    </p>
-                  ) : (
-                    <ul className="list-none pl-5 mt-1">
-                      {candidatosSeleccionados.map((candidato) => (
-                        <li
-                          key={candidato.idcandidato}
-                          className="flex items-center gap-2 text-lg pb-2"
-                        >
-                          <span className="font-medium w-8">
-                            {candidato.codigo_facultad}.
-                          </span>
-                          <span>{candidato.nombre}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-
-          <DialogFooter>
-            <Button
-              variant="outline"
-              className="text-[16px] px-4 cursor-pointer"
-              onClick={() => setModalConfirmacion(false)}
-            >
-              Cancelar
-            </Button>
-            <Button
-              onClick={emitirVoto}
-              className="bg-green-600 hover:bg-green-700 text-[16px] px-4 cursor-pointer"
-            >
-              Confirmar Voto
-            </Button>
-            </DialogFooter>
-            </DialogContent>
-          </Dialog>
-
-        */}
     </main>
   );
 }
