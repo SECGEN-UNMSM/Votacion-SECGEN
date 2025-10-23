@@ -4,14 +4,14 @@ import { getCandidatosPorCategoria, getColorCategoria } from "@/lib/utils";
 import { RankingVotosCandidato } from "./tablaVotosCandidato";
 
 export default function RankingVotos({stateVisibility}: {stateVisibility: boolean}) {
-  const { loading: loadingRanking, rankingVotos } = useVotos();
+  const { loading: loadingRanking, listaVotos } = useVotos();
 
   return (
     <>
       {listaCategorias.map((categoria) => {
         // Ordenar candidatos por votos (descendente)
         const candidatosOrdenados = [
-          ...getCandidatosPorCategoria(rankingVotos, categoria),
+          ...getCandidatosPorCategoria(listaVotos, categoria),
         ].sort((a, b) => parseInt(b.total_votos) - parseInt(a.total_votos));
 
         return (
@@ -37,7 +37,6 @@ export default function RankingVotos({stateVisibility}: {stateVisibility: boolea
             </div>
             <RankingVotosCandidato
               loadingRanking={loadingRanking}
-              rankingVotos={rankingVotos}
               candidatosOrdenados={candidatosOrdenados}
               state={stateVisibility}
             ></RankingVotosCandidato>

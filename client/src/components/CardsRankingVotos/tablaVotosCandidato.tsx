@@ -4,7 +4,6 @@ import { RankingVotosCandidatoType } from "@/lib/types";
 
 export const RankingVotosCandidato = ({
   loadingRanking,
-  rankingVotos,
   candidatosOrdenados,
   state,
 }: RankingVotosCandidatoType) => {
@@ -17,13 +16,13 @@ export const RankingVotosCandidato = ({
     );
   }
 
-  if (rankingVotos.length === 0) {
+  /*if (rankingVotos.length === 0) {
     return (
       <div className="flex items-center justify-center h-48 text-stone-600 text-lg">
-        No hay candidatos
+        Aún no hay votos registrados.
       </div>
     );
-  }
+  }*/
   return (
     <ScrollArea
       className={`h-52 w-full rounded-md text-black ${

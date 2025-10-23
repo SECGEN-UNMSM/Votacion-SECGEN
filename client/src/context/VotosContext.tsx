@@ -1,12 +1,13 @@
 "use client";
 
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useMemo, useState } from "react";
 import { getRankings, registrarVotos, reiniciarVotos } from "@/api/apiVotos";
 import { Ranking, Votos } from "@/lib/types";
 import { useAsambleistas } from "@/hooks/useAsambleistas";
 
 export interface VotosContextType {
   rankingVotos: Ranking[];
+  listaVotos: Ranking[];
   loading: boolean;
   agregarVoto: (data: Votos) => Promise<void>;
   reiniciarTodo: () => Promise<void>;
@@ -22,6 +23,10 @@ export const VotosProvider: React.FC<{ children: React.ReactNode }> = ({
   const [rankingVotos, setRankingVotos] = useState<Ranking[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { fetchAsambleistas } = useAsambleistas();
+
+  const listaVotos = useMemo(() => {
+    return rankingVotos.filter((voto) => parseInt(voto.total_votos) > 0)
+  }, [rankingVotos])
 
   const fetchRankingVotos = async () => {
     setLoading(true);
@@ -68,6 +73,7 @@ export const VotosProvider: React.FC<{ children: React.ReactNode }> = ({
         loading,
         agregarVoto,
         reiniciarTodo,
+        listaVotos
       }}
     >
       {children}
