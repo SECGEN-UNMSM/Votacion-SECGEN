@@ -105,7 +105,7 @@ export default function LoginPage() {
                 </div>
                 <Button
                   type="submit"
-                  className="bg-[var(--bg-button-success)] mt-8 w-full hover:bg-[var(--bg-button-success)]/80 cursor-pointer text-base"
+                  className="bg-green-800 mt-8 w-full hover:bg-green-800/80 cursor-pointer text-xl font-semibold"
                 >
                   Iniciar
                 </Button>

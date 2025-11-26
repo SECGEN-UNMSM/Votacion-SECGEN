@@ -26,7 +26,7 @@ export const CandidatoItem = ({
       />
       <Label
         htmlFor={candidato.idcandidato.toString()}
-        className="cursor-pointer line-clamp-1 text-[16px] font-normal peer-data-[state=checked]:font-medium"
+        className="cursor-pointer line-clamp-1 text-[18.5px] font-normal peer-data-[state=checked]:font-medium"
       >
         {candidato.nombre_candidato}
       </Label>

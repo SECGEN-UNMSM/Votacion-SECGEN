@@ -6,12 +6,14 @@ import { CandidatoProvider } from "@/context/CandidatosContext";
 import { VotosProvider } from "@/context/VotosContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 
-const soraSans = Sora({style: "normal", subsets: ["latin"]});
+//const soraSans = Sora({style: "normal", subsets: ["latin"]});
 
 export const metadata: Metadata = {
   title: "Sistema de Votación | UNMSM",
   description: "Sistema de votación para la UNMSM",
 };
+
+const interSans = Sora({ style: "normal", subsets: ["latin"] });
 
 export default function RootLayout({
   children,
@@ -19,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`${soraSans.className}`}>
+    <html lang="es" className={`${interSans.className}`}>
       <body>
         <ThemeProvider>
           <AsambleistaProvider>

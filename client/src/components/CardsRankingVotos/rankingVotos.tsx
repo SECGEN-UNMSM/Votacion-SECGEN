@@ -21,19 +21,19 @@ export default function RankingVotos({stateVisibility}: {stateVisibility: boolea
               categoria
             )} rounded-lg p-4 min-h-[324px] `}
           >
-            <h3 className="font-bold mb-4 text-center text-black text-lg">
+            <h3 className="font-bold mb-4 text-center text-black text-[22px]">
               {categoria}
             </h3>
             <div className="flex gap-2 w-full mb-4 font-semibold ">
               <div
-                className={`border-b-2 pb-2 border-white/40 dark:text-black`}
+                className={`border-b-2 pb-2 border-white/40 dark:text-black text-lg`}
               >
                 Fac.
               </div>
-              <div className="flex-1 border-b-2 pb-2 border-white/40 text-black">
+              <div className="flex-1 border-b-2 pb-2 border-white/40 text-black text-lg">
                 Apellidos y Nombres
               </div>
-              <div className="border-b-2 border-white/40 text-black">Votos</div>
+              <div className="border-b-2 border-white/40 text-black text-lg">Votos</div>
             </div>
             <RankingVotosCandidato
               loadingRanking={loadingRanking}

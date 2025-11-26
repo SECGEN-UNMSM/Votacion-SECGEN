@@ -180,7 +180,7 @@ export function ReportesPDF() {
                   variant="outline"
                   onClick={descargarReporte}
                   disabled={!puedeGenerar || isLoading}
-                  className="flex items-center justify-center gap-2 cursor-pointer bg-[var(--bg-button-success)] hover:bg-[var(--bg-button-success)] hover:opacity-90 hover:text-white/90 text-white/90 text-lg py-4"
+                  className="flex items-center justify-center gap-2 cursor-pointer bg-green-700 hover:bg-green-600 hover:opacity-90 hover:text-white/90 text-white/90 text-lg py-4"
                 >
                   {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
                   <Download className="h-4 w-4" />

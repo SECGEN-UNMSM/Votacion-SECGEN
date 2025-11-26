@@ -335,7 +335,7 @@ export default function SistemaVotacion() {
                 <Button
                   onClick={emitirVoto}
                   disabled={!puedeEmitirVoto()}
-                  className="bg-green-600 hover:bg-green-700 cursor-pointer flex-1 py-5 text-lg select-none"
+                  className="bg-green-800 hover:bg-green-700 cursor-pointer flex-1 py-5 text-xl select-none font-semibold tracking-wide"
                 >
                   Emitir voto
                 </Button>
@@ -433,7 +433,7 @@ export default function SistemaVotacion() {
         {/* Sección de Resultados */}
         <Card className="col-span-4 flex-flex-col gap-2 border-1 border-[var(--border-color)] dark:border-stone-700 p-2">
           <CardHeader className="p-0">
-            <CardTitle className="flex justify-center items-center bg-[var(--bg-title)] dark:bg-black py-3 rounded-sm text-xl">
+            <CardTitle className="flex justify-center items-center bg-[var(--bg-title)] dark:bg-black py-2 rounded-sm text-xl">
               Resultados
             </CardTitle>
           </CardHeader>

@@ -36,14 +36,14 @@ export const RankingVotosCandidato = ({
             className="flex justify-between items-center"
           >
             <div className="flex items-center gap-2">
-              <span className="font-medium w-8 pl-1 text-lg">
+              <span className="font-medium w-8 pl-1 text-xl">
                 {candidatoVotos.codigo_facultad}.
               </span>
-              <span className="pl-4 line-clamp-1 text-lg">
+              <span className="pl-4 line-clamp-1 text-xl">
                 {candidatoVotos.nombre_candidato}
               </span>
             </div>
-            <span className="font-bold w-12 shrink-0 text-center text-xl">
+            <span className="font-bold w-12 shrink-0 text-center text-2xl">
               {candidatoVotos.total_votos}
             </span>
           </div>
