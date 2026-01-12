@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
-import { ListaCandidatos } from "@/components/CardListaCandidatos/listaCandidatos";
-import { CandidatoColumn } from "@/components/CardListaCandidatos/candidatoColumn";
+import { ListaCandidatos } from "@/components/listado-candidatos/lista-candidatos";
+import { CandidatoColumn } from "@/components/listado-candidatos/columna-candidato";
 import { ListaCandidatosType } from "@/lib/types";
 import { mockRankingPrueba, mockCandidatosPrueba } from "@/lib/mocks";
 import * as utils from "@/lib/utils";

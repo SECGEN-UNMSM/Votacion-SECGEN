@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 export interface ThemeContextType {
   isDark: boolean;
@@ -43,9 +49,9 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [isDark, mounted]);
 
-  const toggleDarkMode = () => {
+  const toggleDarkMode = useCallback(() => {
     setIsDark(!isDark);
-  };
+  }, [isDark]);
 
   const valoresContexto = useMemo(() => {
     return {

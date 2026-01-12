@@ -9,7 +9,7 @@ import { LoginFields } from "@/lib/types";
 import { useState } from "react";
 import { redirect } from "next/navigation";
 import { useTheme } from "@/hooks/useTheme";
-import { ToggleDarkMode } from "@/components/ToggleDarkMode";
+import { ToggleDarkMode } from "@/components/dark-mode";
 import Image from "next/image";
 
 export default function LoginPage() {
@@ -44,7 +44,7 @@ export default function LoginPage() {
       <div className="relative isolate w-screen h-screen overflow-x-hidden flex items-center justify-center gap-8 p-8 xl:overflow-y-hidden before:absolute before:inset-0 before:z-[-1] before:bg-[url(/Fondo.png)] before:bg-cover before:bg-center before:opacity-50 after:absolute after:inset-0 after:z-[-1] after:bg-[linear-gradient(0deg,rgba(0,0,0,0.5)_0%,rgba(0,0,0,0.5)_100%)]">
         {/*linear-gradient(0deg, rgba(0, 0, 0, 0.50) 0%, rgba(0, 0, 0, 0.50) 100%) */}
         <div className="flex gap-20 items-center z-10">
-          <Card className="w-[386px] px-6 py-9">
+          <Card className="w-full sm:w-sm px-6 py-9">
             <CardHeader className="flex justify-center items-center bg-[var(--bg-title)] dark:bg-black py-2 rounded-md">
               <h2 className="text-center font-bold text-lg">
                 Sistema de Votación del Comité Electoral
@@ -105,7 +105,7 @@ export default function LoginPage() {
                 </div>
                 <Button
                   type="submit"
-                  className="bg-[var(--bg-button-success)] mt-8 w-full hover:bg-[var(--bg-button-success)]/80 cursor-pointer text-base"
+                  className="bg-[var(--bg-button-success)] mt-8 w-full hover:bg-[var(--bg-button-success)]/80 cursor-pointer text-base dark:bg-[var(--bg-button-success)] dark:hover:bg-[var(--bg-button-success)] dark:hover:opacity-90 dark:hover:text-white/90 dark:text-white/90"
                 >
                   Iniciar
                 </Button>
@@ -117,6 +117,7 @@ export default function LoginPage() {
             width={320}
             height={320}
             alt="Logo UNMSM"
+            className="hidden xl:block"
           />
         </div>
       </div>

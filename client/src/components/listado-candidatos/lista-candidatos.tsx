@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { LoaderCircle } from "lucide-react";
-import { CandidatoColumn } from "./candidatoColumn";
+import { CandidatoColumn } from "./columna-candidato";
 import { getCandidatosPorCategoria } from "@/lib/utils";
 import { ListaCandidatosType } from "@/lib/types";
 

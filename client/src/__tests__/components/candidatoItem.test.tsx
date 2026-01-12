@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { CandidatoItem } from "@/components/CardListaCandidatos/candidatoItem";
+import { CandidatoItem } from "@/components/listado-candidatos/candidato";
 import { mockCandidato } from "@/lib/mocks";
 
 const mockOnSelectionChange = jest.fn();

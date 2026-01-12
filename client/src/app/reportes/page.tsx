@@ -1,6 +1,6 @@
 "use client";
 import { ReportesPDF } from "@/components/reportes";
-import { ToggleDarkMode } from "@/components/ToggleDarkMode";
+import { ToggleDarkMode } from "@/components/dark-mode";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/hooks/useTheme";
 import { redirect } from "next/navigation";

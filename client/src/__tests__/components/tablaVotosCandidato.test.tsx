@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
-import { RankingVotosCandidato } from "@/components/CardsRankingVotos/tablaVotosCandidato";
+import { RankingVotosCandidato } from "@/components/conteo-votos/tabla-votos-candidatos";
 import { mockCandidatosOrdenados } from "@/lib/mocks";
 
 jest.mock("@/components/ui/scroll-area", () => ({

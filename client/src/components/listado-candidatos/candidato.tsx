@@ -2,7 +2,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { CandidatoItemType } from "@/lib/types";
 
-export const CandidatoItem = ({
+export const CeldaCandidato = ({
   candidato,
   isChecked,
   isDisabled,

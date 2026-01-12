@@ -1,9 +1,9 @@
 import { listaCategorias } from "@/lib/types";
 import { useVotos } from "@/hooks/useVotos";
 import { getCandidatosPorCategoria, getColorCategoria } from "@/lib/utils";
-import { RankingVotosCandidato } from "./tablaVotosCandidato";
+import { TablaVotosCandidato } from "./tabla-votos-candidatos";
 
-export default function RankingVotos() {
+export default function CategoriaVotos() {
   const { loading: loadingRanking, rankingVotos } = useVotos();
 
   return (
@@ -35,11 +35,11 @@ export default function RankingVotos() {
               </div>
               <div className="border-b-2 border-white/40 text-black">Votos</div>
             </div>
-            <RankingVotosCandidato
+            <TablaVotosCandidato
               loadingRanking={loadingRanking}
               rankingVotos={rankingVotos}
               candidatosOrdenados={candidatosOrdenados}
-            ></RankingVotosCandidato>
+            />
           </div>
         );
       })}

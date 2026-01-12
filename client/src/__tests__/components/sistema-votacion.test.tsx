@@ -1,5 +1,5 @@
 import userEvent from "@testing-library/user-event";
-import SistemaVotacion from "../../components/sistema-votacion";
+import SistemaVotacion from "../../components/votacion";
 import { render, screen, waitFor } from "@testing-library/react";
 import {
   limitesPorCategoria,

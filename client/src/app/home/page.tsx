@@ -1,11 +1,11 @@
 "use client";
-import SistemaVotacion from "@/components/sistema-votacion";
+import SistemaVotacion from "@/components/votacion";
 import { Navbar } from "@/components/navbar";
 import { Toaster } from "react-hot-toast";
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
 import { useTheme } from "@/hooks/useTheme";
-import { ToggleDarkMode } from "@/components/ToggleDarkMode";
+import { ToggleDarkMode } from "@/components/dark-mode";
 
 export default function Home() {
   useTheme();

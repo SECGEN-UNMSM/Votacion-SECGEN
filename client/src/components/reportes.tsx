@@ -15,7 +15,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Download, FileText, Loader2, LoaderCircle } from "lucide-react";
 import { baseURL } from "@/api/api";
 import { useVotos } from "@/hooks/useVotos";
-import RankingVotos from "./CardsRankingVotos/rankingVotos";
+import RankingVotos from "./conteo-votos/categoria-votos";
 import toast, { Toaster } from "react-hot-toast";
 import { fetch as tauriFetch } from "@tauri-apps/plugin-http";
 import { listaCategorias } from "@/lib/types";
@@ -180,7 +180,7 @@ export function ReportesPDF() {
                   variant="outline"
                   onClick={descargarReporte}
                   disabled={!puedeGenerar || isLoading}
-                  className="flex items-center justify-center gap-2 cursor-pointer bg-[var(--bg-button-success)] hover:bg-[var(--bg-button-success)] hover:opacity-90 hover:text-white/90 text-white/90 text-lg py-4"
+                  className="flex items-center justify-center gap-2 cursor-pointer bg-[var(--bg-button-success)] hover:bg-[var(--bg-button-success)] hover:opacity-90 hover:text-white/90 text-white/90 text-lg py-4 dark:bg-[var(--bg-button-success)] dark:hover:bg-[var(--bg-button-success)] dark:hover:opacity-90 dark:hover:text-white/90 dark:text-white/90"
                 >
                   {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
                   <Download className="h-4 w-4" />

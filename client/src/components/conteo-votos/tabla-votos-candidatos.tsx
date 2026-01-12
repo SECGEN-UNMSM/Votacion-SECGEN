@@ -2,7 +2,7 @@ import { LoaderCircle } from "lucide-react";
 import { ScrollArea } from "../ui/scroll-area";
 import { RankingVotosCandidatoType } from "@/lib/types";
 
-export const RankingVotosCandidato = ({
+export const TablaVotosCandidato = ({
   loadingRanking,
   rankingVotos,
   candidatosOrdenados,

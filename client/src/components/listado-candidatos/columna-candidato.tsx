@@ -1,4 +1,4 @@
-import { CandidatoItem } from "./candidatoItem";
+import { CeldaCandidato } from "./candidato";
 import { CandidatoColumnType } from "@/lib/types";
 
 export const CandidatoColumn = ({
@@ -27,7 +27,7 @@ export const CandidatoColumn = ({
           (!isChecked && seleccionesCategoria.length >= limiteMaximo);
 
         return (
-          <CandidatoItem
+          <CeldaCandidato
             key={candidato.idcandidato}
             candidato={candidato}
             isChecked={isChecked}

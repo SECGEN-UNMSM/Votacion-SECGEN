@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
-import { CandidatoColumn } from "@/components/CardListaCandidatos/candidatoColumn";
-import { CandidatoItem } from "@/components/CardListaCandidatos/candidatoItem";
+import { CandidatoColumn } from "@/components/listado-candidatos/columna-candidato";
+import { CandidatoItem } from "@/components/listado-candidatos/candidato";
 import { mockCandidatos } from "@/lib/mocks";
 
 const mockCandidatoItem = CandidatoItem as jest.Mock;

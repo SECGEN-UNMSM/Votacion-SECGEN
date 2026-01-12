@@ -18,12 +18,12 @@ import { limitesPorCategoria, listaCategorias } from "@/lib/types";
 import { useAsambleistas } from "@/hooks/useAsambleistas";
 import { useCandidatos } from "@/hooks/useCandidatos";
 import { useVotos } from "@/hooks/useVotos";
-import RankingVotos from "./CardsRankingVotos/rankingVotos";
+import RankingVotos from "./conteo-votos/categoria-votos";
 import { useTheme } from "@/hooks/useTheme";
-import { ListaCandidatos } from "./CardListaCandidatos/listaCandidatos";
+import { ListaCandidatos } from "./listado-candidatos/lista-candidatos";
 import { getColorCategoria } from "@/lib/utils";
 import Swal from "sweetalert2";
-import { SelectPopover } from "./SelectPopover";
+import { Selector } from "./selector";
 import { Info } from "lucide-react";
 
 export default function SistemaVotacion() {
@@ -158,11 +158,6 @@ export default function SistemaVotacion() {
     return listaCategorias.every((categoria) => categoriaEsValida(categoria));
   };
 
-  // Abrir modal de confirmación
-  /*const confirmarVoto = () => {
-    setModalConfirmacion(true);
-  };*/
-
   // Emitir voto
   const emitirVoto = async () => {
     if (!asambleistaSeleccionado) return;
@@ -235,7 +230,6 @@ export default function SistemaVotacion() {
         Estudiantes: false,
       });
       setAsambleistaSeleccionado({ value: "", label: "" });
-      //setModalConfirmacion(false);
     } catch (error) {
       console.error("Error al enviar los datos", error);
     }
@@ -261,12 +255,12 @@ export default function SistemaVotacion() {
                 <Label htmlFor="asambleista" className="text-lg">
                   Lista de asambleístas
                 </Label>
-                <SelectPopover
+                <Selector
                   listaAsambleistas={listaAsambleistas}
                   asambleistaSeleccionado={asambleistaSeleccionado}
                   setAsambleistaSeleccionado={setAsambleistaSeleccionado}
                   loadingAsambleista={loadingAsambleista}
-                ></SelectPopover>
+                ></Selector>
               </div>
 
               {todasEnAbstencion && (
@@ -280,7 +274,7 @@ export default function SistemaVotacion() {
                 <Button
                   onClick={emitirVoto}
                   disabled={!puedeEmitirVoto()}
-                  className="bg-green-600 hover:bg-green-700 cursor-pointer flex-1 py-5 text-lg select-none"
+                  className="bg-green-600 hover:bg-green-700 cursor-pointer flex-1 py-5 text-lg select-none dark:bg-green-600 dark:hover:bg-green-700 dark:hover:text-white/90 dark:text-white/90"
                 >
                   Emitir voto
                 </Button>
@@ -302,7 +296,7 @@ export default function SistemaVotacion() {
               value={categoriaActiva}
               onValueChange={(value) => setCategoriaActiva(value as Categoria)}
             >
-              <TabsList className="grid grid-cols-2 gap-2 h-20 xl:grid-cols-4 xl:gap-4 w-full xl:h-12">
+              <TabsList className="grid grid-cols-1 grid-rows-4 md:grid-cols-2 md:grid-rows-2 gap-2 h-52 md:h-24 xl:grid-cols-4 xl:grid-rows-1 xl:gap-4 w-full xl:h-12">
                 {listaCategorias.map((categoria) => {
                   const isActive = categoria == categoriaActiva;
                   return (

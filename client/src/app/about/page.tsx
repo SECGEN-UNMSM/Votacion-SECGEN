@@ -1,6 +1,6 @@
 "use client";
 
-import { ToggleDarkMode } from "@/components/ToggleDarkMode";
+import { ToggleDarkMode } from "@/components/dark-mode";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
@@ -84,7 +84,7 @@ export default function About() {
       <div className="relative isolate w-screen h-screen overflow-x-hidden flex items-center justify-center gap-8 p-8 xl:overflow-y-hidden before:absolute before:inset-0 before:z-[-1] before:bg-[url(/Fondo.png)] before:bg-cover before:bg-center before:opacity-50 after:absolute after:inset-0 after:z-[-1] after:bg-[linear-gradient(0deg,rgba(0,0,0,0.5)_0%,rgba(0,0,0,0.5)_100%)]">
         {/*linear-gradient(0deg, rgba(0, 0, 0, 0.50) 0%, rgba(0, 0, 0, 0.50) 100%) */}
         <div className="flex gap-20 items-center z-10">
-          <Card className="w-3xl px-6 py-9">
+          <Card className="md:w-3xl w-full px-6 py-9">
             <CardHeader className="flex justify-center items-center bg-[var(--bg-title)] py-2 rounded-md dark:bg-black">
               <h2 className="text-center font-bold text-xl">
                 Acerca de Nosotros
@@ -117,11 +117,11 @@ export default function About() {
                   Reportes
                 </Button>
                 <Button
-                  className="mt-auto cursor-pointer text-red-700 text-base"
+                  className="mt-auto cursor-pointer text-red-700 text-base dark:text-red-500"
                   variant={"link"}
                   onClick={handleLogout}
                 >
-                  Cerrar Sesión
+                  Cerrar sesión
                 </Button>
               </div>
               <Dialog open={openDialog} onOpenChange={setOpenDialog}>
@@ -157,7 +157,7 @@ export default function About() {
                 <h4 className="font-semibold">
                   Sobre el Sistema de Votación del Comité Electoral
                 </h4>
-                <p className="text-stone-700 mt-2 dark:text-stone-400">
+                <p className="text-stone-700 mt-2 dark:text-stone-400 line-clamp-4">
                   El Sistema de Elecciones del Comité Electoral ha sido
                   desarrollado por la Unidad de Informática de la Secretaría
                   General de la Universidad Nacional Mayor de San Marcos.
@@ -175,7 +175,7 @@ export default function About() {
                   <li>Ing. Delfin Urbando Ochoa</li>
                 </ul>
                 <h4 className="font-semibold mt-6">Objetivo del Sistema</h4>
-                <p className="italic text-stone-700 mt-2 dark:text-stone-400">
+                <p className="italic text-stone-700 mt-2 dark:text-stone-400 line-clamp-3">
                   Este sistema fue concebido para optimizar y transparentar el
                   proceso de elecciones del Comité Electoral UNMSM.
                 </p>
@@ -187,6 +187,7 @@ export default function About() {
             width={320}
             height={320}
             alt="Logo UNMSM"
+            className="hidden xl:block"
           />
         </div>
       </div>
