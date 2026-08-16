@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { CandidatoItem } from "@/components/listado-candidatos/candidato";
+import { CeldaCandidato } from "@/components/listado-candidatos/candidato";
 import { mockCandidato } from "@/lib/mocks";
 
 const mockOnSelectionChange = jest.fn();
@@ -13,7 +13,7 @@ describe("CandidatoItem", () => {
 
   it("Debería renderizar la información del candidato correctamente", () => {
     render(
-      <CandidatoItem
+      <CeldaCandidato
         candidato={mockCandidato}
         isChecked={false}
         isDisabled={false}
@@ -29,7 +29,7 @@ describe("CandidatoItem", () => {
 
   it("Debería mostrar el checkbox como marcado si isChecked es true", () => {
     render(
-      <CandidatoItem
+      <CeldaCandidato
         candidato={mockCandidato}
         isChecked={true}
         isDisabled={false}
@@ -43,7 +43,7 @@ describe("CandidatoItem", () => {
 
   it("Debería mostrar el checkbox como deshabilitado si isDisabled es true", () => {
     render(
-      <CandidatoItem
+      <CeldaCandidato
         candidato={mockCandidato}
         isChecked={false}
         isDisabled={true}
@@ -58,7 +58,7 @@ describe("CandidatoItem", () => {
   it("Debería llamar a onSelectionChange cuando el usuario marca el checkbox", async () => {
     const user = userEvent.setup();
     render(
-      <CandidatoItem
+      <CeldaCandidato
         candidato={mockCandidato}
         isChecked={false}
         isDisabled={false}
@@ -80,7 +80,7 @@ describe("CandidatoItem", () => {
   it("Debería llamar a onSelectionChange cuando el usuario desmarca el checkbox", async () => {
     const user = userEvent.setup();
     render(
-      <CandidatoItem
+      <CeldaCandidato
         candidato={mockCandidato}
         isChecked={true}
         isDisabled={false}
@@ -102,7 +102,7 @@ describe("CandidatoItem", () => {
   it("Debería cambiar el estado del checkbox al hacer clic en la etiqueta asociada", async () => {
     const user = userEvent.setup();
     render(
-      <CandidatoItem
+      <CeldaCandidato
         candidato={mockCandidato}
         isChecked={false}
         isDisabled={false}
@@ -124,7 +124,7 @@ describe("CandidatoItem", () => {
   it("No debería llamar a onSelectionChange si el checkbox está deshabilitado", async () => {
     const user = userEvent.setup();
     render(
-      <CandidatoItem
+      <CeldaCandidato
         candidato={mockCandidato}
         isChecked={false}
         isDisabled={true}
