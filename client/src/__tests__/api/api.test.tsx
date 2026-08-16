@@ -1,6 +1,6 @@
 import { getAsambleistas } from "@/api/apiAsambleista";
 import { getCandidatos } from "@/api/apiCandidato";
-import { getRankings, registrarVotos } from "@/api/apiVotos";
+import { getRankings, registrarVotos, reiniciarVotos } from "@/api/apiVotos";
 import { fetch as tauriFetch } from "@tauri-apps/plugin-http";
 import "@testing-library/jest-dom";
 
@@ -118,6 +118,45 @@ describe("registrarVoto", () => {
 
     expect(console.error).toHaveBeenCalledWith(
       "Error en la petición de registrar votos",
+      expect.any(Error)
+    );
+  });
+});
+
+describe("reiniciarVotos", () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("Debería de reiniciar el conteo de votos de manera exitosa", async () => {
+    (tauriFetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+    });
+
+    await reiniciarVotos();
+
+    expect(tauriFetch).toHaveBeenCalledWith(
+      expect.stringContaining("/reiniciar-voto"),
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  });
+
+  it("Debería de mostrar un mensaje de error si la respuesta no es exitosa", async () => {
+    (tauriFetch as jest.Mock).mockResolvedValueOnce({
+      ok: false,
+      json: async () => "Error del servidor",
+      status: 400,
+    });
+
+    await reiniciarVotos();
+
+    expect(console.error).toHaveBeenCalledWith(
+      "Error al momento de reiniciar el conteo de votos",
       expect.any(Error)
     );
   });
