@@ -24,7 +24,7 @@ function createMockPointerEvent(
   return event;
 }
 
-window.PointerEvent = createMockPointerEvent as any;
+window.PointerEvent = createMockPointerEvent as unknown as typeof PointerEvent;
 
 Object.assign(window.HTMLElement.prototype, {
   scrollIntoView: jest.fn(),

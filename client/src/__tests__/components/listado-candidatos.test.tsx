@@ -10,7 +10,7 @@ const mockCandidatoColumn = CandidatoColumn as jest.Mock;
 const mockGetCandidatosPorCategoria =
   utils.getCandidatosPorCategoria as jest.Mock;
 
-jest.mock("@/components/CardListaCandidatos/candidatoColumn", () => ({
+jest.mock("@/components/listado-candidatos/columna-candidato", () => ({
   CandidatoColumn: jest.fn(({ candidatos }) => (
     <div data-testid="candidato-column-mock">
       <span>{candidatos.length} candidatos</span>

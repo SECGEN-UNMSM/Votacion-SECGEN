@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
-import { RankingVotosCandidato } from "@/components/conteo-votos/tabla-votos-candidatos";
+import { TablaVotosCandidato } from "@/components/conteo-votos/tabla-votos-candidatos";
 import { mockCandidatosOrdenados } from "@/lib/mocks";
 
 jest.mock("@/components/ui/scroll-area", () => ({
@@ -14,10 +14,10 @@ jest.mock("lucide-react", () => ({
   LoaderCircle: () => <div data-testid="loader-mock" />,
 }));
 
-describe("RankingVotosCandidato", () => {
+describe("TablaVotosCandidato", () => {
   it("Debería mostrar el spinner de carga cuando loadingRanking es true", () => {
     render(
-      <RankingVotosCandidato
+      <TablaVotosCandidato
         loadingRanking={true}
         rankingVotos={[]}
         candidatosOrdenados={[]}
@@ -31,7 +31,7 @@ describe("RankingVotosCandidato", () => {
 
   it("Debería mostrar un mensaje de 'No hay candidatos' cuando rankingVotos está vacío", () => {
     render(
-      <RankingVotosCandidato
+      <TablaVotosCandidato
         loadingRanking={false}
         rankingVotos={[]}
         candidatosOrdenados={[]}
@@ -45,7 +45,7 @@ describe("RankingVotosCandidato", () => {
 
   it("Debería renderizar la lista de candidatos cuando se tiene datos", () => {
     render(
-      <RankingVotosCandidato
+      <TablaVotosCandidato
         loadingRanking={false}
         rankingVotos={[
           {
@@ -67,7 +67,7 @@ describe("RankingVotosCandidato", () => {
 
   it("Debería mostrar la información de cada candidato", () => {
     render(
-      <RankingVotosCandidato
+      <TablaVotosCandidato
         loadingRanking={false}
         rankingVotos={[
           {
@@ -105,7 +105,7 @@ describe("RankingVotosCandidato", () => {
 
   it("Debería renderizar una lista vacía si candidatosOrdenados está vacío pero rankingVotos tiene datos", () => {
     render(
-      <RankingVotosCandidato
+      <TablaVotosCandidato
         loadingRanking={false}
         rankingVotos={[
           {
