@@ -8,3 +8,4 @@ client/.swc
 client/.env
 client/coverage
 .env
+generar_excels.js
