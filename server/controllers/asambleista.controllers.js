@@ -47,9 +47,12 @@ const importarExcelAsambleistas = async (req, res) => {
 
     await client.query('BEGIN');
     
-    // El usuario solicitó eliminar los registros anteriores.
-    // Usamos TRUNCATE CASCADE para eliminar también los votos asociados (foreign key).
-    await client.query('TRUNCATE TABLE asambleista CASCADE');
+    // 1. Reiniciar la votación (eliminar votos e historial)
+    // Esto asegura que no hayan votos huérfanos y previene errores de foreign key.
+    await client.query('TRUNCATE TABLE votos RESTART IDENTITY CASCADE');
+
+    // 2. Limpiar la tabla de asambleístas
+    await client.query('TRUNCATE TABLE asambleista RESTART IDENTITY CASCADE');
     
     const insertSQL = 'INSERT INTO asambleista (nombre, apellido) VALUES ($1, $2)';
     for (const a of asambleistas) {

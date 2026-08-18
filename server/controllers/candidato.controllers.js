@@ -59,9 +59,13 @@ const importarCedulaCandidatos = async (req, res) => {
 
     await client.query('BEGIN');
     
-    // El usuario solicitó eliminar los registros anteriores.
-    // Usamos TRUNCATE CASCADE para evitar violaciones de foreign key con votos existentes.
-    await client.query('TRUNCATE TABLE candidato CASCADE');
+    // 1. Reiniciar la votación (eliminar votos e historial)
+    // Esto asegura que no hayan votos huérfanos y previene errores de foreign key.
+    await client.query('TRUNCATE TABLE votos RESTART IDENTITY CASCADE');
+    await client.query('UPDATE asambleista SET ha_votado = FALSE');
+
+    // 2. Limpiar la tabla de candidatos
+    await client.query('TRUNCATE TABLE candidato RESTART IDENTITY CASCADE');
     
     const insertSQL = 'INSERT INTO candidato (nombre, categoria, codigo_facultad) VALUES ($1, $2, $3)';
     for (const c of candidatos) {
