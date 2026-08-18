@@ -1,14 +1,21 @@
 import React, { useState, useRef } from "react";
-import { fetch as tauriFetch } from "@tauri-apps/plugin-http";
 import { baseURL } from "@/api/api";
 import Swal from "sweetalert2";
 import { useTheme } from "@/hooks/useTheme";
 import { Button } from "@/components/ui/button";
+import { useAsambleistas } from "@/hooks/useAsambleistas";
+import { useCandidatos } from "@/hooks/useCandidatos";
+import { useVotos } from "@/hooks/useVotos";
 
 export const PanelCargaMasiva: React.FC = () => {
   const [loadingAsambleistas, setLoadingAsambleistas] = useState(false);
   const [loadingCedula, setLoadingCedula] = useState(false);
+  const [asambleistasUploaded, setAsambleistasUploaded] = useState(false);
+  const [cedulaUploaded, setCedulaUploaded] = useState(false);
   const { isDark } = useTheme();
+  const { fetchAsambleistas } = useAsambleistas();
+  const { fetchCandidatos } = useCandidatos();
+  const { fetchRankingVotos } = useVotos();
 
   const fileInputAsambleistasRef = useRef<HTMLInputElement>(null);
   const fileInputCedulaRef = useRef<HTMLInputElement>(null);
@@ -23,13 +30,23 @@ export const PanelCargaMasiva: React.FC = () => {
     setLoadingAsambleistas(true);
 
     try {
-      const response = await tauriFetch(`${baseURL}/asambleistas/importar-excel`, {
+      const response = await globalThis.fetch(`${baseURL}/asambleistas/importar-excel`, {
         method: "POST",
         body: formData,
       });
-      const data = await response.json();
+      
+      let data;
+      const text = await response.text();
+      try {
+        data = JSON.parse(text);
+      } catch (err) {
+        throw new Error(`Error del servidor (${response.status}): El backend retornó HTML en lugar de JSON. Verifica si el servidor backend está actualizado y ejecutándose.`);
+      }
 
       if (response.ok && data.ok) {
+        setAsambleistasUploaded(true);
+        await fetchAsambleistas();
+        await fetchRankingVotos();
         Swal.fire({
           icon: "success",
           title: "¡Éxito!",
@@ -44,12 +61,12 @@ export const PanelCargaMasiva: React.FC = () => {
           theme: isDark ? "dark" : "light",
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       Swal.fire({
         icon: "error",
         title: "Error de conexión",
-        text: "Error de red o no hay conexión con el servidor.",
+        text: error.message || "Error de red o no hay conexión con el servidor.",
         theme: isDark ? "dark" : "light",
       });
     } finally {
@@ -68,13 +85,23 @@ export const PanelCargaMasiva: React.FC = () => {
     setLoadingCedula(true);
 
     try {
-      const response = await tauriFetch(`${baseURL}/candidatos/importar-cedula`, {
+      const response = await globalThis.fetch(`${baseURL}/candidatos/importar-cedula`, {
         method: "POST",
         body: formData,
       });
-      const data = await response.json();
+      
+      let data;
+      const text = await response.text();
+      try {
+        data = JSON.parse(text);
+      } catch (err) {
+        throw new Error(`Error del servidor (${response.status}): El backend retornó HTML en lugar de JSON. Verifica si el servidor backend está actualizado y ejecutándose.`);
+      }
 
       if (response.ok && data.ok) {
+        setCedulaUploaded(true);
+        await fetchCandidatos();
+        await fetchRankingVotos();
         Swal.fire({
           icon: "success",
           title: "¡Éxito!",
@@ -89,12 +116,12 @@ export const PanelCargaMasiva: React.FC = () => {
           theme: isDark ? "dark" : "light",
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       Swal.fire({
         icon: "error",
         title: "Error de conexión",
-        text: "Error de red o no hay conexión con el servidor.",
+        text: error.message || "Error de red o no hay conexión con el servidor.",
         theme: isDark ? "dark" : "light",
       });
     } finally {
@@ -114,7 +141,14 @@ export const PanelCargaMasiva: React.FC = () => {
 
       <div className="flex flex-col gap-4 p-5 border rounded-lg bg-card text-card-foreground shadow-sm transition-all hover:shadow-md">
         <div>
-          <h4 className="font-semibold text-base leading-none tracking-tight">Lista de Asambleístas</h4>
+          <div className="flex items-center justify-between">
+            <h4 className="font-semibold text-base leading-none tracking-tight">Lista de Asambleístas</h4>
+            {asambleistasUploaded && (
+              <span className="inline-flex items-center rounded-md border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-700 dark:text-emerald-400 animate-in fade-in zoom-in-95 duration-300">
+                Subido
+              </span>
+            )}
+          </div>
           <p className="text-sm text-muted-foreground mt-2">Padrón oficial de asambleístas con nombres y apellidos.</p>
         </div>
         <input
@@ -135,7 +169,14 @@ export const PanelCargaMasiva: React.FC = () => {
 
       <div className="flex flex-col gap-4 p-5 border rounded-lg bg-card text-card-foreground shadow-sm transition-all hover:shadow-md">
         <div>
-          <h4 className="font-semibold text-base leading-none tracking-tight">Cédula de Sufragio</h4>
+          <div className="flex items-center justify-between">
+            <h4 className="font-semibold text-base leading-none tracking-tight">Cédula de Sufragio</h4>
+            {cedulaUploaded && (
+              <span className="inline-flex items-center rounded-md border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-700 dark:text-emerald-400 animate-in fade-in zoom-in-95 duration-300">
+                Subido
+              </span>
+            )}
+          </div>
           <p className="text-sm text-muted-foreground mt-2">Documento Excel con los candidatos categorizados.</p>
         </div>
         <input

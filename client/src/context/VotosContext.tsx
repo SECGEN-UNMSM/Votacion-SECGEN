@@ -11,6 +11,7 @@ export interface VotosContextType {
   loading: boolean;
   agregarVoto: (data: Votos) => Promise<void>;
   reiniciarTodo: () => Promise<void>;
+  fetchRankingVotos: () => Promise<void>;
 }
 
 export const VotosContext = createContext<VotosContextType | undefined>(
@@ -73,7 +74,8 @@ export const VotosProvider: React.FC<{ children: React.ReactNode }> = ({
         loading,
         agregarVoto,
         reiniciarTodo,
-        listaVotos
+        listaVotos,
+        fetchRankingVotos
       }}
     >
       {children}
