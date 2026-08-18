@@ -43,7 +43,7 @@ const generarHeader = () => ({
 function generarTablaCategoria(categoria, candidatos, abstenciones) {
   return [
     {
-      text: "ELECCIÓN DEL COMITÉ ELECTORAL UNIVERSITARIO (2025 - 2026) - ASAMBLEA UNIVERSITARIA",
+      text: "ELECCIÓN DEL COMITÉ ELECTORAL UNIVERSITARIO (2026 - 2027) - ASAMBLEA UNIVERSITARIA",
       style: "seccionTitulo",
     },
     {
