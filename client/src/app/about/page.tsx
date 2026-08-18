@@ -18,8 +18,11 @@ import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
+import { PanelCargaMasiva } from "@/components/PanelCargaMasiva";
+
 export default function About() {
   const [openDialog, setOpenDialog] = useState(false);
+  const [activeTab, setActiveTab] = useState<"nosotros" | "cargar">("nosotros");
   const { isDark } = useTheme();
   const { reiniciarTodo } = useVotos();
 
@@ -87,12 +90,18 @@ export default function About() {
           <Card className="w-3xl px-6 py-9">
             <CardHeader className="flex justify-center items-center bg-[var(--bg-title)] py-2 rounded-md dark:bg-black">
               <h2 className="text-center font-bold text-xl">
-                Acerca de Nosotros
+                {
+                  activeTab === "nosotros" ? "Acera de Nosotros" : "Importar datos"
+                }
               </h2>
             </CardHeader>
             <CardContent className="flex gap-8 text-base">
               <div className="flex flex-col items-baseline gap-2 pr-2 border-r-2">
-                <Button variant={"link"} disabled className="text-base">
+                <Button 
+                  variant={"link"} 
+                  className={`cursor-pointer text-base ${activeTab === "nosotros" ? "text-stone-400 font-semibold" : ""}`}
+                  onClick={() => setActiveTab("nosotros")}
+                >
                   Nosotros
                 </Button>
                 <Button
@@ -100,7 +109,14 @@ export default function About() {
                   className="cursor-pointer text-base"
                   onClick={() => setOpenDialog(!openDialog)}
                 >
-                  Iniciar
+                  Nueva votación
+                </Button>
+                <Button
+                  variant={"link"}
+                  className={`cursor-pointer text-base ${activeTab === "cargar" ? "text-stone-400 font-semibold" : ""}`}
+                  onClick={() => setActiveTab("cargar")}
+                >
+                  Importar datos
                 </Button>
                 <Button
                   variant={"link"}
@@ -121,7 +137,7 @@ export default function About() {
                   variant={"link"}
                   onClick={handleLogout}
                 >
-                  Cerrar Sesión
+                  Cerrar sesión
                 </Button>
               </div>
               <Dialog open={openDialog} onOpenChange={setOpenDialog}>
@@ -153,33 +169,39 @@ export default function About() {
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
-              <section>
-                <h4 className="font-semibold">
-                  Sobre el Sistema de Votación del Comité Electoral
-                </h4>
-                <p className="text-stone-700 mt-2 dark:text-stone-400">
-                  El Sistema de Elecciones del Comité Electoral ha sido
-                  desarrollado por la Unidad de Informática de la Secretaría
-                  General de la Universidad Nacional Mayor de San Marcos.
-                </p>
-                <h4 className="font-semibold mt-6">Equipo de Desarrollo</h4>
-                <ul className="text-stone-700 mt-2 pl-6 list-disc dark:text-stone-400">
-                  <li>Patricio Julca, Vilberto</li>
-                  <li>Román Suyo, André</li>
-                  <li>Vera Alva, Miguel</li>
-                </ul>
-                <h4 className="font-semibold mt-6">Equipo de Supervisión</h4>
-                <ul className="text-stone-700 mt-2 pl-6 list-disc dark:text-stone-400">
-                  <li>Ing. Tomas Angeles Natividad (Encargado de la Unidad)</li>
-                  <li>Ing. Billy Padilla Huaman</li>
-                  <li>Ing. Delfin Urbando Ochoa</li>
-                </ul>
-                <h4 className="font-semibold mt-6">Objetivo del Sistema</h4>
-                <p className="italic text-stone-700 mt-2 dark:text-stone-400">
-                  Este sistema fue concebido para optimizar y transparentar el
-                  proceso de elecciones del Comité Electoral UNMSM.
-                </p>
-              </section>
+              {activeTab === "nosotros" ? (
+                <section>
+                  <h4 className="font-semibold">
+                    Sobre el Sistema de Votación del Comité Electoral
+                  </h4>
+                  <p className="text-stone-700 mt-2 dark:text-stone-400">
+                    El Sistema de Elecciones del Comité Electoral ha sido
+                    desarrollado por la Unidad de Informática de la Secretaría
+                    General de la Universidad Nacional Mayor de San Marcos.
+                  </p>
+                  <h4 className="font-semibold mt-6">Equipo de Desarrollo</h4>
+                  <ul className="text-stone-700 mt-2 pl-6 list-disc dark:text-stone-400">
+                    <li>Patricio Julca, Vilberto</li>
+                    <li>Román Suyo, André</li>
+                    <li>Vera Alva, Miguel</li>
+                  </ul>
+                  <h4 className="font-semibold mt-6">Equipo de Supervisión</h4>
+                  <ul className="text-stone-700 mt-2 pl-6 list-disc dark:text-stone-400">
+                    <li>Ing. Tomas Angeles Natividad (Encargado de la Unidad)</li>
+                    <li>Ing. Billy Padilla Huaman</li>
+                    <li>Ing. Delfin Urbando Ochoa</li>
+                  </ul>
+                  <h4 className="font-semibold mt-6">Objetivo del Sistema</h4>
+                  <p className="italic text-stone-700 mt-2 dark:text-stone-400">
+                    Este sistema fue concebido para optimizar y transparentar el
+                    proceso de elecciones del Comité Electoral UNMSM.
+                  </p>
+                </section>
+              ) : (
+                <section className="w-full flex">
+                  <PanelCargaMasiva />
+                </section>
+              )}
             </CardContent>
           </Card>
           <Image
