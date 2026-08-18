@@ -59,8 +59,9 @@ const importarCedulaCandidatos = async (req, res) => {
 
     await client.query('BEGIN');
     
-    // El usuario solicitó eliminar los registros anteriores
-    await client.query('DELETE FROM candidato');
+    // El usuario solicitó eliminar los registros anteriores.
+    // Usamos TRUNCATE CASCADE para evitar violaciones de foreign key con votos existentes.
+    await client.query('TRUNCATE TABLE candidato CASCADE');
     
     const insertSQL = 'INSERT INTO candidato (nombre, categoria, codigo_facultad) VALUES ($1, $2, $3)';
     for (const c of candidatos) {
