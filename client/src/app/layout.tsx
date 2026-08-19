@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
 import { Sora } from "next/font/google";
 import "./globals.css";
-import { AsambleistaProvider } from "@/context/AsambleistasContext";
-import { CandidatoProvider } from "@/context/CandidatosContext";
-import { VotosProvider } from "@/context/VotosContext";
-import { ThemeProvider } from "@/context/ThemeContext";
+import { AppInitWrapper } from "@/components/AppInitWrapper";
 
 //const soraSans = Sora({style: "normal", subsets: ["latin"]});
 
@@ -23,13 +20,9 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${interSans.className}`}>
       <body>
-        <ThemeProvider>
-          <AsambleistaProvider>
-            <CandidatoProvider>
-              <VotosProvider>{children}</VotosProvider>
-            </CandidatoProvider>
-          </AsambleistaProvider>
-        </ThemeProvider>
+        <AppInitWrapper>
+          {children}
+        </AppInitWrapper>
       </body>
     </html>
   );
