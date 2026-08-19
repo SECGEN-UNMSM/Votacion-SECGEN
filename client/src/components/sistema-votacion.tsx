@@ -409,7 +409,7 @@ export default function SistemaVotacion() {
                         htmlFor={`abstencion-${categoria}`}
                         className="text-lg text-gray-600 dark:text-stone-400"
                       >
-                        Abstención
+                        Ninguno/Abstención
                       </Label>
                     </div>
                   </div>
